@@ -56,29 +56,28 @@
             width: 100%;
             text-align: center;
             opacity: 0;
-            transition: opacity 0.5s ease; /* Плавна поява */
+            transition: opacity 0.5s ease;
             font-size: 0.8rem;
             color: rgba(255,255,255,0.7);
-            z-index: 50; /* Поверх усього */
+            z-index: 50; 
             pointer-events: none;
-            /* Мобільна позиція */
-            bottom: 12%; 
+            bottom: 15%; /* Mobile default */
         }
         
         @media (min-width: 769px) {
             #hero-footnote {
-                /* Десктопна позиція (піднято, як просили) */
-                bottom: 20%; 
+                /* Піднято на 15% вище від стандартного */
+                bottom: 30%; 
             }
         }
 
-        /* --- БЛОК 2: РИЗИКИ (ВИПРАВЛЕНО) --- */
+        /* --- БЛОК 2: РИЗИКИ (ВИПРАВЛЕНО МЕХАНІКУ) --- */
         .risk-container {
             position: relative; width: 100%; max-width: 1200px; height: 80vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* Desktop Grid */
+        /* Розмітка сітки */
         @media (min-width: 769px) {
             .cards-layout-wrapper {
                 display: grid; width: 100%; height: 100%;
@@ -86,10 +85,7 @@
                 grid-template-rows: 1fr 0.4fr 1fr; 
                 gap: 2rem; pointer-events: none;
             }
-            /* Клітинки сітки - це якорі */
-            .grid-pos-tl, .grid-pos-tr, .grid-pos-bl, .grid-pos-br { 
-                position: relative; pointer-events: auto; width: 100%; height: 100%;
-            }
+            .grid-cell { position: relative; width: 100%; height: 100%; pointer-events: auto; }
             
             .grid-pos-tl { grid-row: 1; grid-column: 1; }
             .grid-pos-tr { grid-row: 1; grid-column: 2; }
@@ -98,104 +94,99 @@
             
             .desktop-title-wrapper { display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; }
             .mobile-title-wrapper { display: none; }
-
-            /* Стилі картки для десктопу */
-            .risk-card {
-                height: 130px; 
-            }
         }
 
-        /* Mobile Flex Layout (ВИПРАВЛЕНО) */
         @media (max-width: 768px) {
-            .risk-container {
-                height: 100vh; /* Повна висота */
-                padding: 10px;
-                justify-content: center;
-                gap: 10px;
-            }
-
+            .risk-container { height: 100vh; padding: 10px; justify-content: center; gap: 20px; }
             .cards-layout-wrapper {
-                display: flex; flex-direction: column; width: 100%; height: auto;
-                justify-content: center; gap: 10px;
+                display: flex; flex-direction: column; width: 100%; height: 100%;
+                justify-content: center; gap: 20px;
             }
-
+            /* Ряди для мобільного */
             .mobile-row {
-                display: flex; justify-content: space-between; gap: 10px; width: 100%;
-                height: 110px; /* Фіксована висота рядка */
-                position: relative;
-                z-index: 10; /* Базовий рівень */
+                display: flex; justify-content: space-between; gap: 15px; width: 100%;
+                height: 120px; /* Висота зони, де живуть картки */
+                position: relative; z-index: 10;
             }
-            
-            /* Клітинки для карток */
-            .grid-pos-tl, .grid-pos-tr, .grid-pos-bl, .grid-pos-br {
-                position: relative; 
-                width: 48%; 
-                height: 100%;
-                pointer-events: auto;
-            }
-
-            .mobile-title-wrapper {
-                display: flex !important; justify-content: center; align-items: center;
-                margin: 5px 0; z-index: 5;
-            }
-
-            /* Зменшений розмір карток для мобільного, щоб влізли 4 шт */
-            .risk-card {
-                height: 100px !important; /* Менша висота */
-                padding: 10px !important;
-            }
-            
-            .risk-card h3 { font-size: 0.9rem !important; margin-bottom: 2px !important; }
-            .card-icon { width: 24px !important; height: 24px !important; margin-bottom: 5px !important; }
+            .grid-cell { position: relative; width: 48%; height: 100%; pointer-events: auto; }
+            .mobile-title-wrapper { display: flex !important; justify-content: center; align-items: center; z-index: 5; margin: 10px 0; }
         }
 
-        /* Загальні стилі картки */
+        /* --- КАРТКА (Core Logic) --- */
         .risk-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
-            padding: 1.5rem; 
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
+            padding: 1.2rem; 
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            width: 100%; max-width: 320px; 
             
-            /* Абсолютне позиціонування всередині клітинки */
+            /* Анімація розміру */
+            transition: height 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.4s, border-color 0.4s, box-shadow 0.4s;
+            
+            width: 100%; 
             position: absolute; 
             z-index: 30;
             overflow: hidden;
             display: flex; flex-direction: column; justify-content: center;
         }
 
-        /* ЛОГІКА РОСТУ (Мобільний і Десктоп) */
-        /* Верхні карти: притиснуті до низу клітинки, ростуть вгору */
-        .grid-pos-tl .risk-card { bottom: 0; left: 0; transform-origin: bottom left; }
-        .grid-pos-tr .risk-card { bottom: 0; right: 0; transform-origin: bottom right; }
+        /* Розміри карток */
+        @media (min-width: 769px) { .risk-card { height: 130px; max-width: 300px; } }
+        @media (max-width: 768px) { .risk-card { height: 100px; max-width: none; } }
+
+        /* ЛОГІКА МАГНІТУ (Anchor Logic) */
+        /* Top Left / Top Right -> Притиснуті до низу, ростуть ВГОРУ */
+        .grid-pos-tl .risk-card { bottom: 0; left: 0; transform-origin: bottom center; }
+        .grid-pos-tr .risk-card { bottom: 0; right: 0; transform-origin: bottom center; }
         
-        /* Нижні карти: притиснуті до верху клітинки, ростуть вниз */
-        .grid-pos-bl .risk-card { top: 0; left: 0; transform-origin: top left; }
-        .grid-pos-br .risk-card { top: 0; right: 0; transform-origin: top right; }
+        /* Bottom Left / Bottom Right -> Притиснуті до верху, ростуть ВНИЗ */
+        .grid-pos-bl .risk-card { top: 0; left: 0; transform-origin: top center; }
+        .grid-pos-br .risk-card { top: 0; right: 0; transform-origin: top center; }
 
         .risk-card.landed { opacity: 1; transform: scale(1); }
         
-        /* Активний стан */
+        /* АКТИВНИЙ СТАН */
         .risk-card.active { 
-            background: rgba(15, 15, 15, 0.98); border-color: #fbbf24; 
-            z-index: 100; /* Перекриває сусідів */
-            height: 240px !important; /* Збільшена висота для тексту */
-            box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
+            background: rgba(15, 15, 15, 0.98); 
+            border-color: #fbbf24; 
+            z-index: 100; /* Поверх сусідів */
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
+            /* Висота розкритої картки */
+            height: 220px !important; 
         }
 
-        .risk-card h3 { color: white; margin-bottom: 5px; font-size: 1.1rem; }
-        .risk-card .card-icon { color: #fbbf24; margin-bottom: 10px; transition: all 0.3s; }
+        /* Контент всередині */
+        .risk-card h3 { 
+            color: white; margin-bottom: 5px; font-size: 1rem; line-height: 1.2;
+            transition: all 0.3s;
+        }
+        .card-icon { 
+            color: #fbbf24; margin-bottom: 8px; width: 28px; height: 28px; 
+            transition: all 0.3s; 
+        }
         
+        /* Прихований текст */
         .hidden-text { 
-            max-height: 0; opacity: 0; overflow: hidden; 
-            transition: all 0.5s ease; font-size: 0.85rem; color: #ddd; margin-top: 0; line-height: 1.3;
-        }
-        .risk-card.active .hidden-text { 
-            max-height: 150px; opacity: 1; margin-top: 10px; 
+            display: block;
+            opacity: 0; 
+            transform: translateY(10px);
+            transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s; /* Затримка появи тексту */
+            font-size: 0.85rem; color: #ccc; margin-top: 0; line-height: 1.3;
+            pointer-events: none; /* Щоб клік проходив крізь текст на картку */
+            position: absolute; /* Вириваємо з потоку, щоб не ламало центр */
+            bottom: 20px; left: 1.2rem; right: 1.2rem;
         }
 
+        .risk-card.active .hidden-text { 
+            opacity: 1; 
+            transform: translateY(0);
+        }
+
+        /* Зміщення заголовка та іконки при відкритті */
+        .risk-card.active .card-icon { transform: translateY(-60px); opacity: 0.5; }
+        .risk-card.active h3 { transform: translateY(-60px); color: #fbbf24; }
+
+        /* Анімації вильоту */
         .fly-from-tl { transform: translate(-50vw, -50vh) scale(0); }
         .fly-from-tr { transform: translate(50vw, -50vh) scale(0); }
         .fly-from-bl { transform: translate(-50vw, 50vh) scale(0); }
@@ -213,7 +204,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 15px 25px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             display: inline-block;
         }
 
@@ -223,12 +214,13 @@
             grid-template-rows: repeat(2, 1fr);
             gap: 15px; 
             width: 100%; max-width: 1000px;
-            margin: 5px 0; flex-grow: 1; align-content: center;
+            margin: 0; flex-grow: 1; align-content: center;
         }
 
         .service-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
         .service-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
+        /* Збільшені картки на 25% */
         .photo-box {
             width: 100%; aspect-ratio: 1 / 1; 
             max-width: 200px; 
@@ -245,7 +237,8 @@
         @keyframes flicker-glow { 0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); transform: scale(1); } 100% { box-shadow: 0 0 25px rgba(96, 165, 250, 0.8); transform: scale(1.03); } }
         .label-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase; z-index: 10; transition: background 0.3s; }
 
-        /* FOOTER STYLES */
+        /* FOOTER */
+        /* Mobile Marquee */
         .mobile-marquee {
             width: 100%; overflow: hidden;
             background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
@@ -256,6 +249,7 @@
         .marquee-track { display: flex; gap: 30px; padding: 0 20px; animation: marquee 25s linear infinite; width: max-content; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         
+        /* Desktop Static Grid */
         .desktop-static-bar {
             background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
@@ -269,10 +263,9 @@
         .mobile-marquee .benefit-item { flex-direction: row; white-space: nowrap; }
         .mobile-marquee .benefit-text { font-size: 12px; }
 
-        /* Mobile Adaptations */
         @media (max-width: 768px) {
             #block3.content-block { padding-top: 40px; gap: 5px; justify-content: flex-start; }
-            .services-matrix { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+            .services-matrix { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 5px; }
             .photo-box { max-width: 115px; border-radius: 10px; }
             .service-title { font-size: 0.8rem; }
             #b3-title { font-size: 1.3rem; line-height: 1.2; }
@@ -284,12 +277,11 @@
 <body class="text-white antialiased">
 
     <div class="fixed-viewport">
-        <!-- ФОН -->
         <img src="clean.WEBP" alt="Чиста вентиляція" class="bg-layer z-0">
         <img src="dirty.WEBP" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
 
-        <!-- ================= БЛОК 1: HERO ================= -->
+        <!-- БЛОК 1 -->
         <div id="block1" class="content-block" style="z-index: 40;">
             <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong">
                 <span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ
@@ -297,17 +289,16 @@
             <h2 id="hero-subtitle" class="cinematic-text text-2xl md:text-4xl font-light text-center mt-6 text-shadow-strong tracking-wide">
                 ПОВʼЯЗАНІ З БРУДНОЮ<br>ВЕНТИЛЯЦІЄЮ*
             </h2>
-            <!-- Виноска -->
+            <!-- Виноска повернута та позиціонована -->
             <div id="hero-footnote" class="transition-opacity duration-500 text-shadow-strong">
                 * За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)
             </div>
         </div>
 
-        <!-- ================= БЛОК 2: РИЗИКИ (MOBILE FIXED) ================= -->
+        <!-- БЛОК 2 -->
         <div id="block2" class="content-block">
             <div id="riskContainer" class="risk-container">
                 
-                <!-- Desktop Title -->
                 <div class="desktop-title-wrapper hidden md:block text-center w-full max-w-xl transition-opacity duration-300">
                     <h2 id="block2-title-desk" class="cinematic-text text-4xl md:text-6xl font-bold text-shadow-strong leading-tight">
                         ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
@@ -316,9 +307,10 @@
 
                 <div class="cards-layout-wrapper">
                     
-                    <!-- Верхній Ряд (Mobile: Flex Row, Desktop: Grid Cells) -->
+                    <!-- Верхній ряд (Mobile Row) -->
                     <div class="mobile-row md:contents">
-                        <div class="grid-pos-tl">
+                        <!-- Top Left -->
+                        <div class="grid-cell grid-pos-tl">
                             <div class="risk-card fly-from-tl" onclick="toggleCard(this, event)">
                                 <i data-lucide="flame" class="card-icon"></i>
                                 <h3 class="font-bold">Пожежа</h3>
@@ -327,7 +319,8 @@
                             </div>
                         </div>
 
-                        <div class="grid-pos-tr">
+                        <!-- Top Right -->
+                        <div class="grid-cell grid-pos-tr">
                             <div class="risk-card fly-from-tr" onclick="toggleCard(this, event)">
                                 <i data-lucide="file-warning" class="card-icon"></i>
                                 <h3 class="font-bold">Штрафи та закриття</h3>
@@ -337,16 +330,17 @@
                         </div>
                     </div>
 
-                    <!-- Mobile Title (Middle) -->
+                    <!-- Mobile Title -->
                     <div class="mobile-title-wrapper md:hidden text-center w-full">
                         <h2 id="block2-title-mob" class="cinematic-text text-2xl font-bold text-shadow-strong leading-tight">
                             ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
                         </h2>
                     </div>
 
-                    <!-- Нижній Ряд (Mobile: Flex Row, Desktop: Grid Cells) -->
+                    <!-- Нижній ряд (Mobile Row) -->
                     <div class="mobile-row md:contents">
-                        <div class="grid-pos-bl">
+                        <!-- Bottom Left -->
+                        <div class="grid-cell grid-pos-bl">
                             <div class="risk-card fly-from-bl" onclick="toggleCard(this, event)">
                                 <i data-lucide="user-x" class="card-icon"></i>
                                 <h3 class="font-bold">Втрата клієнтів</h3>
@@ -355,7 +349,8 @@
                             </div>
                         </div>
 
-                        <div class="grid-pos-br">
+                        <!-- Bottom Right -->
+                        <div class="grid-cell grid-pos-br">
                             <div class="risk-card fly-from-br" onclick="toggleCard(this, event)">
                                 <i data-lucide="zap" class="card-icon"></i>
                                 <h3 class="font-bold">Витрата електроенергії</h3>
@@ -368,9 +363,8 @@
             </div>
         </div>
 
-        <!-- ================= БЛОК 3: ПОСЛУГИ ================= -->
+        <!-- БЛОК 3 -->
         <div id="block3" class="content-block">
-            
             <div class="text-center w-full max-w-5xl mb-1 px-2">
                 <div class="glass-title-panel cinematic-text">
                     <h2 id="b3-title" class="text-xl md:text-3xl font-bold text-shadow-strong leading-tight">
@@ -478,27 +472,19 @@
                     <p class="benefit-text">Захищаємо ваше робоче місце від потрапляння жиру у ході наших робіт.</p>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
-        // --- ЛОГІКА КЛІКІВ БЛОКУ 2 ---
         function toggleCard(card, event) {
             if(event) event.stopPropagation();
             const container = document.getElementById('riskContainer');
             const isActive = card.classList.contains('active');
             
-            document.querySelectorAll('.risk-card').forEach(c => {
-                c.classList.remove('active');
-                const txt = c.querySelector('.hidden-text');
-                if(txt) txt.style.maxHeight = '0';
-            });
+            document.querySelectorAll('.risk-card').forEach(c => c.classList.remove('active'));
 
             if (!isActive) {
                 card.classList.add('active');
-                const txt = card.querySelector('.hidden-text');
-                if(txt) txt.style.maxHeight = '200px'; 
                 container.classList.add('has-active-card');
             } else {
                 container.classList.remove('has-active-card');
@@ -507,17 +493,12 @@
 
         document.addEventListener('click', (e) => {
              if(!e.target.closest('.risk-card')) {
-                 document.querySelectorAll('.risk-card').forEach(c => {
-                    c.classList.remove('active');
-                    const txt = c.querySelector('.hidden-text');
-                    if(txt) txt.style.maxHeight = '0';
-                 });
+                 document.querySelectorAll('.risk-card').forEach(c => c.classList.remove('active'));
                  const container = document.getElementById('riskContainer');
                  if(container) container.classList.remove('has-active-card');
              }
         });
 
-        // --- ГОЛОВНА ЛОГІКА ---
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             const dirtyImg = document.getElementById('dirtyImage');
@@ -540,10 +521,7 @@
             let currentComparisonState = 'before';
             let comparisonInterval = null;
 
-            setTimeout(() => { 
-                introDone = true; 
-                sync(); 
-            }, 500);
+            setTimeout(() => { introDone = true; sync(); }, 500);
 
             function sync() {
                 const sHeight = document.documentElement.scrollHeight - window.innerHeight;
