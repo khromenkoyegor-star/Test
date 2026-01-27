@@ -9,7 +9,7 @@
     <style>
         html { scroll-behavior: smooth; }
         body {
-            height: 600vh;
+            height: 600vh; /* Достатня висота для скролу */
             margin: 0;
             background-color: #000;
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -64,7 +64,7 @@
         }
         @media (min-width: 769px) { #hero-footnote { bottom: 25%; } }
 
-        /* --- БЛОК 2: РИЗИКИ (ВИПРАВЛЕНО ДЛЯ РОБОТИ В 1 КЛІК) --- */
+        /* --- БЛОК 2: РИЗИКИ --- */
         .risk-container {
             position: relative; width: 100%; max-width: 1200px; height: 80vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -255,11 +255,12 @@
 <body class="text-white antialiased">
 
     <div class="fixed-viewport">
-        <img src="clean.WEBP" alt="Чиста вентиляція" class="bg-layer z-0">
-        <img src="dirty.WEBP" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
+        <!-- Backgrounds -->
+        <img src="clean.WEBP" onerror="this.style.display='none'; document.body.style.background='#111'" alt="Чиста вентиляція" class="bg-layer z-0">
+        <img src="dirty.WEBP" onerror="this.style.display='none'" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
 
-        <!-- БЛОК 1 -->
+        <!-- БЛОК 1: HERO -->
         <div id="block1" class="content-block" style="z-index: 40;">
             <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong">
                 <span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ
@@ -272,7 +273,7 @@
             </div>
         </div>
 
-        <!-- БЛОК 2 -->
+        <!-- БЛОК 2: РИЗИКИ -->
         <div id="block2" class="content-block">
             <div id="riskContainer" class="risk-container">
                 
@@ -285,7 +286,7 @@
                 <div class="cards-layout-wrapper">
                     <!-- Верхній ряд -->
                     <div class="mobile-row md:contents">
-                        <!-- TL -->
+                        <!-- TL: Пожежа -->
                         <div class="grid-cell grid-pos-tl">
                             <div class="risk-card fly-from-tl card-js">
                                 <i data-lucide="flame" class="card-icon"></i>
@@ -294,7 +295,7 @@
                                 <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
                             </div>
                         </div>
-                        <!-- TR -->
+                        <!-- TR: Штрафи -->
                         <div class="grid-cell grid-pos-tr">
                             <div class="risk-card fly-from-tr card-js">
                                 <i data-lucide="file-warning" class="card-icon"></i>
@@ -314,7 +315,7 @@
 
                     <!-- Нижній ряд -->
                     <div class="mobile-row md:contents">
-                        <!-- BL -->
+                        <!-- BL: Втрата клієнтів -->
                         <div class="grid-cell grid-pos-bl">
                             <div class="risk-card fly-from-bl card-js">
                                 <i data-lucide="user-x" class="card-icon"></i>
@@ -323,7 +324,7 @@
                                 <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
                             </div>
                         </div>
-                        <!-- BR -->
+                        <!-- BR: Електроенергія -->
                         <div class="grid-cell grid-pos-br">
                             <div class="risk-card fly-from-br card-js">
                                 <i data-lucide="zap" class="card-icon"></i>
@@ -337,7 +338,7 @@
             </div>
         </div>
 
-        <!-- БЛОК 3 -->
+        <!-- БЛОК 3: ПОСЛУГИ -->
         <div id="block3" class="content-block">
             <div class="text-center w-full max-w-5xl mb-1 px-2">
                 <div class="glass-title-panel cinematic-text">
@@ -351,22 +352,16 @@
             </div>
 
             <div class="services-matrix">
-                <div class="service-item cinematic-text" style="transition-delay: 0s;"><div class="service-title">Витяжні зонти</div><div class="photo-box" id="box-1"><img src="1.webp" class="photo-img img-before" alt="До"><img src="2.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-1">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.1s;"><div class="service-title">Фільтра</div><div class="photo-box" id="box-2"><img src="3.webp" class="photo-img img-before" alt="До"><img src="4.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-2">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.2s;"><div class="service-title">Повітропроводи</div><div class="photo-box" id="box-3"><img src="5.webp" class="photo-img img-before" alt="До"><img src="6.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-3">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.3s;"><div class="service-title">Вентилятори</div><div class="photo-box" id="box-4"><img src="7.webp" class="photo-img img-before" alt="До"><img src="8.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-4">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.4s;"><div class="service-title">Повітророзподільні пристрої</div><div class="photo-box" id="box-5"><img src="9.webp" class="photo-img img-before" alt="До"><img src="10.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-5">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.5s;"><div class="service-title">Інше</div><div class="photo-box" id="box-6"><img src="11.webp" class="photo-img img-before" alt="До"><img src="12.webp" class="photo-img img-after" alt="Після"></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0s;"><div class="service-title">Витяжні зонти</div><div class="photo-box" id="box-1"><img src="1.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="2.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-1">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.1s;"><div class="service-title">Фільтра</div><div class="photo-box" id="box-2"><img src="3.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="4.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-2">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.2s;"><div class="service-title">Повітропроводи</div><div class="photo-box" id="box-3"><img src="5.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="6.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-3">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.3s;"><div class="service-title">Вентилятори</div><div class="photo-box" id="box-4"><img src="7.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="8.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-4">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.4s;"><div class="service-title">Повітророзподільні пристрої</div><div class="photo-box" id="box-5"><img src="9.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="10.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-5">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.5s;"><div class="service-title">Інше</div><div class="photo-box" id="box-6"><img src="11.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="12.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"></div></div>
             </div>
 
             <div class="mobile-marquee md:hidden cinematic-text" style="transition-delay: 0.6s;">
                 <div class="marquee-track">
-                    <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
-                    <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
-                    <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
-                    <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Акт утилізації та документи ДСНС</span></div>
-                    <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
-                    <!-- Dupes -->
                     <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
                     <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
                     <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
@@ -386,9 +381,6 @@
     </div>
 
     <script>
-        // === НАДІЙНИЙ JS ДЛЯ КАРТОК ===
-        // Використовуємо EventListener замість onclick в HTML для кращого контролю
-        
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
 
@@ -398,28 +390,24 @@
 
             cards.forEach(card => {
                 card.addEventListener('click', (e) => {
-                    // Зупиняємо спливання, щоб не спрацював клік по документу
-                    e.stopPropagation();
+                    e.stopPropagation(); // Зупиняємо спливання
 
-                    // Чи активна зараз?
                     const isActive = card.classList.contains('active');
-
-                    // Закрити всі інші картки
+                    
+                    // Закрити всі інші
                     cards.forEach(c => c.classList.remove('active'));
 
-                    // Якщо не була активна -> відкриваємо
+                    // Тоггл поточної
                     if (!isActive) {
                         card.classList.add('active');
                         container.classList.add('has-active-card');
                     } else {
-                        // Якщо була активна -> ми її вже закрили вище (remove), 
-                        // лишається прибрати клас з контейнера
                         container.classList.remove('has-active-card');
                     }
                 });
             });
 
-            // Клік по фону закриває все
+            // Клік по фону закриває картки
             document.addEventListener('click', () => {
                 cards.forEach(c => c.classList.remove('active'));
                 if(container) container.classList.remove('has-active-card');
@@ -449,13 +437,15 @@
                 const sHeight = document.documentElement.scrollHeight - window.innerHeight;
                 const scroll = window.scrollY;
                 const progress = scroll / sHeight;
-                const op = (1 - progress) * 100;
+                const op = (1 - progress) * 100; // 100 -> 0
 
-                dirtyImg.style.opacity = (1 - progress).toFixed(3);
+                // Брудна картинка зникає
+                if(dirtyImg) dirtyImg.style.opacity = (1 - progress).toFixed(3);
 
-                // Block 1
+                // --- БЛОК 1 (HERO) ---
                 if (op > 85) {
                     b1.style.opacity = 1;
+                    b1.style.visibility = 'visible'; // ВАЖЛИВО: Робимо видимим для миші
                     if(introDone) {
                         hTitle.classList.add('in-focus');
                         hSub.classList.add('in-focus');
@@ -463,32 +453,37 @@
                     }
                 } else {
                     b1.style.opacity = 0;
+                    b1.style.visibility = 'hidden'; // ВАЖЛИВО: Прибираємо перешкоду для кліків
                     hTitle.classList.remove('in-focus');
                     hSub.classList.remove('in-focus');
                     hFoot.classList.remove('opacity-100');
                 }
 
-                // Block 2
+                // --- БЛОК 2 (РИЗИКИ) ---
                 if (op <= 80 && op > 60) {
                     b2.style.opacity = 1;
+                    b2.style.visibility = 'visible'; // ВАЖЛИВО
                     if(b2TitleDesk) b2TitleDesk.classList.add('in-focus');
                     if(b2TitleMob) b2TitleMob.classList.add('in-focus');
                     riskCards.forEach(c => c.classList.add('landed'));
                 } else {
                     b2.style.opacity = 0;
+                    b2.style.visibility = 'hidden'; // ВАЖЛИВО
                     if(b2TitleDesk) b2TitleDesk.classList.remove('in-focus');
                     if(b2TitleMob) b2TitleMob.classList.remove('in-focus');
                     riskCards.forEach(c => c.classList.remove('landed', 'active'));
                 }
 
-                // Block 3
+                // --- БЛОК 3 (ПОСЛУГИ) ---
                 if (op <= 60 && op > 40) {
                     b3.style.opacity = 1;
+                    b3.style.visibility = 'visible'; // ВАЖЛИВО
                     if(b3Panel) b3Panel.classList.add('in-focus');
                     b3Anims.forEach(el => el.classList.add('in-focus'));
                     startComparisonLoop();
                 } else {
                     b3.style.opacity = 0;
+                    b3.style.visibility = 'hidden'; // ВАЖЛИВО
                     if(b3Panel) b3Panel.classList.remove('in-focus');
                     b3Anims.forEach(el => el.classList.remove('in-focus'));
                     stopComparisonLoop();
@@ -532,10 +527,9 @@
                 }
             }
             window.addEventListener('scroll', sync);
-            sync();
+            sync(); // First run
         });
     </script>
 </body>
 </html>
-
 
