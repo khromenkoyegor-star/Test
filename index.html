@@ -18,275 +18,264 @@
 
         /* --- Viewport & Backgrounds --- */
         .fixed-viewport {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100vh;
-            overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
 
         .bg-layer {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            will-change: opacity;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; will-change: opacity;
         }
 
         .content-block {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100vh;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            z-index: 30;
-            pointer-events: none;
-            padding: 20px;
-            opacity: 0;
-            transition: opacity 0.4s ease-out; 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 30; pointer-events: none; padding: 20px;
+            opacity: 0; transition: opacity 0.4s ease-out; 
         }
         
         .content-block > * { pointer-events: auto; }
 
-        /* --- CINEMATIC ANIMATION (Block 1) --- */
+        /* --- CINEMATIC ANIMATION --- */
         .cinematic-text {
-            opacity: 0;
-            filter: blur(20px);
-            transform: scale(1.15) translateY(20px);
-            transition: all 0.3s ease-out; 
-            will-change: transform, opacity, filter;
+            opacity: 0; filter: blur(20px); transform: scale(1.15) translateY(20px);
+            transition: all 0.3s ease-out; will-change: transform, opacity, filter;
         }
-
         .in-focus {
-            opacity: 1 !important;
-            filter: blur(0) !important;
-            transform: scale(1) translateY(0) !important;
+            opacity: 1 !important; filter: blur(0) !important; transform: scale(1) translateY(0) !important;
             transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .text-shadow-strong { text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6); }
 
-        /* --- БЛОК 2: РИЗИКИ (ВИПРАВЛЕНИЙ LAYOUT) --- */
+        /* --- БЛОК 2: РИЗИКИ --- */
         .risk-container {
-            position: relative;
-            width: 100%; max-width: 1200px;
-            height: 80vh;
-            display: flex; 
-            flex-direction: column; /* Для мобільного */
-            align-items: center; justify-content: center;
+            position: relative; width: 100%; max-width: 1200px; height: 80vh;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* Desktop Grid Structure */
+        /* Desktop Grid */
         @media (min-width: 769px) {
             .cards-layout-wrapper {
-                display: grid;
-                width: 100%; height: 100%;
+                display: grid; width: 100%; height: 100%;
                 grid-template-columns: 1fr 1fr;
-                grid-template-rows: 1fr 0.4fr 1fr; /* Верх / Заголовок / Низ */
+                grid-template-rows: 1fr 0.4fr 1fr; 
                 gap: 2rem;
             }
-            /* Розносимо по кутах */
             .grid-pos-tl { grid-row: 1; grid-column: 1; display: flex; align-items: flex-end; justify-content: flex-start; }
             .grid-pos-tr { grid-row: 1; grid-column: 2; display: flex; align-items: flex-end; justify-content: flex-end; }
             .grid-pos-bl { grid-row: 3; grid-column: 1; display: flex; align-items: flex-start; justify-content: flex-start; }
             .grid-pos-br { grid-row: 3; grid-column: 2; display: flex; align-items: flex-start; justify-content: flex-end; }
             
-            /* Ховаємо мобільний заголовок, показуємо десктопний */
-            .mobile-title-wrapper { display: none; }
             .desktop-title-wrapper { display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; }
+            .mobile-title-wrapper { display: none; }
         }
 
-        /* Mobile Flex Structure */
-        @media (max-width: 768px) {
-            .risk-container { height: 100vh; justify-content: space-between; padding: 60px 0 20px 0; }
-            
-            .cards-layout-wrapper {
-                display: contents; /* Ігноруємо обгортку на мобільному */
-            }
-
-            /* Верхній ряд карток */
-            .grid-pos-tl, .grid-pos-tr { 
-                order: 1; 
-                width: 48%; /* Половина екрану мінус відступ */
-                margin-bottom: 10px;
-            }
-            /* Нижній ряд карток */
-            .grid-pos-bl, .grid-pos-br { 
-                order: 3; 
-                width: 48%;
-            }
-
-            /* Контейнери для рядків (віртуальні через flex wrap батька якщо треба, або просто float) 
-               Але краще зробити окремий грід для мобільного.
-            */
-        }
-        
-        /* Універсальний стиль картки */
+        /* Card Styles */
         .risk-card {
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 1.5rem;
-            cursor: pointer;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
+            padding: 1.5rem; cursor: pointer;
             transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            width: 100%; max-width: 320px;
-            height: 140px; 
-            opacity: 0;
-            transform: scale(0.5);
-            z-index: 30;
-            position: relative;
-            overflow: hidden;
+            width: 100%; max-width: 320px; height: 140px; 
+            opacity: 0; transform: scale(0.5); z-index: 30;
+            position: relative; overflow: hidden;
             display: flex; flex-direction: column; justify-content: center;
         }
-
         .risk-card.landed { opacity: 1; transform: translate(0, 0) scale(1) !important; }
         
         .risk-card.active { 
-            background: rgba(15, 15, 15, 0.98); 
-            border-color: #fbbf24; 
+            background: rgba(15, 15, 15, 0.98); border-color: #fbbf24; 
             z-index: 100; height: auto; min-height: 220px; 
-            box-shadow: 0 0 40px rgba(251, 191, 36, 0.3); /* Золоте світіння */
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
         }
 
-        /* Тексти в картці */
         .risk-card h3 { color: white; margin-bottom: 5px; font-size: 1.1rem; }
         .risk-card .card-icon { color: #fbbf24; margin-bottom: 10px; transition: all 0.3s; }
         .risk-card.active .card-icon { transform: scale(0.8); margin-bottom: 5px; }
+        .hidden-text { transition: all 0.5s ease; }
 
-        /* Анімація вильоту (Десктоп) */
         .fly-from-tl { transform: translate(-50vw, -50vh) scale(0); }
         .fly-from-tr { transform: translate(50vw, -50vh) scale(0); }
         .fly-from-bl { transform: translate(-50vw, 50vh) scale(0); }
         .fly-from-br { transform: translate(50vw, 50vh) scale(0); }
 
-
         /* --- БЛОК 3: ПОСЛУГИ --- */
         #block3.content-block {
-            justify-content: space-between;
-            padding-top: 60px;
-            padding-bottom: 20px;
+            justify-content: space-between; padding-top: 60px; padding-bottom: 20px;
         }
 
         .services-matrix {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 15px; 
-            width: 100%; max-width: 900px;
-            margin: 5px 0;
-            flex-grow: 1; /* Заповнюємо простір */
-            align-content: center;
+            gap: 20px; width: 100%; max-width: 1100px;
+            margin: 5px 0; flex-grow: 1; align-content: center;
         }
 
         .service-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .service-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .service-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
+        /* ЗБІЛЬШЕНІ КАРТКИ (+25%) */
         .photo-box {
-            width: 100%; aspect-ratio: 1 / 1; max-width: 160px; 
+            width: 100%; aspect-ratio: 1 / 1; 
+            max-width: 200px; /* Було 160px, стало 200px */
             position: relative; border-radius: 12px; overflow: hidden;
             background: #111; border: 2px solid rgba(255,255,255,0.1);
             transition: all 0.6s ease;
         }
 
-        .photo-img {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; object-fit: cover;
-            transition: opacity 1s ease-in-out;
-        }
-        
+        .photo-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; }
         .img-before { z-index: 1; opacity: 1; }
         .img-after { z-index: 2; opacity: 0; }
-
-        .photo-box.state-after {
-            border-color: #60a5fa;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
-            animation: flicker-glow 2s infinite alternate;
-        }
+        .photo-box.state-after { border-color: #60a5fa; box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); animation: flicker-glow 2s infinite alternate; }
         .photo-box.state-after .img-after { opacity: 1; }
+        @keyframes flicker-glow { 0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); transform: scale(1); } 100% { box-shadow: 0 0 25px rgba(96, 165, 250, 0.8); transform: scale(1.03); } }
+        .label-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase; z-index: 10; transition: background 0.3s; }
 
-        @keyframes flicker-glow {
-            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); transform: scale(1); }
-            100% { box-shadow: 0 0 25px rgba(96, 165, 250, 0.8); transform: scale(1.03); }
+        /* FOOTER MARQUEE (Біжучий рядок) */
+        .benefits-marquee-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            margin-top: auto;
+            /* Flex center vertical */
+            display: flex;
+            align-items: center;
+            height: 80px; /* Фіксована висота */
         }
 
-        .label-badge {
-            position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6);
-            padding: 1px 5px; border-radius: 4px; font-size: 9px; text-transform: uppercase; z-index: 10;
+        .benefits-track {
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+            /* Анімація */
+            animation: marquee 25s linear infinite;
+            width: max-content;
         }
 
-        /* Benefits Bar */
-        .benefits-bar {
-            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
-            padding: 12px; display: grid; grid-template-columns: repeat(5, 1fr);
-            gap: 12px; width: 100%; max-width: 1200px; margin-top: auto;
-            flex-shrink: 0;
+        .benefits-track:hover {
+            animation-play-state: paused;
         }
-        .benefit-item { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
-        .benefit-text { font-size: 10px; line-height: 1.2; color: rgba(255,255,255,0.85); text-align: left; }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Зміщуємо на 50%, оскільки контент продубльовано */
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+        
+        .benefit-text {
+            font-size: 12px;
+            line-height: 1.2;
+            color: rgba(255,255,255,0.9);
+            text-align: left;
+        }
+
 
         /* =========================================
-           MOBILE ADAPTATIONS (Specific Fixes)
+           MOBILE ADAPTATIONS (FIXES)
            ========================================= */
         @media (max-width: 768px) {
-            /* Блок 2 Fix */
+            /* --- БЛОК 2: MOBILE GRID FIX --- */
+            .risk-container { 
+                height: 100vh;
+                padding: 10px;
+                display: flex; flex-direction: column; justify-content: center;
+            }
+            
             .cards-layout-wrapper {
                 display: flex !important;
                 flex-wrap: wrap;
+                align-content: center; /* Центруємо блок по вертикалі */
                 justify-content: space-between;
-                align-content: space-between;
                 height: 100%;
                 width: 100%;
+                max-height: 600px; /* Обмежуємо висоту зони карток */
+                position: relative;
             }
 
-            /* Порядок елементів для мобільного */
-            /* Нам потрібно: Картки, Картки (Верх) -> Заголовок -> Картки, Картки (Низ) */
-            /* Використовуємо order */
-            
-            .grid-pos-tl, .grid-pos-tr { order: 1; width: 48%; height: 120px; }
+            /* Центр з заголовком */
             .mobile-title-wrapper { 
                 order: 2; width: 100%; 
                 display: flex !important; justify-content: center; align-items: center;
-                height: 100px; /* Місце під заголовок */
+                height: auto; margin: 10px 0;
             }
-            .grid-pos-bl, .grid-pos-br { order: 3; width: 48%; height: 120px; }
+
+            /* Верхні картки */
+            .grid-pos-tl, .grid-pos-tr { 
+                order: 1; width: 48%; 
+                display: flex; 
+                align-items: flex-end; /* Притискаємо до низу (ближче до центру) */
+                height: 140px;
+            }
+            
+            /* Нижні картки */
+            .grid-pos-bl, .grid-pos-br { 
+                order: 3; width: 48%; 
+                display: flex; 
+                align-items: flex-start; /* Притискаємо до верху (ближче до центру) */
+                height: 140px;
+            }
 
             .risk-card { 
-                width: 100%; height: 100%; max-width: none; padding: 10px; 
+                width: 100%; height: 100px; max-width: none; padding: 10px;
+                /* Важливо для анімації росту */
+                transition: height 0.4s ease, transform 0.4s ease;
             }
-            
-            /* Pop-up картки по центру на мобільному */
+
+            /* ВЕРХНІ РОСТУТЬ ВГОРУ */
+            .grid-pos-tl .risk-card, .grid-pos-tr .risk-card {
+                transform-origin: bottom center;
+            }
+
+            /* НИЖНІ РОСТУТЬ ВНИЗ */
+            .grid-pos-bl .risk-card, .grid-pos-br .risk-card {
+                transform-origin: top center;
+            }
+
+            /* АКТИВНИЙ СТАН MOBILE - В МЕЖАХ ПОЗИЦІЇ, РОСТЕ ПО ВЕРТИКАЛІ */
             .risk-card.active { 
-                position: fixed; top: 50% !important; left: 50% !important; 
-                transform: translate(-50%, -50%) !important; 
-                width: 90vw; height: auto; min-height: 250px;
-                margin: 0;
+                position: relative; /* Залишаємось в потоці/флексі */
+                width: 100%; 
+                height: 220px; /* Збільшуємо висоту */
+                min-height: 220px;
+                z-index: 50;
+                transform: scale(1.05) !important; /* Трохи збільшуємо масштаб */
             }
 
-            /* Блок 3 Mobile Optimization (Для плашки) */
-            #block3.content-block { padding-top: 50px; justify-content: flex-start; gap: 10px; }
+            /* --- БЛОК 3: MOBILE OPTIMIZATION --- */
+            #block3.content-block { padding-top: 40px; gap: 5px; }
             
+            /* Збільшені шрифти */
+            #b3-title { font-size: 1.4rem; line-height: 1.2; margin-bottom: 5px; }
+            #b3-subtitle { font-size: 12px; line-height: 1.3; margin-top: 5px; display: block !important; }
+
             .services-matrix {
-                grid-template-columns: repeat(2, 1fr); 
-                grid-template-rows: repeat(3, 1fr);
-                gap: 8px; flex-grow: 0;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-top: 10px;
             }
-            /* СУТТЄВЕ ЗМЕНШЕННЯ КАРТОК ЩОБ ВЛІЗ ФУТЕР */
-            .photo-box { max-width: 90px; border-radius: 8px; } 
             
-            #b3-subtitle { display: block; font-size: 9px; line-height: 1.2; margin-top: 2px; }
-            #b3-title { font-size: 1.1rem; margin-bottom: 2px; }
+            /* Збільшення карток на мобільному (+25%) ~110-120px */
+            .photo-box { max-width: 115px; border-radius: 10px; }
+            .service-title { font-size: 0.8rem; }
 
-            /* Footer visible fix */
-            .benefits-bar {
-                display: flex; overflow-x: auto; gap: 15px; padding: 10px; 
-                width: 100%; margin-top: auto; 
-                background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+            /* Marquee Mobile */
+            .benefits-marquee-wrapper {
+                height: 60px;
+                margin-bottom: 10px;
             }
-            .benefit-item { min-width: 160px; flex-direction: row; align-items: center; }
-            .benefit-text { font-size: 10px; }
+            .benefit-text { font-size: 12px; }
         }
     </style>
 </head>
@@ -298,7 +287,7 @@
         <img src="dirty.WEBP" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
 
-        <!-- ================= БЛОК 1: HERO (0.5s delay) ================= -->
+        <!-- ================= БЛОК 1 (0.5s DELAY) ================= -->
         <div id="block1" class="content-block" style="z-index: 40;">
             <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong">
                 <span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ
@@ -311,7 +300,7 @@
             </div>
         </div>
 
-        <!-- ================= БЛОК 2: РИЗИКИ (FIXED) ================= -->
+        <!-- ================= БЛОК 2: РИЗИКИ (ВИПРАВЛЕНО) ================= -->
         <div id="block2" class="content-block">
             <div id="riskContainer" class="risk-container">
                 
@@ -345,8 +334,8 @@
                     </div>
 
                     <!-- Mobile Title (Middle) -->
-                    <div class="mobile-title-wrapper md:hidden text-center w-full my-4">
-                        <h2 id="block2-title-mob" class="cinematic-text text-3xl font-bold text-shadow-strong leading-tight">
+                    <div class="mobile-title-wrapper md:hidden text-center w-full">
+                        <h2 id="block2-title-mob" class="cinematic-text text-2xl font-bold text-shadow-strong leading-tight">
                             ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
                         </h2>
                     </div>
@@ -388,81 +377,72 @@
             </div>
 
             <div class="services-matrix">
-                <!-- 1 -->
+                <!-- Items 1-6 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0s;">
                     <div class="service-title">Витяжні зонти</div>
                     <div class="photo-box" id="box-1">
-                        <img src="1.webp" class="photo-img img-before" alt="Зонт До">
-                        <img src="2.webp" class="photo-img img-after" alt="Зонт Після">
+                        <img src="1.webp" class="photo-img img-before" alt="До">
+                        <img src="2.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-1">До</div>
                     </div>
                 </div>
-                <!-- 2 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.1s;">
                     <div class="service-title">Фільтра</div>
                     <div class="photo-box" id="box-2">
-                        <img src="3.webp" class="photo-img img-before" alt="Фільтр До">
-                        <img src="4.webp" class="photo-img img-after" alt="Фільтр Після">
+                        <img src="3.webp" class="photo-img img-before" alt="До">
+                        <img src="4.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-2">До</div>
                     </div>
                 </div>
-                <!-- 3 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.2s;">
                     <div class="service-title">Повітропроводи</div>
                     <div class="photo-box" id="box-3">
-                        <img src="5.webp" class="photo-img img-before" alt="Труба До">
-                        <img src="6.webp" class="photo-img img-after" alt="Труба Після">
+                        <img src="5.webp" class="photo-img img-before" alt="До">
+                        <img src="6.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-3">До</div>
                     </div>
                 </div>
-                <!-- 4 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.3s;">
                     <div class="service-title">Вентилятори</div>
                     <div class="photo-box" id="box-4">
-                        <img src="7.webp" class="photo-img img-before" alt="Вентилятор До">
-                        <img src="8.webp" class="photo-img img-after" alt="Вентилятор Після">
+                        <img src="7.webp" class="photo-img img-before" alt="До">
+                        <img src="8.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-4">До</div>
                     </div>
                 </div>
-                <!-- 5 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.4s;">
                     <div class="service-title">Повітророзподільні пристрої</div>
                     <div class="photo-box" id="box-5">
-                        <img src="9.webp" class="photo-img img-before" alt="Дифузор До">
-                        <img src="10.webp" class="photo-img img-after" alt="Дифузор Після">
+                        <img src="9.webp" class="photo-img img-before" alt="До">
+                        <img src="10.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-5">До</div>
                     </div>
                 </div>
-                <!-- 6 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.5s;">
                     <div class="service-title">Інше</div>
                     <div class="photo-box" id="box-6">
-                        <img src="11.webp" class="photo-img img-before" alt="Інше До">
-                        <img src="12.webp" class="photo-img img-after" alt="Інше Після">
+                        <img src="11.webp" class="photo-img img-before" alt="До">
+                        <img src="12.webp" class="photo-img img-after" alt="Після">
                     </div>
                 </div>
             </div>
 
-            <div class="benefits-bar cinematic-text" style="transition-delay: 0.6s;">
-                <div class="benefit-item">
-                    <i data-lucide="beaker" class="text-amber-400 shrink-0 w-5 h-5"></i>
-                    <p class="benefit-text">Використовуємо ефективну хімію (виробництво Іспанія)</p>
-                </div>
-                <div class="benefit-item">
-                    <i data-lucide="moon" class="text-amber-400 shrink-0 w-5 h-5"></i>
-                    <p class="benefit-text">Працюємо в нічний час та на будь-якій висоті.</p>
-                </div>
-                <div class="benefit-item">
-                    <i data-lucide="camera" class="text-amber-400 shrink-0 w-5 h-5"></i>
-                    <p class="benefit-text">Фото та відео-фіксація виконаної роботи.</p>
-                </div>
-                <div class="benefit-item">
-                    <i data-lucide="file-check" class="text-amber-400 shrink-0 w-5 h-5"></i>
-                    <p class="benefit-text">Надаємо акт утилізації жирових відходів та розробляємо документацію для проходження перевірок ДСНС (по запиту)</p>
-                </div>
-                <div class="benefit-item">
-                    <i data-lucide="shield-check" class="text-amber-400 shrink-0 w-5 h-5"></i>
-                    <p class="benefit-text">Захищаємо ваше робоче місце від потрапляння жиру у ході наших робіт.</p>
+            <!-- ANIMATED MARQUEE BAR -->
+            <div class="benefits-marquee-wrapper cinematic-text" style="transition-delay: 0.6s;">
+                <div class="benefits-track">
+                    <!-- CONTENT (Original) -->
+                    <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
+                    <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
+                    <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
+                    <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Акт утилізації та документи ДСНС</span></div>
+                    <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
+                    
+                    <!-- CONTENT (Duplicated for Loop) -->
+                    <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
+                    <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
+                    <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
+                    <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Акт утилізації та документи ДСНС</span></div>
+                    <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
                 </div>
             </div>
         </div>
@@ -475,7 +455,6 @@
             const container = document.getElementById('riskContainer');
             const isActive = card.classList.contains('active');
             
-            // Закрити всі інші
             document.querySelectorAll('.risk-card').forEach(c => {
                 c.classList.remove('active');
                 c.querySelector('.hidden-text').classList.add('opacity-0', 'h-0');
@@ -519,13 +498,13 @@
             const b3 = document.getElementById('block3');
             const b3Title = document.getElementById('b3-title');
             const b3Sub = document.getElementById('b3-subtitle');
-            const b3Anims = document.querySelectorAll('.services-matrix .cinematic-text, .benefits-bar');
+            const b3Anims = document.querySelectorAll('.services-matrix .cinematic-text, .benefits-marquee-wrapper');
 
             let introDone = false;
             let currentComparisonState = 'before';
             let comparisonInterval = null;
 
-            // 0.5s затримка
+            // 0.5s Delay
             setTimeout(() => { 
                 introDone = true; 
                 sync(); 
@@ -539,7 +518,7 @@
 
                 dirtyImg.style.opacity = (1 - progress).toFixed(3);
 
-                // --- БЛОК 1 ---
+                // Block 1
                 if (op > 85) {
                     b1.style.opacity = 1;
                     if(introDone) {
@@ -554,7 +533,7 @@
                     hFoot.classList.remove('opacity-100');
                 }
 
-                // --- БЛОК 2 ---
+                // Block 2
                 if (op <= 80 && op > 60) {
                     b2.style.opacity = 1;
                     if(b2TitleDesk) b2TitleDesk.classList.add('in-focus');
@@ -567,7 +546,7 @@
                     riskCards.forEach(c => c.classList.remove('landed', 'active'));
                 }
 
-                // --- БЛОК 3 ---
+                // Block 3
                 if (op <= 60 && op > 40) {
                     b3.style.opacity = 1;
                     b3Title.classList.add('in-focus');
