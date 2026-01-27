@@ -48,7 +48,7 @@
         
         .content-block > * { pointer-events: auto; }
 
-        /* --- CINEMATIC ANIMATION --- */
+        /* --- CINEMATIC ANIMATION (Block 1) --- */
         .cinematic-text {
             opacity: 0;
             filter: blur(20px);
@@ -66,33 +66,67 @@
 
         .text-shadow-strong { text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6); }
 
-        /* --- БЛОК 2: РИЗИКИ (ВИПРАВЛЕНО) --- */
+        /* --- БЛОК 2: РИЗИКИ (ВИПРАВЛЕНИЙ LAYOUT) --- */
         .risk-container {
             position: relative;
             width: 100%; max-width: 1200px;
             height: 80vh;
-            display: flex; align-items: center; justify-content: center;
+            display: flex; 
+            flex-direction: column; /* Для мобільного */
+            align-items: center; justify-content: center;
         }
 
-        .cards-spread-layout {
-            width: 100%; height: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 0.4fr 1fr; 
-            gap: 2rem;
+        /* Desktop Grid Structure */
+        @media (min-width: 769px) {
+            .cards-layout-wrapper {
+                display: grid;
+                width: 100%; height: 100%;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 0.4fr 1fr; /* Верх / Заголовок / Низ */
+                gap: 2rem;
+            }
+            /* Розносимо по кутах */
+            .grid-pos-tl { grid-row: 1; grid-column: 1; display: flex; align-items: flex-end; justify-content: flex-start; }
+            .grid-pos-tr { grid-row: 1; grid-column: 2; display: flex; align-items: flex-end; justify-content: flex-end; }
+            .grid-pos-bl { grid-row: 3; grid-column: 1; display: flex; align-items: flex-start; justify-content: flex-start; }
+            .grid-pos-br { grid-row: 3; grid-column: 2; display: flex; align-items: flex-start; justify-content: flex-end; }
+            
+            /* Ховаємо мобільний заголовок, показуємо десктопний */
+            .mobile-title-wrapper { display: none; }
+            .desktop-title-wrapper { display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; }
         }
 
-        /* Позиціонування комірок (Desktop) */
-        .cell-tl { grid-row: 1; grid-column: 1; display: flex; align-items: flex-end; justify-content: flex-start; }
-        .cell-tr { grid-row: 1; grid-column: 2; display: flex; align-items: flex-end; justify-content: flex-end; }
-        .cell-bl { grid-row: 3; grid-column: 1; display: flex; align-items: flex-start; justify-content: flex-start; }
-        .cell-br { grid-row: 3; grid-column: 2; display: flex; align-items: flex-start; justify-content: flex-end; }
+        /* Mobile Flex Structure */
+        @media (max-width: 768px) {
+            .risk-container { height: 100vh; justify-content: space-between; padding: 60px 0 20px 0; }
+            
+            .cards-layout-wrapper {
+                display: contents; /* Ігноруємо обгортку на мобільному */
+            }
 
+            /* Верхній ряд карток */
+            .grid-pos-tl, .grid-pos-tr { 
+                order: 1; 
+                width: 48%; /* Половина екрану мінус відступ */
+                margin-bottom: 10px;
+            }
+            /* Нижній ряд карток */
+            .grid-pos-bl, .grid-pos-br { 
+                order: 3; 
+                width: 48%;
+            }
+
+            /* Контейнери для рядків (віртуальні через flex wrap батька якщо треба, або просто float) 
+               Але краще зробити окремий грід для мобільного.
+            */
+        }
+        
+        /* Універсальний стиль картки */
         .risk-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 20px;
             padding: 1.5rem;
             cursor: pointer;
@@ -104,26 +138,34 @@
             z-index: 30;
             position: relative;
             overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center;
         }
-        
+
         .risk-card.landed { opacity: 1; transform: translate(0, 0) scale(1) !important; }
         
         .risk-card.active { 
-            background: rgba(10, 10, 10, 0.95); border-color: #fbbf24; 
+            background: rgba(15, 15, 15, 0.98); 
+            border-color: #fbbf24; 
             z-index: 100; height: auto; min-height: 220px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.3); /* Золоте світіння */
         }
 
+        /* Тексти в картці */
+        .risk-card h3 { color: white; margin-bottom: 5px; font-size: 1.1rem; }
+        .risk-card .card-icon { color: #fbbf24; margin-bottom: 10px; transition: all 0.3s; }
+        .risk-card.active .card-icon { transform: scale(0.8); margin-bottom: 5px; }
+
+        /* Анімація вильоту (Десктоп) */
         .fly-from-tl { transform: translate(-50vw, -50vh) scale(0); }
         .fly-from-tr { transform: translate(50vw, -50vh) scale(0); }
         .fly-from-bl { transform: translate(-50vw, 50vh) scale(0); }
         .fly-from-br { transform: translate(50vw, 50vh) scale(0); }
 
 
-        /* --- БЛОК 3: ПОСЛУГИ (ОПТИМІЗОВАНО) --- */
+        /* --- БЛОК 3: ПОСЛУГИ --- */
         #block3.content-block {
-            justify-content: space-evenly;
-            padding-top: 50px;
+            justify-content: space-between;
+            padding-top: 60px;
             padding-bottom: 20px;
         }
 
@@ -134,7 +176,7 @@
             gap: 15px; 
             width: 100%; max-width: 900px;
             margin: 5px 0;
-            flex-grow: 0;
+            flex-grow: 1; /* Заповнюємо простір */
             align-content: center;
         }
 
@@ -174,90 +216,77 @@
             padding: 1px 5px; border-radius: 4px; font-size: 9px; text-transform: uppercase; z-index: 10;
         }
 
-        /* Footer: Переваги */
+        /* Benefits Bar */
         .benefits-bar {
             background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
             padding: 12px; display: grid; grid-template-columns: repeat(5, 1fr);
-            gap: 12px; width: 100%; max-width: 1200px; flex-shrink: 0; margin-top: auto;
+            gap: 12px; width: 100%; max-width: 1200px; margin-top: auto;
+            flex-shrink: 0;
         }
         .benefit-item { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
         .benefit-text { font-size: 10px; line-height: 1.2; color: rgba(255,255,255,0.85); text-align: left; }
 
         /* =========================================
-           MOBILE ADAPTATIONS (ВИПРАВЛЕННЯ БЛОКУ 2)
+           MOBILE ADAPTATIONS (Specific Fixes)
            ========================================= */
         @media (max-width: 768px) {
-            /* Блок 2 Mobile */
-            .risk-container { 
-                height: 100vh; /* На всю висоту */
-                padding: 10px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-            
-            .center-title { 
-                position: relative; /* Повертаємо в потік */
-                top: auto; left: auto; transform: none;
-                width: 100%; margin: 20px 0;
-            }
-
-            .cards-spread-layout { 
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: 1fr 1fr; /* Тільки 2 ряди для карток, текст між ними через Flex */
-                height: auto;
-                gap: 10px;
+            /* Блок 2 Fix */
+            .cards-layout-wrapper {
+                display: flex !important;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-content: space-between;
+                height: 100%;
                 width: 100%;
-                /* Ми не використовуємо цей контейнер для тексту на мобільному, а розділимо його */
-                display: contents; /* Розчиняємо грід, щоб керувати через флекс батька */
             }
 
-            /* Створюємо віртуальні контейнери для верхнього і нижнього ряду */
-            .mobile-top-row {
-                display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
-                order: 1; /* Зверху */
+            /* Порядок елементів для мобільного */
+            /* Нам потрібно: Картки, Картки (Верх) -> Заголовок -> Картки, Картки (Низ) */
+            /* Використовуємо order */
+            
+            .grid-pos-tl, .grid-pos-tr { order: 1; width: 48%; height: 120px; }
+            .mobile-title-wrapper { 
+                order: 2; width: 100%; 
+                display: flex !important; justify-content: center; align-items: center;
+                height: 100px; /* Місце під заголовок */
             }
-            .mobile-bottom-row {
-                display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
-                order: 3; /* Знизу */
-            }
-            .center-title { order: 2; } /* Посередині */
+            .grid-pos-bl, .grid-pos-br { order: 3; width: 48%; height: 120px; }
 
-            /* Стилі карток для мобільного */
             .risk-card { 
-                width: 100%; max-width: none; height: 110px; 
-                padding: 10px;
-                min-height: 0;
+                width: 100%; height: 100%; max-width: none; padding: 10px; 
             }
             
-            /* Текст всередині карток */
-            .risk-card h3 { font-size: 0.8rem; margin-top: 5px; }
-            .card-icon { width: 24px; height: 24px; }
-            
-            /* ВИПРАВЛЕННЯ АКТИВНОГО СТАНУ (POP-UP ПО ЦЕНТРУ) */
+            /* Pop-up картки по центру на мобільному */
             .risk-card.active { 
-                position: fixed; /* Поверх усього */
-                top: 50% !important; left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                width: 90vw; max-width: 350px;
-                height: auto; min-height: 200px;
-                z-index: 1000;
+                position: fixed; top: 50% !important; left: 50% !important; 
+                transform: translate(-50%, -50%) !important; 
+                width: 90vw; height: auto; min-height: 250px;
                 margin: 0;
             }
 
-            /* Блок 3 Mobile */
-            .services-matrix { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; margin: 0; }
-            .photo-box { max-width: 100%; border-radius: 8px; }
-            .service-title { font-size: 0.65rem; margin-bottom: 2px; }
+            /* Блок 3 Mobile Optimization (Для плашки) */
+            #block3.content-block { padding-top: 50px; justify-content: flex-start; gap: 10px; }
             
-            #b3-title { font-size: 1.1rem; line-height: 1.2; margin-bottom: 4px; }
-            #b3-subtitle { display: block !important; font-size: 10px; line-height: 1.2; margin-top: 4px; }
+            .services-matrix {
+                grid-template-columns: repeat(2, 1fr); 
+                grid-template-rows: repeat(3, 1fr);
+                gap: 8px; flex-grow: 0;
+            }
+            /* СУТТЄВЕ ЗМЕНШЕННЯ КАРТОК ЩОБ ВЛІЗ ФУТЕР */
+            .photo-box { max-width: 90px; border-radius: 8px; } 
+            
+            #b3-subtitle { display: block; font-size: 9px; line-height: 1.2; margin-top: 2px; }
+            #b3-title { font-size: 1.1rem; margin-bottom: 2px; }
 
-            .benefits-bar { display: flex; overflow-x: auto; gap: 15px; padding: 10px; white-space: normal; width: 100%; margin-top: auto; background: rgba(0, 0, 0, 0.4); }
-            .benefit-item { min-width: 180px; flex-direction: row; align-items: center; gap: 10px; }
-            .benefit-text { font-size: 11px; }
+            /* Footer visible fix */
+            .benefits-bar {
+                display: flex; overflow-x: auto; gap: 15px; padding: 10px; 
+                width: 100%; margin-top: auto; 
+                background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+            }
+            .benefit-item { min-width: 160px; flex-direction: row; align-items: center; }
+            .benefit-text { font-size: 10px; }
         }
     </style>
 </head>
@@ -269,7 +298,7 @@
         <img src="dirty.WEBP" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
 
-        <!-- ================= БЛОК 1: HERO ================= -->
+        <!-- ================= БЛОК 1: HERO (0.5s delay) ================= -->
         <div id="block1" class="content-block" style="z-index: 40;">
             <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong">
                 <span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ
@@ -282,64 +311,67 @@
             </div>
         </div>
 
-        <!-- ================= БЛОК 2: РИЗИКИ (ВИПРАВЛЕНО ДЛЯ МОБ) ================= -->
+        <!-- ================= БЛОК 2: РИЗИКИ (FIXED) ================= -->
         <div id="block2" class="content-block">
             <div id="riskContainer" class="risk-container">
                 
-                <!-- Заголовок (Для десктопу абсолютний, для моб - в потоці flex) -->
-                <div class="center-title absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20 text-center w-full max-w-xl transition-opacity duration-300 md:block hidden">
-                    <h2 id="block2-title-desktop" class="cinematic-text text-4xl md:text-6xl font-bold text-shadow-strong leading-tight">
+                <!-- Desktop Title -->
+                <div class="desktop-title-wrapper hidden md:block text-center w-full max-w-xl transition-opacity duration-300">
+                    <h2 id="block2-title-desk" class="cinematic-text text-4xl md:text-6xl font-bold text-shadow-strong leading-tight">
                         ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
                     </h2>
                 </div>
 
-                <!-- МОБІЛЬНА СТРУКТУРА: ВЕРХНІЙ РЯД -->
-                <div class="mobile-top-row md:contents">
-                    <div class="cell-tl md:contents">
+                <div class="cards-layout-wrapper">
+                    
+                    <!-- Top Left -->
+                    <div class="grid-pos-tl">
                         <div class="risk-card fly-from-tl" onclick="toggleCard(this, event)">
-                            <i data-lucide="flame" class="card-icon mb-2 text-yellow-500 w-8 h-8"></i>
-                            <h3 class="font-bold text-lg">Пожежа</h3>
-                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
+                            <i data-lucide="flame" class="card-icon w-8 h-8"></i>
+                            <h3 class="font-bold">Пожежа</h3>
+                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm text-gray-200">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
                             <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5"></i>
                         </div>
                     </div>
-                    <div class="cell-tr md:contents">
+
+                    <!-- Top Right -->
+                    <div class="grid-pos-tr">
                         <div class="risk-card fly-from-tr" onclick="toggleCard(this, event)">
-                            <i data-lucide="file-warning" class="card-icon mb-2 text-yellow-500 w-8 h-8"></i>
-                            <h3 class="font-bold text-lg">Штрафи та закриття</h3>
-                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
+                            <i data-lucide="file-warning" class="card-icon w-8 h-8"></i>
+                            <h3 class="font-bold">Штрафи та закриття</h3>
+                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm text-gray-200">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
                             <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5"></i>
                         </div>
                     </div>
-                </div>
 
-                <!-- МОБІЛЬНИЙ ЗАГОЛОВОК (Посередині) -->
-                <div class="center-title md:hidden block my-4 z-20 text-center w-full">
-                    <h2 id="block2-title-mobile" class="cinematic-text text-3xl font-bold text-shadow-strong leading-tight">
-                        ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
-                    </h2>
-                </div>
+                    <!-- Mobile Title (Middle) -->
+                    <div class="mobile-title-wrapper md:hidden text-center w-full my-4">
+                        <h2 id="block2-title-mob" class="cinematic-text text-3xl font-bold text-shadow-strong leading-tight">
+                            ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
+                        </h2>
+                    </div>
 
-                <!-- МОБІЛЬНА СТРУКТУРА: НИЖНІЙ РЯД -->
-                <div class="mobile-bottom-row md:contents">
-                    <div class="cell-bl md:contents">
+                    <!-- Bottom Left -->
+                    <div class="grid-pos-bl">
                         <div class="risk-card fly-from-bl" onclick="toggleCard(this, event)">
-                            <i data-lucide="user-x" class="card-icon mb-2 text-yellow-500 w-8 h-8"></i>
-                            <h3 class="font-bold text-lg">Втрата клієнтів</h3>
-                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
+                            <i data-lucide="user-x" class="card-icon w-8 h-8"></i>
+                            <h3 class="font-bold">Втрата клієнтів</h3>
+                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm text-gray-200">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
                             <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5"></i>
                         </div>
                     </div>
-                    <div class="cell-br md:contents">
-                        <div class="risk-card fly-from-br" onclick="toggleCard(this, event)">
-                            <i data-lucide="zap" class="card-icon mb-2 text-yellow-500 w-8 h-8"></i>
-                            <h3 class="font-bold text-lg">Витрата електроенергії</h3>
-                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
-                            <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5"></i>
-                        </div>
-                    </div>
-                </div>
 
+                    <!-- Bottom Right -->
+                    <div class="grid-pos-br">
+                        <div class="risk-card fly-from-br" onclick="toggleCard(this, event)">
+                            <i data-lucide="zap" class="card-icon w-8 h-8"></i>
+                            <h3 class="font-bold">Витрата електроенергії</h3>
+                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm text-gray-200">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
+                            <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5"></i>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
 
@@ -356,6 +388,7 @@
             </div>
 
             <div class="services-matrix">
+                <!-- 1 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0s;">
                     <div class="service-title">Витяжні зонти</div>
                     <div class="photo-box" id="box-1">
@@ -364,6 +397,7 @@
                         <div class="label-badge" id="lbl-1">До</div>
                     </div>
                 </div>
+                <!-- 2 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.1s;">
                     <div class="service-title">Фільтра</div>
                     <div class="photo-box" id="box-2">
@@ -372,6 +406,7 @@
                         <div class="label-badge" id="lbl-2">До</div>
                     </div>
                 </div>
+                <!-- 3 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.2s;">
                     <div class="service-title">Повітропроводи</div>
                     <div class="photo-box" id="box-3">
@@ -380,6 +415,7 @@
                         <div class="label-badge" id="lbl-3">До</div>
                     </div>
                 </div>
+                <!-- 4 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.3s;">
                     <div class="service-title">Вентилятори</div>
                     <div class="photo-box" id="box-4">
@@ -388,6 +424,7 @@
                         <div class="label-badge" id="lbl-4">До</div>
                     </div>
                 </div>
+                <!-- 5 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.4s;">
                     <div class="service-title">Повітророзподільні пристрої</div>
                     <div class="photo-box" id="box-5">
@@ -396,12 +433,12 @@
                         <div class="label-badge" id="lbl-5">До</div>
                     </div>
                 </div>
+                <!-- 6 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.5s;">
                     <div class="service-title">Інше</div>
                     <div class="photo-box" id="box-6">
                         <img src="11.webp" class="photo-img img-before" alt="Інше До">
                         <img src="12.webp" class="photo-img img-after" alt="Інше Після">
-                        <div class="label-badge" id="lbl-6">До</div>
                     </div>
                 </div>
             </div>
@@ -445,17 +482,14 @@
             });
 
             if (!isActive) {
-                // Відкрити поточну
                 card.classList.add('active');
                 card.querySelector('.hidden-text').classList.remove('opacity-0', 'h-0');
                 container.classList.add('has-active-card');
             } else {
-                // Закрити поточну
                 container.classList.remove('has-active-card');
             }
         }
 
-        // Закриття по кліку на фон
         document.addEventListener('click', (e) => {
              if(!e.target.closest('.risk-card')) {
                  document.querySelectorAll('.risk-card').forEach(c => {
@@ -478,8 +512,8 @@
             const hFoot = document.getElementById('hero-footnote');
             
             const b2 = document.getElementById('block2');
-            const b2TitleDesk = document.getElementById('block2-title-desktop');
-            const b2TitleMob = document.getElementById('block2-title-mobile');
+            const b2TitleDesk = document.getElementById('block2-title-desk');
+            const b2TitleMob = document.getElementById('block2-title-mob');
             const riskCards = document.querySelectorAll('.risk-card');
             
             const b3 = document.getElementById('block3');
@@ -491,7 +525,7 @@
             let currentComparisonState = 'before';
             let comparisonInterval = null;
 
-            // Таймер вступу: 0.5s
+            // 0.5s затримка
             setTimeout(() => { 
                 introDone = true; 
                 sync(); 
@@ -572,12 +606,16 @@
 
                     if (currentComparisonState === 'after') {
                         box.classList.add('state-after');
-                        label.innerText = "Після";
-                        label.style.background = "#3b82f6";
+                        if(label) {
+                            label.innerText = "Після";
+                            label.style.background = "#3b82f6";
+                        }
                     } else {
                         box.classList.remove('state-after');
-                        label.innerText = "До";
-                        label.style.background = "rgba(0,0,0,0.6)";
+                        if(label) {
+                            label.innerText = "До";
+                            label.style.background = "rgba(0,0,0,0.6)";
+                        }
                     }
                 }
             }
