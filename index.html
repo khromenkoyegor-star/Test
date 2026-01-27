@@ -14,7 +14,7 @@
             background-color: #000;
             font-family: 'Helvetica Neue', Arial, sans-serif;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent; /* Прибирає синє виділення на мобільному */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* --- Viewport & Backgrounds --- */
@@ -30,13 +30,13 @@
 
         .content-block {
             position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 30; pointer-events: none; /* Пропускаємо кліки крізь пусті місця */
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center;
+            z-index: 30; pointer-events: none; 
             padding: 20px;
             opacity: 0; transition: opacity 0.4s ease-out; 
         }
         
-        /* ВАЖЛИВО: Дозволяємо кліки на всіх дочірніх елементах */
         .content-block > * { pointer-events: auto; }
 
         /* --- CINEMATIC ANIMATION --- */
@@ -50,14 +50,33 @@
         }
         .text-shadow-strong { text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6); }
 
-        /* --- БЛОК 2: РИЗИКИ --- */
+        /* --- БЛОК 1: HERO --- */
+        #hero-footnote {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            /* Мобільна позиція за замовчуванням */
+            bottom: 10%; 
+        }
+        
+        @media (min-width: 769px) {
+            #hero-footnote {
+                /* Десктопна позиція (піднято на 15% вище, як просили) */
+                bottom: 25%; 
+            }
+        }
+
+        /* --- БЛОК 2: РИЗИКИ (НОВА ЛОГІКА РОЗКРИТТЯ) --- */
         .risk-container {
             position: relative; width: 100%; max-width: 1200px; height: 80vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            pointer-events: none; /* Контейнер прозорий для кліків */
         }
 
-        /* Desktop Grid Structure */
+        /* Desktop Grid */
         @media (min-width: 769px) {
             .cards-layout-wrapper {
                 display: grid; width: 100%; height: 100%;
@@ -65,67 +84,107 @@
                 grid-template-rows: 1fr 0.4fr 1fr; 
                 gap: 2rem; pointer-events: none;
             }
-            .grid-pos-tl { grid-row: 1; grid-column: 1; display: flex; align-items: flex-end; justify-content: flex-start; pointer-events: auto; }
-            .grid-pos-tr { grid-row: 1; grid-column: 2; display: flex; align-items: flex-end; justify-content: flex-end; pointer-events: auto; }
-            .grid-pos-bl { grid-row: 3; grid-column: 1; display: flex; align-items: flex-start; justify-content: flex-start; pointer-events: auto; }
-            .grid-pos-br { grid-row: 3; grid-column: 2; display: flex; align-items: flex-start; justify-content: flex-end; pointer-events: auto; }
+            /* Клітинки сітки - це якорі */
+            .grid-pos-tl, .grid-pos-tr, .grid-pos-bl, .grid-pos-br { position: relative; pointer-events: auto; }
+            
+            .grid-pos-tl { grid-row: 1; grid-column: 1; }
+            .grid-pos-tr { grid-row: 1; grid-column: 2; }
+            .grid-pos-bl { grid-row: 3; grid-column: 1; }
+            .grid-pos-br { grid-row: 3; grid-column: 2; }
             
             .desktop-title-wrapper { display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; }
             .mobile-title-wrapper { display: none; }
         }
 
-        /* Card Styles */
+        /* Картки */
         .risk-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
             padding: 1.5rem; 
             cursor: pointer;
-            pointer-events: auto !important; /* ПРИМУСОВЕ ВКЛЮЧЕННЯ КЛІКІВ */
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            width: 100%; max-width: 320px; height: 140px; 
-            opacity: 0; transform: scale(0.5); z-index: 30;
-            position: relative; overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            
+            /* Базові розміри (трохи зменшені для акуратності) */
+            width: 100%; max-width: 300px; 
+            height: 130px; 
+            
+            /* Абсолютне позиціонування всередині клітинки для правильного росту */
+            position: absolute; 
+            z-index: 30;
+            overflow: hidden;
             display: flex; flex-direction: column; justify-content: center;
-            user-select: none; /* Щоб текст не виділявся при кліку */
         }
-        .risk-card.landed { opacity: 1; transform: translate(0, 0) scale(1) !important; }
+
+        /* Позиціонування всередині клітинок */
+        /* Верхні - притиснуті до низу клітинки */
+        .grid-pos-tl .risk-card { bottom: 0; left: 0; transform-origin: bottom left; }
+        .grid-pos-tr .risk-card { bottom: 0; right: 0; transform-origin: bottom right; }
         
+        /* Нижні - притиснуті до верху клітинки */
+        .grid-pos-bl .risk-card { top: 0; left: 0; transform-origin: top left; }
+        .grid-pos-br .risk-card { top: 0; right: 0; transform-origin: top right; }
+
+        .risk-card.landed { opacity: 1; transform: scale(1); }
+        
+        /* АКТИВНИЙ СТАН: Більша висота, вищий Z-index */
         .risk-card.active { 
             background: rgba(15, 15, 15, 0.98); border-color: #fbbf24; 
-            z-index: 100; height: auto; min-height: 220px; 
+            z-index: 100; 
+            height: 260px; /* Збільшена висота для тексту */
             box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
         }
 
-        .risk-card h3 { color: white; margin-bottom: 5px; font-size: 1.1rem; pointer-events: none; }
-        .risk-card .card-icon { color: #fbbf24; margin-bottom: 10px; transition: all 0.3s; pointer-events: none; }
-        .risk-card.active .card-icon { transform: scale(0.8); margin-bottom: 5px; }
-        .hidden-text { transition: all 0.5s ease; pointer-events: none; }
+        .risk-card h3 { color: white; margin-bottom: 5px; font-size: 1.1rem; }
+        .risk-card .card-icon { color: #fbbf24; margin-bottom: 10px; transition: all 0.3s; width: 32px; height: 32px; }
+        
+        /* Текст з'являється плавно */
+        .hidden-text { 
+            max-height: 0; opacity: 0; overflow: hidden; 
+            transition: all 0.5s ease; font-size: 0.9rem; color: #ddd; margin-top: 0;
+        }
+        .risk-card.active .hidden-text { 
+            max-height: 150px; opacity: 1; margin-top: 10px; 
+        }
 
         .fly-from-tl { transform: translate(-50vw, -50vh) scale(0); }
         .fly-from-tr { transform: translate(50vw, -50vh) scale(0); }
         .fly-from-bl { transform: translate(-50vw, 50vh) scale(0); }
         .fly-from-br { transform: translate(50vw, 50vh) scale(0); }
 
+
         /* --- БЛОК 3: ПОСЛУГИ --- */
         #block3.content-block {
-            justify-content: space-between; padding-top: 60px; padding-bottom: 20px;
+            justify-content: space-between; padding-top: 40px; padding-bottom: 20px;
+        }
+
+        /* Glass Panel for Title */
+        .glass-title-panel {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 15px 25px;
+            margin-bottom: 10px;
+            display: inline-block;
         }
 
         .services-matrix {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 20px; width: 100%; max-width: 1100px;
+            gap: 15px; 
+            width: 100%; max-width: 1000px;
             margin: 5px 0; flex-grow: 1; align-content: center;
         }
 
         .service-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .service-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        /* Зменшено відступ знизу */
+        .service-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
         .photo-box {
             width: 100%; aspect-ratio: 1 / 1; 
-            max-width: 200px; 
+            max-width: 200px; /* +25% size */
             position: relative; border-radius: 12px; overflow: hidden;
             background: #111; border: 2px solid rgba(255,255,255,0.1);
             transition: all 0.6s ease;
@@ -139,92 +198,82 @@
         @keyframes flicker-glow { 0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); transform: scale(1); } 100% { box-shadow: 0 0 25px rgba(96, 165, 250, 0.8); transform: scale(1.03); } }
         .label-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase; z-index: 10; transition: background 0.3s; }
 
-        /* Footer Marquee */
-        .benefits-marquee-wrapper {
-            width: 100%; max-width: 1200px; overflow: hidden;
+        /* --- FOOTER STYLES --- */
+        
+        /* 1. Mobile Marquee (Visible on sm, hidden on md) */
+        .mobile-marquee {
+            width: 100%; overflow: hidden;
             background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
-            margin-top: auto; display: flex; align-items: center; height: 80px; 
-            pointer-events: auto; /* Дозволити скрол/взаємодію */
+            margin-top: auto; display: flex; align-items: center; height: 60px;
+            pointer-events: auto;
         }
-        .benefits-track { display: flex; gap: 40px; padding: 0 20px; animation: marquee 25s linear infinite; width: max-content; }
+        .marquee-track { display: flex; gap: 30px; padding: 0 20px; animation: marquee 25s linear infinite; width: max-content; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .benefit-item { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
-        .benefit-text { font-size: 12px; line-height: 1.2; color: rgba(255,255,255,0.9); text-align: left; }
+        
+        /* 2. Desktop Static Grid (Hidden on sm, visible on md) */
+        .desktop-static-bar {
+            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
+            padding: 15px; 
+            /* Grid Layout */
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 15px; width: 100%; max-width: 1200px; margin-top: auto;
+        }
+
+        .benefit-item { display: flex; align-items: center; gap: 10px; }
+        /* Desktop text wraps nicely, Mobile is nowrap */
+        .desktop-static-bar .benefit-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+        .desktop-static-bar .benefit-text { font-size: 11px; white-space: normal; line-height: 1.3; }
+        
+        .mobile-marquee .benefit-item { flex-direction: row; white-space: nowrap; }
+        .mobile-marquee .benefit-text { font-size: 12px; }
 
         /* =========================================
-           MOBILE ADAPTATIONS (FIXES)
+           MOBILE ADAPTATIONS
            ========================================= */
         @media (max-width: 768px) {
-            /* Блок 2 Mobile */
-            .risk-container { 
-                height: 100vh; padding: 10px;
-                display: flex; flex-direction: column; justify-content: center;
-            }
-            
+            /* Блок 2 Mobile Layout */
+            .risk-container { height: 100vh; padding: 10px; justify-content: center; }
             .cards-layout-wrapper {
-                display: flex !important; flex-wrap: wrap;
-                align-content: center; justify-content: space-between;
-                height: 100%; width: 100%; max-height: 650px;
-                position: relative;
-                pointer-events: none; /* Wrapper не повинен блокувати, діти мають auto */
+                display: flex !important; flex-wrap: wrap; justify-content: space-between; align-content: center;
+                height: auto; width: 100%; position: relative;
             }
-
             .mobile-title-wrapper { 
-                order: 2; width: 100%; display: flex !important; 
-                justify-content: center; align-items: center; height: auto; margin: 10px 0;
+                order: 2; width: 100%; display: flex !important; justify-content: center; align-items: center; margin: 15px 0;
             }
 
-            /* --- ЗБІЛЬШЕННЯ КАРТОК МОБІЛЬНИЙ --- */
-            .grid-pos-tl, .grid-pos-tr { 
-                order: 1; width: 48%; 
-                display: flex; align-items: flex-end; 
-                height: 150px; /* Збільшена зона */
-                pointer-events: auto; /* ВАЖЛИВО */
-            }
-            
-            .grid-pos-bl, .grid-pos-br { 
-                order: 3; width: 48%; 
-                display: flex; align-items: flex-start; 
-                height: 150px; /* Збільшена зона */
-                pointer-events: auto; /* ВАЖЛИВО */
-            }
+            /* Клітинки на мобільному */
+            .grid-pos-tl, .grid-pos-tr { order: 1; width: 48%; height: 140px; }
+            .grid-pos-bl, .grid-pos-br { order: 3; width: 48%; height: 140px; }
 
             .risk-card { 
-                width: 100%; 
-                height: 140px; /* Більша висота для іконок */
-                max-width: none; padding: 12px;
-                transition: height 0.4s ease, transform 0.4s ease;
+                width: 100%; height: 130px; max-width: none; padding: 12px;
+                /* Важливо для мобільного: позиція relative всередині клітинки за замовчуванням */
+                position: absolute; 
             }
 
-            /* Іконки завжди видимі на мобільному */
-            .risk-card .card-icon {
-                width: 32px; height: 32px; /* Фіксований розмір */
-                min-width: 32px;
-                display: block;
-            }
+            /* Верхні ростуть вгору */
+            .grid-pos-tl .risk-card, .grid-pos-tr .risk-card { bottom: 0; top: auto; transform-origin: bottom center; }
+            /* Нижні ростуть вниз */
+            .grid-pos-bl .risk-card, .grid-pos-br .risk-card { top: 0; bottom: auto; transform-origin: top center; }
 
-            /* Ріст карток */
-            .grid-pos-tl .risk-card, .grid-pos-tr .risk-card { transform-origin: bottom center; }
-            .grid-pos-bl .risk-card, .grid-pos-br .risk-card { transform-origin: top center; }
-
-            /* Активний стан Mobile: росте на місці (без центрування) */
             .risk-card.active { 
-                position: relative; width: 100%; 
-                height: 240px; /* Місце для тексту */
-                min-height: 240px; z-index: 50;
-                transform: scale(1.02) !important;
+                height: 250px; z-index: 50;
             }
 
             /* Блок 3 Mobile */
-            #block3.content-block { padding-top: 40px; gap: 5px; }
-            #b3-title { font-size: 1.4rem; line-height: 1.2; margin-bottom: 5px; }
-            #b3-subtitle { font-size: 12px; line-height: 1.3; margin-top: 5px; display: block !important; }
+            #block3.content-block { padding-top: 40px; gap: 5px; justify-content: flex-start; }
             
             .services-matrix { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+            /* Збільшено на 25% на мобільному ~115px */
             .photo-box { max-width: 115px; border-radius: 10px; }
             .service-title { font-size: 0.8rem; }
-            .benefits-marquee-wrapper { height: 60px; margin-bottom: 10px; }
+            
+            /* Типографіка */
+            #b3-title { font-size: 1.3rem; line-height: 1.2; }
+            #b3-subtitle { font-size: 11px; line-height: 1.3; }
+            .glass-title-panel { padding: 10px 15px; }
         }
     </style>
 </head>
@@ -236,7 +285,7 @@
         <img src="dirty.WEBP" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
 
-        <!-- ================= БЛОК 1: HERO (0.5s DELAY) ================= -->
+        <!-- ================= БЛОК 1: HERO ================= -->
         <div id="block1" class="content-block" style="z-index: 40;">
             <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong">
                 <span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ
@@ -244,12 +293,13 @@
             <h2 id="hero-subtitle" class="cinematic-text text-2xl md:text-4xl font-light text-center mt-6 text-shadow-strong tracking-wide">
                 ПОВʼЯЗАНІ З БРУДНОЮ<br>ВЕНТИЛЯЦІЄЮ*
             </h2>
-            <div id="hero-footnote" class="opacity-0 transition-opacity duration-200 absolute bottom-[8%] text-sm text-white/70 text-shadow-strong">
+            <!-- Виноска (піднята на 15% для Desktop в CSS) -->
+            <div id="hero-footnote" class="opacity-0 transition-opacity duration-200 absolute text-sm text-white/70 text-shadow-strong">
                 * За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)
             </div>
         </div>
 
-        <!-- ================= БЛОК 2: РИЗИКИ (ВИПРАВЛЕНО КЛІКИ) ================= -->
+        <!-- ================= БЛОК 2: РИЗИКИ ================= -->
         <div id="block2" class="content-block">
             <div id="riskContainer" class="risk-container">
                 
@@ -264,26 +314,27 @@
                     
                     <!-- Top Left -->
                     <div class="grid-pos-tl">
-                        <!-- ВАЖЛИВО: pointer-events-auto додано явно -->
-                        <div class="risk-card fly-from-tl pointer-events-auto" onclick="toggleCard(this, event)">
-                            <i data-lucide="flame" class="card-icon w-8 h-8"></i>
+                        <div class="risk-card fly-from-tl" onclick="toggleCard(this, event)">
+                            <i data-lucide="flame" class="card-icon"></i>
                             <h3 class="font-bold">Пожежа</h3>
-                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm text-gray-200">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
+                            <!-- ТОЧНИЙ ТЕКСТ -->
+                            <p class="hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
                             <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
                         </div>
                     </div>
 
                     <!-- Top Right -->
                     <div class="grid-pos-tr">
-                        <div class="risk-card fly-from-tr pointer-events-auto" onclick="toggleCard(this, event)">
-                            <i data-lucide="file-warning" class="card-icon w-8 h-8"></i>
+                        <div class="risk-card fly-from-tr" onclick="toggleCard(this, event)">
+                            <i data-lucide="file-warning" class="card-icon"></i>
                             <h3 class="font-bold">Штрафи та закриття</h3>
-                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm text-gray-200">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
+                            <!-- ТОЧНИЙ ТЕКСТ -->
+                            <p class="hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
                             <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
                         </div>
                     </div>
 
-                    <!-- Mobile Title (Middle) -->
+                    <!-- Mobile Title -->
                     <div class="mobile-title-wrapper md:hidden text-center w-full">
                         <h2 id="block2-title-mob" class="cinematic-text text-2xl font-bold text-shadow-strong leading-tight">
                             ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
@@ -292,24 +343,25 @@
 
                     <!-- Bottom Left -->
                     <div class="grid-pos-bl">
-                        <div class="risk-card fly-from-bl pointer-events-auto" onclick="toggleCard(this, event)">
-                            <i data-lucide="user-x" class="card-icon w-8 h-8"></i>
+                        <div class="risk-card fly-from-bl" onclick="toggleCard(this, event)">
+                            <i data-lucide="user-x" class="card-icon"></i>
                             <h3 class="font-bold">Втрата клієнтів</h3>
-                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm text-gray-200">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
+                            <!-- ТОЧНИЙ ТЕКСТ -->
+                            <p class="hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
                             <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
                         </div>
                     </div>
 
                     <!-- Bottom Right -->
                     <div class="grid-pos-br">
-                        <div class="risk-card fly-from-br pointer-events-auto" onclick="toggleCard(this, event)">
-                            <i data-lucide="zap" class="card-icon w-8 h-8"></i>
+                        <div class="risk-card fly-from-br" onclick="toggleCard(this, event)">
+                            <i data-lucide="zap" class="card-icon"></i>
                             <h3 class="font-bold">Витрата електроенергії</h3>
-                            <p class="hidden-text opacity-0 h-0 transition-all duration-300 mt-2 text-sm text-gray-200">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
+                            <!-- ТОЧНИЙ ТЕКСТ -->
+                            <p class="hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
                             <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -318,75 +370,83 @@
         <div id="block3" class="content-block">
             
             <div class="text-center w-full max-w-5xl mb-1 px-2">
-                <h2 id="b3-title" class="cinematic-text text-xl md:text-3xl font-bold text-shadow-strong leading-tight">
-                    Професійна механічна очистка повітроводів — ефективне вирішення проблеми жирового нагару та бруду
-                </h2>
-                <p id="b3-subtitle" class="cinematic-text text-[10px] md:text-sm text-blue-300 mt-1 md:mt-2 font-medium italic">
-                    Працюємо вночі, щоб ваш бізнес працював вдень. Без зупинки кухні, без бруду в залі, з повним пакетом документів для ДСНС.
-                </p>
+                <!-- GLASS FRAME -->
+                <div class="glass-title-panel cinematic-text">
+                    <h2 id="b3-title" class="text-xl md:text-3xl font-bold text-shadow-strong leading-tight">
+                        <!-- HIGHLIGHT -->
+                        <span class="text-amber-500 font-extrabold uppercase">Професійна механічна очистка</span> повітроводів — ефективне вирішення проблеми жирового нагару та бруду
+                    </h2>
+                    <p id="b3-subtitle" class="text-[10px] md:text-sm text-blue-200 mt-2 font-medium italic">
+                        Працюємо вночі, щоб ваш бізнес працював вдень. Без зупинки кухні, без бруду в залі, з повним пакетом документів для ДСНС.
+                    </p>
+                </div>
             </div>
 
             <div class="services-matrix">
-                <!-- Items 1-6 -->
+                <!-- 1 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0s;">
                     <div class="service-title">Витяжні зонти</div>
                     <div class="photo-box" id="box-1">
-                        <img src="1.webp" class="photo-img img-before" alt="Зонт До">
-                        <img src="2.webp" class="photo-img img-after" alt="Зонт Після">
+                        <img src="1.webp" class="photo-img img-before" alt="До">
+                        <img src="2.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-1">До</div>
                     </div>
                 </div>
+                <!-- 2 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.1s;">
                     <div class="service-title">Фільтра</div>
                     <div class="photo-box" id="box-2">
-                        <img src="3.webp" class="photo-img img-before" alt="Фільтр До">
-                        <img src="4.webp" class="photo-img img-after" alt="Фільтр Після">
+                        <img src="3.webp" class="photo-img img-before" alt="До">
+                        <img src="4.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-2">До</div>
                     </div>
                 </div>
+                <!-- 3 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.2s;">
                     <div class="service-title">Повітропроводи</div>
                     <div class="photo-box" id="box-3">
-                        <img src="5.webp" class="photo-img img-before" alt="Труба До">
-                        <img src="6.webp" class="photo-img img-after" alt="Труба Після">
+                        <img src="5.webp" class="photo-img img-before" alt="До">
+                        <img src="6.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-3">До</div>
                     </div>
                 </div>
+                <!-- 4 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.3s;">
                     <div class="service-title">Вентилятори</div>
                     <div class="photo-box" id="box-4">
-                        <img src="7.webp" class="photo-img img-before" alt="Вентилятор До">
-                        <img src="8.webp" class="photo-img img-after" alt="Вентилятор Після">
+                        <img src="7.webp" class="photo-img img-before" alt="До">
+                        <img src="8.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-4">До</div>
                     </div>
                 </div>
+                <!-- 5 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.4s;">
                     <div class="service-title">Повітророзподільні пристрої</div>
                     <div class="photo-box" id="box-5">
-                        <img src="9.webp" class="photo-img img-before" alt="Дифузор До">
-                        <img src="10.webp" class="photo-img img-after" alt="Дифузор Після">
+                        <img src="9.webp" class="photo-img img-before" alt="До">
+                        <img src="10.webp" class="photo-img img-after" alt="Після">
                         <div class="label-badge" id="lbl-5">До</div>
                     </div>
                 </div>
+                <!-- 6 -->
                 <div class="service-item cinematic-text" style="transition-delay: 0.5s;">
                     <div class="service-title">Інше</div>
                     <div class="photo-box" id="box-6">
-                        <img src="11.webp" class="photo-img img-before" alt="Інше До">
-                        <img src="12.webp" class="photo-img img-after" alt="Інше Після">
+                        <img src="11.webp" class="photo-img img-before" alt="До">
+                        <img src="12.webp" class="photo-img img-after" alt="Після">
                     </div>
                 </div>
             </div>
 
-            <!-- ANIMATED MARQUEE BAR -->
-            <div class="benefits-marquee-wrapper cinematic-text" style="transition-delay: 0.6s;">
-                <div class="benefits-track">
-                    <!-- CONTENT -->
+            <!-- FOOTER: MOBILE (MARQUEE) -->
+            <div class="mobile-marquee md:hidden cinematic-text" style="transition-delay: 0.6s;">
+                <div class="marquee-track">
                     <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
                     <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
                     <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
                     <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Акт утилізації та документи ДСНС</span></div>
                     <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
-                    <!-- DUPLICATE -->
+                    <!-- Dupes -->
                     <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
                     <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
                     <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
@@ -394,44 +454,65 @@
                     <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
                 </div>
             </div>
+
+            <!-- FOOTER: DESKTOP (STATIC GRID) -->
+            <div class="desktop-static-bar hidden md:grid cinematic-text" style="transition-delay: 0.6s;">
+                <div class="benefit-item">
+                    <i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i>
+                    <p class="benefit-text">Використовуємо ефективну хімію (виробництво Іспанія)</p>
+                </div>
+                <div class="benefit-item">
+                    <i data-lucide="moon" class="text-amber-400 w-5 h-5"></i>
+                    <p class="benefit-text">Працюємо в нічний час та на будь-якій висоті.</p>
+                </div>
+                <div class="benefit-item">
+                    <i data-lucide="camera" class="text-amber-400 w-5 h-5"></i>
+                    <p class="benefit-text">Фото та відео-фіксація виконаної роботи.</p>
+                </div>
+                <div class="benefit-item">
+                    <i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i>
+                    <p class="benefit-text">Надаємо акт утилізації жирових відходів та розробляємо документацію для ДСНС (по запиту)</p>
+                </div>
+                <div class="benefit-item">
+                    <i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i>
+                    <p class="benefit-text">Захищаємо ваше робоче місце від потрапляння жиру у ході наших робіт.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // --- ВИПРАВЛЕНА ЛОГІКА КЛІКІВ БЛОКУ 2 ---
+        // --- ЛОГІКА КЛІКІВ БЛОКУ 2 ---
         function toggleCard(card, event) {
-            // Зупиняємо спливання, щоб не спрацював клік document
             if(event) event.stopPropagation();
-
             const container = document.getElementById('riskContainer');
-            
-            // Перевіряємо, чи ця карта вже активна
             const isActive = card.classList.contains('active');
             
-            // Спочатку закриваємо ВСІ картки
             document.querySelectorAll('.risk-card').forEach(c => {
                 c.classList.remove('active');
-                c.querySelector('.hidden-text').classList.add('opacity-0', 'h-0');
+                // Вимикаємо текст через стилі
+                const txt = c.querySelector('.hidden-text');
+                if(txt) txt.style.maxHeight = '0';
             });
 
-            // Якщо карта не була активна - відкриваємо її
             if (!isActive) {
                 card.classList.add('active');
-                card.querySelector('.hidden-text').classList.remove('opacity-0', 'h-0');
+                // Вмикаємо текст
+                const txt = card.querySelector('.hidden-text');
+                if(txt) txt.style.maxHeight = '200px'; 
                 container.classList.add('has-active-card');
             } else {
-                // Якщо була активна - ми її вже закрили вище, просто знімаємо клас контейнера
                 container.classList.remove('has-active-card');
             }
         }
 
-        // Закриття при кліку в пусте місце
         document.addEventListener('click', (e) => {
-             // Якщо клік не по картці
              if(!e.target.closest('.risk-card')) {
                  document.querySelectorAll('.risk-card').forEach(c => {
                     c.classList.remove('active');
-                    c.querySelector('.hidden-text').classList.add('opacity-0', 'h-0');
+                    const txt = c.querySelector('.hidden-text');
+                    if(txt) txt.style.maxHeight = '0';
                  });
                  const container = document.getElementById('riskContainer');
                  if(container) container.classList.remove('has-active-card');
@@ -454,15 +535,14 @@
             const riskCards = document.querySelectorAll('.risk-card');
             
             const b3 = document.getElementById('block3');
-            const b3Title = document.getElementById('b3-title');
-            const b3Sub = document.getElementById('b3-subtitle');
-            const b3Anims = document.querySelectorAll('.services-matrix .cinematic-text, .benefits-marquee-wrapper');
+            // Анімуємо весь блок title panel
+            const b3Panel = document.querySelector('.glass-title-panel');
+            const b3Anims = document.querySelectorAll('.services-matrix .cinematic-text, .mobile-marquee, .desktop-static-bar');
 
             let introDone = false;
             let currentComparisonState = 'before';
             let comparisonInterval = null;
 
-            // 0.5s Delay
             setTimeout(() => { 
                 introDone = true; 
                 sync(); 
@@ -507,14 +587,12 @@
                 // Block 3
                 if (op <= 60 && op > 40) {
                     b3.style.opacity = 1;
-                    b3Title.classList.add('in-focus');
-                    if(b3Sub) b3Sub.classList.add('in-focus');
+                    if(b3Panel) b3Panel.classList.add('in-focus');
                     b3Anims.forEach(el => el.classList.add('in-focus'));
                     startComparisonLoop();
                 } else {
                     b3.style.opacity = 0;
-                    b3Title.classList.remove('in-focus');
-                    if(b3Sub) b3Sub.classList.remove('in-focus');
+                    if(b3Panel) b3Panel.classList.remove('in-focus');
                     b3Anims.forEach(el => el.classList.remove('in-focus'));
                     stopComparisonLoop();
                 }
