@@ -9,8 +9,7 @@
     <style>
         html { scroll-behavior: smooth; }
         body {
-            /* Збільшуємо висоту скролу, щоб вмістити 4 блоки */
-            height: 800vh; 
+            height: 800vh; /* Висота для скролу 4 блоків */
             margin: 0;
             background-color: #000;
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -65,6 +64,31 @@
             position: relative; width: 100%; max-width: 1200px; height: 80vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
+        /* Grid Layout */
+        @media (min-width: 769px) {
+            .cards-layout-wrapper {
+                display: grid; width: 100%; height: 100%;
+                grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 0.4fr 1fr; gap: 2rem; pointer-events: none;
+            }
+            .grid-cell { position: relative; width: 100%; height: 100%; pointer-events: auto; }
+            .grid-pos-tl { grid-row: 1; grid-column: 1; }
+            .grid-pos-tr { grid-row: 1; grid-column: 2; }
+            .grid-pos-bl { grid-row: 3; grid-column: 1; }
+            .grid-pos-br { grid-row: 3; grid-column: 2; }
+            .desktop-title-wrapper { display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; }
+            .mobile-title-wrapper { display: none; }
+            .risk-card { max-width: 300px; }
+        }
+        @media (max-width: 768px) {
+            .risk-container { height: 100vh; padding: 10px; justify-content: center; gap: 10px; }
+            .cards-layout-wrapper { display: flex; flex-direction: column; width: 100%; justify-content: center; gap: 10px; }
+            .mobile-row { display: flex; justify-content: space-between; gap: 12px; width: 100%; height: 100px; position: relative; z-index: 10; }
+            .grid-cell { position: relative; width: 48%; height: 100%; pointer-events: auto; }
+            .mobile-title-wrapper { display: flex !important; justify-content: center; align-items: center; z-index: 5; margin: 10px 0; }
+            .risk-card { height: 100px; padding: 1rem; }
+            .risk-card.active { height: 240px !important; }
+        }
+        /* Card Styles */
         .risk-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -93,30 +117,6 @@
         .risk-card.active .hidden-text { opacity: 1; max-height: 200px; transform: translateY(0); margin-top: 10px; }
         .risk-card.active .card-icon { transform: translateY(-10px) scale(0.9); opacity: 0.8; }
         .risk-card.active h3 { transform: translateY(-5px); color: #fbbf24; }
-
-        @media (min-width: 769px) {
-            .cards-layout-wrapper {
-                display: grid; width: 100%; height: 100%;
-                grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 0.4fr 1fr; gap: 2rem; pointer-events: none;
-            }
-            .grid-cell { position: relative; width: 100%; height: 100%; pointer-events: auto; }
-            .grid-pos-tl { grid-row: 1; grid-column: 1; }
-            .grid-pos-tr { grid-row: 1; grid-column: 2; }
-            .grid-pos-bl { grid-row: 3; grid-column: 1; }
-            .grid-pos-br { grid-row: 3; grid-column: 2; }
-            .desktop-title-wrapper { display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; }
-            .mobile-title-wrapper { display: none; }
-            .risk-card { max-width: 300px; }
-        }
-        @media (max-width: 768px) {
-            .risk-container { height: 100vh; padding: 10px; justify-content: center; gap: 10px; }
-            .cards-layout-wrapper { display: flex; flex-direction: column; width: 100%; justify-content: center; gap: 10px; }
-            .mobile-row { display: flex; justify-content: space-between; gap: 12px; width: 100%; height: 100px; position: relative; z-index: 10; }
-            .grid-cell { position: relative; width: 48%; height: 100%; pointer-events: auto; }
-            .mobile-title-wrapper { display: flex !important; justify-content: center; align-items: center; z-index: 5; margin: 10px 0; }
-            .risk-card { height: 100px; padding: 1rem; }
-            .risk-card.active { height: 240px !important; }
-        }
         .fly-from-tl { transform: translate(-50vw, -50vh) scale(0); }
         .fly-from-tr { transform: translate(50vw, -50vh) scale(0); }
         .fly-from-bl { transform: translate(-50vw, 50vh) scale(0); }
@@ -174,121 +174,114 @@
             .glass-title-panel { padding: 10px 15px; }
         }
 
-        /* --- БЛОК 4: CINEMATIC SLIDER (NEW) --- */
+        /* --- БЛОК 4: CINEMATIC SLIDER (REDESIGNED) --- */
         #block4.content-block {
             justify-content: center;
             padding: 0;
-            background: #000; /* Підкладка, щоб не світився бекграунд попередніх */
+            background: transparent; /* Background remains visible */
         }
 
-        .slider-container {
+        .cinematic-stage {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            /* Adaptive Height */
+            height: 60vh; 
+            max-height: 550px;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 769px) {
+            .cinematic-stage { height: 500px; }
+        }
+
+        .slides-wrapper {
             width: 100%; height: 100%;
             position: relative;
+        }
+
+        .slide-item {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
-            overflow: hidden;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .slide-item.active { opacity: 1; pointer-events: auto; }
 
-        .slide {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-            z-index: 10;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 20;
-        }
-
-        /* Desktop Layout: Split */
+        /* Desktop Layout: Side by Side */
         @media (min-width: 769px) {
-            .slide { flex-direction: row; }
-            .slide-visual { width: 60%; height: 100%; position: relative; overflow: hidden; }
-            .slide-text-zone { width: 40%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; padding: 40px; }
+            .slide-item { flex-direction: row; }
+            .slide-img-col { width: 45%; height: 100%; position: relative; overflow: hidden; }
+            .slide-txt-col { width: 55%; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
         }
 
-        /* Mobile Layout: Stack */
+        /* Mobile Layout: Stacked */
         @media (max-width: 768px) {
-            .slide { flex-direction: column; }
-            .slide-visual { width: 100%; height: 55%; position: relative; overflow: hidden; }
-            .slide-text-zone { width: 100%; height: 45%; position: relative; padding: 20px; display: flex; align-items: center; }
+            .slide-item { flex-direction: column; }
+            .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; }
+            .slide-txt-col { width: 100%; height: 60%; padding: 20px; overflow-y: auto; }
         }
 
-        /* Parallax Image Style */
-        .slide-image {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            transform: scale(1.1);
-            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        /* Image Parallax Effect */
+        .slide-img-obj {
+            width: 100%; height: 100%; object-fit: cover;
+            transform: scale(1.15);
+            transition: transform 1.5s ease-out;
         }
+        .slide-item.active .slide-img-obj {
+            transform: scale(1); /* Smooth zoom out */
+        }
+
+        /* Text Styles */
+        .case-label {
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+            color: #fbbf24; font-weight: 700; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .case-label::before { content: ''; width: 30px; height: 1px; background: #fbbf24; display: block; }
         
-        .slide.active .slide-image {
-            transform: scale(1); /* Zoom Out effect on active */
+        .case-desc {
+            font-size: 0.95rem; line-height: 1.6; color: #e5e5e5;
+            font-weight: 300;
         }
+        @media (min-width: 769px) { .case-desc { font-size: 1.05rem; } }
 
-        /* Glass Panel for Text */
-        .slide-glass-card {
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
+        /* Controls */
+        .stage-controls {
+            position: absolute; bottom: 0; right: 0;
             width: 100%;
-            max-width: 500px;
-            color: #eee;
-            transform: translateY(30px);
-            opacity: 0;
-            transition: all 0.6s ease 0.2s; /* Delay text */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.2);
         }
-
-        .slide.active .slide-glass-card {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* Navigation Controls */
-        .slider-nav {
-            position: absolute;
-            bottom: 30px; left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            z-index: 50;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .nav-btn {
-            background: transparent; border: none; color: white; cursor: pointer;
-            padding: 8px; border-radius: 50%;
-            transition: background 0.3s;
-        }
-        .nav-btn:hover { background: rgba(255,255,255,0.1); }
-        .nav-counter { font-family: monospace; font-size: 1.1rem; color: #fbbf24; }
         
-        /* Desktop Arrows can be on sides */
         @media (min-width: 769px) {
-            .slider-nav { bottom: 50px; right: 50px; left: auto; transform: none; }
+            .stage-controls { width: 55%; bottom: 0; right: 0; padding: 0 40px; }
         }
 
-        .story-number {
-            font-size: 4rem;
-            font-weight: 800;
-            color: rgba(255,255,255,0.05);
-            position: absolute;
-            top: 10px; right: 20px;
-            line-height: 1;
+        .prog-bar { flex-grow: 1; height: 2px; background: rgba(255,255,255,0.1); margin: 0 20px; position: relative; }
+        .prog-fill { height: 100%; background: #fbbf24; width: 0%; transition: width 0.4s; }
+        
+        .nav-arrows { display: flex; gap: 10px; }
+        .stage-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: white; width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s;
         }
+        .stage-btn:hover { background: #fbbf24; color: black; border-color: #fbbf24; }
+
+        .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.05); position: absolute; top: 20px; right: 20px; line-height: 1; }
+        @media (max-width: 768px) { .slide-number { top: auto; bottom: 20px; right: 20px; font-size: 4rem; } }
 
     </style>
 </head>
@@ -300,7 +293,7 @@
         <img src="dirty.WEBP" onerror="this.style.display='none'" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
 
-        <!-- БЛОК 1: HERO -->
+        <!-- БЛОК 1 -->
         <div id="block1" class="content-block" style="z-index: 40;">
             <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong">
                 <span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ
@@ -313,20 +306,16 @@
             </div>
         </div>
 
-        <!-- БЛОК 2: РИЗИКИ -->
+        <!-- БЛОК 2 -->
         <div id="block2" class="content-block">
             <div id="riskContainer" class="risk-container">
-                
                 <div class="desktop-title-wrapper hidden md:block text-center w-full max-w-xl transition-opacity duration-300">
                     <h2 id="block2-title-desk" class="cinematic-text text-4xl md:text-6xl font-bold text-shadow-strong leading-tight">
                         ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
                     </h2>
                 </div>
-
                 <div class="cards-layout-wrapper">
-                    <!-- Верхній ряд -->
                     <div class="mobile-row md:contents">
-                        <!-- TL: Пожежа -->
                         <div class="grid-cell grid-pos-tl">
                             <div class="risk-card fly-from-tl card-js">
                                 <i data-lucide="flame" class="card-icon"></i>
@@ -335,7 +324,6 @@
                                 <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
                             </div>
                         </div>
-                        <!-- TR: Штрафи -->
                         <div class="grid-cell grid-pos-tr">
                             <div class="risk-card fly-from-tr card-js">
                                 <i data-lucide="file-warning" class="card-icon"></i>
@@ -345,17 +333,12 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Mobile Title -->
                     <div class="mobile-title-wrapper md:hidden text-center w-full">
                         <h2 id="block2-title-mob" class="cinematic-text text-2xl font-bold text-shadow-strong leading-tight">
                             ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
                         </h2>
                     </div>
-
-                    <!-- Нижній ряд -->
                     <div class="mobile-row md:contents">
-                        <!-- BL: Втрата клієнтів -->
                         <div class="grid-cell grid-pos-bl">
                             <div class="risk-card fly-from-bl card-js">
                                 <i data-lucide="user-x" class="card-icon"></i>
@@ -364,7 +347,6 @@
                                 <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
                             </div>
                         </div>
-                        <!-- BR: Електроенергія -->
                         <div class="grid-cell grid-pos-br">
                             <div class="risk-card fly-from-br card-js">
                                 <i data-lucide="zap" class="card-icon"></i>
@@ -378,7 +360,7 @@
             </div>
         </div>
 
-        <!-- БЛОК 3: ПОСЛУГИ -->
+        <!-- БЛОК 3 -->
         <div id="block3" class="content-block">
             <div class="text-center w-full max-w-5xl mb-1 px-2">
                 <div class="glass-title-panel cinematic-text">
@@ -390,7 +372,6 @@
                     </p>
                 </div>
             </div>
-
             <div class="services-matrix">
                 <div class="service-item cinematic-text" style="transition-delay: 0s;"><div class="service-title">Витяжні зонти</div><div class="photo-box" id="box-1"><img src="1.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="2.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-1">До</div></div></div>
                 <div class="service-item cinematic-text" style="transition-delay: 0.1s;"><div class="service-title">Фільтра</div><div class="photo-box" id="box-2"><img src="3.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="4.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-2">До</div></div></div>
@@ -399,7 +380,6 @@
                 <div class="service-item cinematic-text" style="transition-delay: 0.4s;"><div class="service-title">Повітророзподільні пристрої</div><div class="photo-box" id="box-5"><img src="9.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="10.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-5">До</div></div></div>
                 <div class="service-item cinematic-text" style="transition-delay: 0.5s;"><div class="service-title">Інше</div><div class="photo-box" id="box-6"><img src="11.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="12.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"></div></div>
             </div>
-
             <div class="mobile-marquee md:hidden cinematic-text" style="transition-delay: 0.6s;">
                 <div class="marquee-track">
                     <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
@@ -407,7 +387,6 @@
                     <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
                     <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Акт утилізації та документи ДСНС</span></div>
                     <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
-                    <!-- Dupes -->
                     <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
                     <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
                     <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
@@ -415,7 +394,6 @@
                     <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
                 </div>
             </div>
-
             <div class="desktop-static-bar hidden md:grid cinematic-text" style="transition-delay: 0.6s;">
                 <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Використовуємо ефективну хімію (виробництво Іспанія)</p></div>
                 <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Працюємо в нічний час та на будь-якій висоті.</p></div>
@@ -425,18 +403,28 @@
             </div>
         </div>
 
-        <!-- БЛОК 4: CINEMATIC PORTFOLIO SLIDER -->
+        <!-- БЛОК 4: CINEMATIC SLIDER (NEW CENTERED DESIGN) -->
         <div id="block4" class="content-block">
-            <div class="slider-container" id="portfolioSlider">
-                <!-- Слайди будуть згенеровані JS -->
-            </div>
             
-            <!-- Навігація -->
-            <div class="slider-nav">
-                <button class="nav-btn" id="prevBtn"><i data-lucide="chevron-left"></i></button>
-                <span class="nav-counter" id="slideCounter">01 / 06</span>
-                <button class="nav-btn" id="nextBtn"><i data-lucide="chevron-right"></i></button>
+            <!-- Центральна "Сцена" -->
+            <div class="cinematic-stage">
+                <div class="slides-wrapper" id="portfolioWrapper">
+                    <!-- Slides Generated by JS -->
+                </div>
+
+                <!-- Controls inside the stage -->
+                <div class="stage-controls">
+                    <span class="text-amber-400 font-mono text-lg" id="currentSlideNum">01</span>
+                    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+                    <span class="text-white/50 font-mono text-sm" id="totalSlideNum">06</span>
+                    
+                    <div class="nav-arrows ml-6">
+                        <button class="stage-btn" id="prevBtn"><i data-lucide="chevron-left"></i></button>
+                        <button class="stage-btn" id="nextBtn"><i data-lucide="chevron-right"></i></button>
+                    </div>
+                </div>
             </div>
+
         </div>
 
     </div>
@@ -444,30 +432,12 @@
     <script>
         // --- ДАНІ ДЛЯ ПОРТФОЛІО ---
         const portfolioItems = [
-            {
-                img: '41.webp',
-                text: "У деяких системах ми не маємо технічної можливості дістати до проблемних ділянок. В таких випадках ми встановлюємо сервісні лючки які дозволяють швидко та зручно виконати обслуговування зараз та в майбутньому. Оптимально встановлення таких люків у застельовому просторі, де їх не видно але зручно до них дістатися."
-            },
-            {
-                img: '42.webp',
-                text: "У ході робіт ми не тільки виконуємо свою роботу а й оглядаємо стан вашої вентсистеми і якщо знаходимо якісь недоліки - виправляємо їх. Як наприклад в цьому випадку, коли старий адаптер дифузора вивалився зі своїх кріплень і лежав на стелі армстронг. Обвал стелі міг відбутися в будь-який момент, а ціна цій трагедії життя та здоровʼя ти хто знаходився б під нею."
-            },
-            {
-                img: '43.webp',
-                text: "Особливо цікава історія трапилася при обслуговуванні дренажного коліна до якого приєднано труба для відведення конденсату. За пів року до наших робіт, раптово з усіх щілей магістралі почала витікати чорна жижа. Раптово і незрозуміло чому, зіпсувавши десятки кілограм продукції під магістраллю. Коли ми розібрали коліно, побачили що все воно було забито креозотом, не завдавши збігати рідині. Як результат, вся ця рідина замість стікання в дренаж витікала з усіх можливих щілей."
-            },
-            {
-                img: '44.webp',
-                text: "Проводячи роботу і поспілкувавшись з працівниками пекарні ми почули від них скаргу що один із витяжних зонтів гірше засмоктує повітря. Тому ми вирішили провести міні-діагностику системи і знайшли дуже цікаве місце. Там де дві гілки зʼєднуються в магістраль, встановлені зворотні клапани і от один із них заклинив через неправильно вкручений саморіз. Саме це і було причиною слабкої витяжки."
-            },
-            {
-                img: '45.webp',
-                text: "Частіше за все, жир протікає через стики зʼєднання повітропроводів між собою. Практика показує, якщо жир потік - відновити його дуже не просто. Для цього треба повністью розʼєднати місце зʼєднання, зачистити його, обезжирити, проспиртувати, нанести новий герметик, АКУРАТНО зʼєднати назад, закрутити. Проблема в тому, що інколи, для того аби розʼєднати одне єдине місце зʼєднання, потрібно розібрати десятки метрів повітропроводу вліво та вправо. Єдине, що можна зробити в таких випадках з уже існуючою проблемою - це акуратно (майже ювелірно) очистити проблемне місце, обезжирити, проспиртувати і нанести герметик з надлишком. Варто відмітити що це не естетично і такі маніпуляції потім видно, але це краще ніж коли старий жир з вентиляції крапає на робоче місце."
-            },
-            {
-                img: '46.webp',
-                text: "Інколи буває, що касета армстронга в яку врізано стельовий дифузор - тріскається від деформації. Вирішенням подібної проблеми ми також займаємось."
-            }
+            { img: '41.webp', text: "У деяких системах ми не маємо технічної можливості дістати до проблемних ділянок. В таких випадках ми встановлюємо сервісні лючки які дозволяють швидко та зручно виконати обслуговування зараз та в майбутньому. Оптимально встановлення таких люків у застельовому просторі, де їх не видно але зручно до них дістатися." },
+            { img: '42.webp', text: "У ході робіт ми не тільки виконуємо свою роботу а й оглядаємо стан вашої вентсистеми і якщо знаходимо якісь недоліки - виправляємо їх. Як наприклад в цьому випадку, коли старий адаптер дифузора вивалився зі своїх кріплень і лежав на стелі армстронг. Обвал стелі міг відбутися в будь-який момент, а ціна цій трагедії життя та здоровʼя ти хто знаходився б під нею." },
+            { img: '43.webp', text: "Особливо цікава історія трапилася при обслуговуванні дренажного коліна до якого приєднано труба для відведення конденсату. За пів року до наших робіт, раптово з усіх щілей магістралі почала витікати чорна жижа. Раптово і незрозуміло чому, зіпсувавши десятки кілограм продукції під магістраллю. Коли ми розібрали коліно, побачили що все воно було забито креозотом, не завдавши збігати рідині. Як результат, вся ця рідина замість стікання в дренаж витікала з усіх можливих щілей." },
+            { img: '44.webp', text: "Проводячи роботу і поспілкувавшись з працівниками пекарні ми почули від них скаргу що один із витяжних зонтів гірше засмоктує повітря. Тому ми вирішили провести міні-діагностику системи і знайшли дуже цікаве місце. Там де дві гілки зʼєднуються в магістраль, встановлені зворотні клапани і от один із них заклинив через неправильно вкручений саморіз. Саме це і було причиною слабкої витяжки." },
+            { img: '45.webp', text: "Частіше за все, жир протікає через стики зʼєднання повітропроводів між собою. Практика показує, якщо жир потік - відновити його дуже не просто. Для цього треба повністью розʼєднати місце зʼєднання, зачистити його, обезжирити, проспиртувати, нанести новий герметик, АКУРАТНО зʼєднати назад, закрутити. Проблема в тому, що інколи, для того аби розʼєднати одне єдине місце зʼєднання, потрібно розібрати десятки метрів повітропроводу вліво та вправо. Єдине, що можна зробити в таких випадках з уже існуючою проблемою - це акуратно (майже ювелірно) очистити проблемне місце, обезжирити, проспиртувати і нанести герметик з надлишком. Варто відмітити що це не естетично і такі маніпуляції потім видно, але це краще ніж коли старий жир з вентиляції крапає на робоче місце." },
+            { img: '46.webp', text: "Інколи буває, що касета армстронга в яку врізано стельовий дифузор - тріскається від деформації. Вирішенням подібної проблеми ми також займаємось." }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -476,7 +446,6 @@
             // --- БЛОК 2: КАРТКИ ---
             const cards = document.querySelectorAll('.card-js');
             const container = document.getElementById('riskContainer');
-
             cards.forEach(card => {
                 card.addEventListener('click', (e) => {
                     e.stopPropagation(); 
@@ -490,80 +459,78 @@
                     }
                 });
             });
-
             document.addEventListener('click', () => {
                 cards.forEach(c => c.classList.remove('active'));
                 if(container) container.classList.remove('has-active-card');
             });
 
-            // --- БЛОК 4: СЛАЙДЕР ---
-            const sliderContainer = document.getElementById('portfolioSlider');
-            const counterEl = document.getElementById('slideCounter');
-            let currentSlide = 0;
-
-            // Генеруємо HTML слайдів
-            portfolioItems.forEach((item, index) => {
-                const slide = document.createElement('div');
-                slide.className = `slide ${index === 0 ? 'active' : ''}`;
-                slide.innerHTML = `
-                    <div class="slide-visual">
-                        <img src="${item.img}" class="slide-image" alt="Case Study ${index + 1}">
-                        <div class="story-number">0${index + 1}</div>
+            // --- БЛОК 4: CINEMATIC SLIDER ---
+            const wrapper = document.getElementById('portfolioWrapper');
+            const currentNumEl = document.getElementById('currentSlideNum');
+            const totalNumEl = document.getElementById('totalSlideNum');
+            const progFill = document.getElementById('progFill');
+            
+            // Init Slides
+            portfolioItems.forEach((item, i) => {
+                const el = document.createElement('div');
+                el.className = `slide-item ${i===0 ? 'active' : ''}`;
+                el.innerHTML = `
+                    <div class="slide-img-col">
+                        <img src="${item.img}" class="slide-img-obj" loading="lazy">
+                        <div class="slide-number">0${i+1}</div>
                     </div>
-                    <div class="slide-text-zone">
-                        <div class="slide-glass-card">
-                            <h3 class="text-amber-400 font-bold mb-4 uppercase text-sm tracking-widest">Case Study</h3>
-                            <p class="text-sm md:text-base leading-relaxed text-gray-200">
-                                ${item.text}
-                            </p>
-                        </div>
+                    <div class="slide-txt-col">
+                        <div class="case-label">CASE STUDY</div>
+                        <p class="case-desc">${item.text}</p>
                     </div>
                 `;
-                sliderContainer.appendChild(slide);
+                wrapper.appendChild(el);
             });
 
-            const slides = document.querySelectorAll('.slide');
+            let currentIndex = 0;
+            const slides = document.querySelectorAll('.slide-item');
+            totalNumEl.innerText = `0${slides.length}`;
 
-            function updateSlide(index) {
-                slides.forEach(s => s.classList.remove('active'));
-                slides[index].classList.add('active');
-                counterEl.textContent = `0${index + 1} / 0${portfolioItems.length}`;
+            function updateSliderUI() {
+                // Update slides
+                slides.forEach((s, i) => {
+                    if(i === currentIndex) s.classList.add('active');
+                    else s.classList.remove('active');
+                });
+                
+                // Update numbers
+                currentNumEl.innerText = `0${currentIndex + 1}`;
+                
+                // Update Progress
+                const pct = ((currentIndex + 1) / slides.length) * 100;
+                progFill.style.width = `${pct}%`;
             }
 
-            // Кнопки
-            document.getElementById('prevBtn').addEventListener('click', () => {
-                currentSlide = (currentSlide > 0) ? currentSlide - 1 : portfolioItems.length - 1;
-                updateSlide(currentSlide);
+            // Controls
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+
+            nextBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % slides.length;
+                updateSliderUI();
             });
-            document.getElementById('nextBtn').addEventListener('click', () => {
-                currentSlide = (currentSlide < portfolioItems.length - 1) ? currentSlide + 1 : 0;
-                updateSlide(currentSlide);
+            prevBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                updateSliderUI();
             });
 
-            // Свайпи (Mobile)
-            let touchStartX = 0;
-            let touchEndX = 0;
-            
-            sliderContainer.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
+            // Swipe logic
+            let ts = 0;
+            const stage = document.querySelector('.cinematic-stage');
+            stage.addEventListener('touchstart', e => ts = e.touches[0].clientX, {passive: true});
+            stage.addEventListener('touchend', e => {
+                const te = e.changedTouches[0].clientX;
+                if(ts - te > 50) nextBtn.click();
+                if(te - ts > 50) prevBtn.click();
             }, {passive: true});
-            
-            sliderContainer.addEventListener('touchend', e => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, {passive: true});
-            
-            function handleSwipe() {
-                if (touchEndX < touchStartX - 50) {
-                    // Swipe Left -> Next
-                    document.getElementById('nextBtn').click();
-                }
-                if (touchEndX > touchStartX + 50) {
-                    // Swipe Right -> Prev
-                    document.getElementById('prevBtn').click();
-                }
-            }
 
+            // Init UI
+            updateSliderUI();
 
             // --- SCROLL LOGIC ---
             const dirtyImg = document.getElementById('dirtyImage');
@@ -591,26 +558,22 @@
                 const sHeight = document.documentElement.scrollHeight - window.innerHeight;
                 const scroll = window.scrollY;
                 const progress = scroll / sHeight;
-                const op = (1 - progress) * 100; // 100 -> 0
+                const op = (1 - progress) * 100;
 
                 if(dirtyImg) dirtyImg.style.opacity = (1 - progress).toFixed(3);
 
-                // Block 1: > 85
+                // Block 1
                 if (op > 85) {
                     b1.style.opacity = 1; b1.style.visibility = 'visible';
                     if(introDone) {
-                        hTitle.classList.add('in-focus');
-                        hSub.classList.add('in-focus');
-                        hFoot.classList.add('opacity-100');
+                        hTitle.classList.add('in-focus'); hSub.classList.add('in-focus'); hFoot.classList.add('opacity-100');
                     }
                 } else {
                     b1.style.opacity = 0; b1.style.visibility = 'hidden';
-                    hTitle.classList.remove('in-focus');
-                    hSub.classList.remove('in-focus');
-                    hFoot.classList.remove('opacity-100');
+                    hTitle.classList.remove('in-focus'); hSub.classList.remove('in-focus'); hFoot.classList.remove('opacity-100');
                 }
 
-                // Block 2: 80 - 60
+                // Block 2
                 if (op <= 80 && op > 60) {
                     b2.style.opacity = 1; b2.style.visibility = 'visible';
                     if(b2TitleDesk) b2TitleDesk.classList.add('in-focus');
@@ -623,7 +586,7 @@
                     riskCards.forEach(c => c.classList.remove('landed', 'active'));
                 }
 
-                // Block 3: 60 - 40
+                // Block 3
                 if (op <= 60 && op > 35) {
                     b3.style.opacity = 1; b3.style.visibility = 'visible';
                     if(b3Panel) b3Panel.classList.add('in-focus');
@@ -636,7 +599,7 @@
                     stopComparisonLoop();
                 }
 
-                // Block 4: < 35
+                // Block 4
                 if (op <= 35) {
                     b4.style.opacity = 1; b4.style.visibility = 'visible';
                 } else {
@@ -651,37 +614,28 @@
                     updateComparisonUI();
                 }, 2000);
             }
-
             function stopComparisonLoop() {
                 clearInterval(comparisonInterval);
                 comparisonInterval = null;
                 currentComparisonState = 'before';
                 updateComparisonUI();
             }
-
             function updateComparisonUI() {
                 for(let i=1; i<=6; i++) {
                     const box = document.getElementById(`box-${i}`);
                     const label = document.getElementById(`lbl-${i}`);
                     if(!box) continue;
-
                     if (currentComparisonState === 'after') {
                         box.classList.add('state-after');
-                        if(label) {
-                            label.innerText = "Після";
-                            label.style.background = "#3b82f6";
-                        }
+                        if(label) { label.innerText = "Після"; label.style.background = "#3b82f6"; }
                     } else {
                         box.classList.remove('state-after');
-                        if(label) {
-                            label.innerText = "До";
-                            label.style.background = "rgba(0,0,0,0.6)";
-                        }
+                        if(label) { label.innerText = "До"; label.style.background = "rgba(0,0,0,0.6)"; }
                     }
                 }
             }
             window.addEventListener('scroll', sync);
-            sync(); // First run
+            sync(); 
         });
     </script>
 </body>
