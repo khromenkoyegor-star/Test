@@ -1,655 +1,436 @@
-<!DOCTYPE html>
+працюємо над блоком 5.  Тут буде інформація про нашу команду.  Слайд називається «Наша команда» і підзаголовок «Наша команда займається монтажем вентиляції, а отже ми знаємо як обслуговувати те що монтуємо»  картки цього слайду мають особливи ефект: кожний персонаж це окрема картка яка зліва має текстовий опис а справа фото. Ці картки йдуть послідовно горизонтально і скроляться жестом. Основна картка яка активна, вона займає основне місце на екрані, а інші картки мають 3д ефект, вони розвернуті у просторі так що видно торець кртки (бо воно повернута по осі в просторі) і виднощо на них є фото і текст. А коли людина пальцем скролить в бік - картки зміщуються і провертаються відкриваючись на основній, а та яка була основною зсовується і закривається. Також додай ефект магніту для центральної картки, аби їй буле легше закріпитися на екрані.  Всього. Цьому блоці буде 5 карток. Надаю тобі текстову інформацію до кожної картки: №1 Хроменко Єгор 
+Комерційний директор. 
+Цитата (Великим шрифтом):
+"Я починав свій шлях монтажником та проектувальником, щоб знати ціну кожній виконаній роботі. Для мене немає проблеми, яку неможливо вирішити; вирішити можна все, але неможливе вирішується важко і дорого.» Додаткова посада: голова державної екзаменаційної комісії ЧДТУ. Досвід роботи з компанями: Sweetondale, Юрія-Фарм, LNZ Group, Велмарт.  {фотографія у співвідношенні 1:2.5 називається 5.1.webp}  №2 
+Внуков Валерій 
+Технічний директор 
+Цитата (Великим шрифтом):
+«Для багатьох висота — це страх; для мене висота — це робота, яка вчить: чим складніший підйом, тим чіткішою стає перспектива»
+
+{фотографія у співвідношенні 1:2.5 називається 5.2.webp}
+
+№3
+Ярослав Іванченко
+Бригадир, монтажник вентиляційних систем, сервісант.  
+Цитата (Великим шрифтом):
+
+Я як хороший метал-альбом: готуюся довго, роблю якісно, і в результаті — качає всіх. Якщо я затримався з монтажем, значить я налаштовую ваш повітровод так само прискіпливо, як свій кардан перед концертом. Поспішати можна на репетиції, а в системі вентиляції кожен "удар" має бути чітким
+
+{фотографія у співвідношенні 1:2.5 називається 5.3.webp} 
+№4
+Пархоменко Дмитро
+Монтажник вентиляційних систем, сервісант.  
+Цитата (Великим шрифтом):
+
+Я вірю в чесні правила: клієнт отримує ідеально змонтовану систему, а я — справедливу винагороду за свою старанність. Для мене якісна робота — це найнадійніша валюта, тому я вкладаю максимум зусиль у кожен сантиметр повітроводу
+
+{фотографія у співвідношенні 1:2.5 називається 5.4.webp}
+
+№5
+Коаленко Євгеній інженер КВП, електрик.  
+Цитата (Великим шрифтом):
+
+Найкраща автоматика — та, яку ви не помічаєте. Коли все працює — це моя заслуга, якої не видно. Коли щось зупиняється — це стає моєю проблемою, яку я вирішую максимально швидко. Я не люблю хаос, тому повертаю системі "розум" прискіпливо і надійно
+
+{фотографія у співвідношенні 1:2.5 називається 5.5.webp}
+
+ Надсилаю тобі для аналізу код який точно працює і відповідає моєму технічному завданню, проаналізуй його та додай до основного коду, а також адаптуй цей код аби він працював і на десктопній версії. <!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ventilation Cleaning Scrollytelling</title>
+    <title>Team Final Carousel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        html { scroll-behavior: smooth; }
         body {
-            height: 800vh;
+            background-color: #050505;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            background-color: #000;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- Viewport & Backgrounds --- */
-        .fixed-viewport {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
+        /* --- DESKTOP STYLES (Placeholder) --- */
+        .desktop-view {
+            display: none;
+            padding: 4rem;
+            min-height: 100vh;
         }
-
-        .bg-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; will-change: opacity;
-        }
-
-        .content-block {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
-            z-index: 30; pointer-events: none; 
-            padding: 20px;
-            opacity: 0; transition: opacity 0.4s ease-out; 
-            visibility: hidden;
-        }
-        
-        .content-block > * { pointer-events: auto; }
-
-        /* --- CINEMATIC ANIMATION --- */
-        .cinematic-text {
-            opacity: 0; filter: blur(20px); transform: scale(1.15) translateY(20px);
-            transition: all 0.3s ease-out; will-change: transform, opacity, filter;
-        }
-        .in-focus {
-            opacity: 1 !important; filter: blur(0) !important; transform: scale(1) translateY(0) !important;
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .text-shadow-strong { text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6); }
-
-        /* --- БЛОК 1: HERO --- */
-        #hero-footnote {
-            position: absolute; width: 100%; text-align: center; opacity: 0;
-            transition: opacity 0.5s ease; font-size: 0.8rem; color: rgba(255,255,255,0.7);
-            z-index: 50; bottom: 15%; 
-        }
-        @media (min-width: 769px) { #hero-footnote { bottom: 25%; } }
-
-        /* --- БЛОК 2: РИЗИКИ --- */
-        .risk-container {
-            position: relative; width: 100%; max-width: 1200px; height: 80vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        /* Grid Layout */
-        @media (min-width: 769px) {
-            .cards-layout-wrapper {
-                display: grid; width: 100%; height: 100%;
-                grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 0.4fr 1fr; gap: 2rem; pointer-events: none;
+        @media (min-width: 1024px) {
+            .desktop-view {
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
-            .grid-cell { position: relative; width: 100%; height: 100%; pointer-events: auto; }
-            .grid-pos-tl { grid-row: 1; grid-column: 1; }
-            .grid-pos-tr { grid-row: 1; grid-column: 2; }
-            .grid-pos-bl { grid-row: 3; grid-column: 1; }
-            .grid-pos-br { grid-row: 3; grid-column: 2; }
-            .desktop-title-wrapper { display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; }
-            .mobile-title-wrapper { display: none; }
-            .risk-card { max-width: 300px; }
-        }
-        @media (max-width: 768px) {
-            .risk-container { height: 100vh; padding: 10px; justify-content: center; gap: 10px; }
-            .cards-layout-wrapper { display: flex; flex-direction: column; width: 100%; justify-content: center; gap: 10px; }
-            .mobile-row { display: flex; justify-content: space-between; gap: 12px; width: 100%; height: 100px; position: relative; z-index: 10; }
-            .grid-cell { position: relative; width: 48%; height: 100%; pointer-events: auto; }
-            .mobile-title-wrapper { display: flex !important; justify-content: center; align-items: center; z-index: 5; margin: 10px 0; }
-            .risk-card { height: 100px; padding: 1rem; }
-            .risk-card.active { height: 240px !important; }
-        }
-        /* Card Styles */
-        .risk-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
-            padding: 1.2rem; cursor: pointer; touch-action: manipulation; pointer-events: auto; 
-            transition: height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.4s, border-color 0.4s, box-shadow 0.4s;
-            width: 100%; position: absolute; z-index: 30; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: center; height: 130px; 
-        }
-        .grid-pos-tl .risk-card { bottom: 0; left: 0; transform-origin: bottom center; }
-        .grid-pos-tr .risk-card { bottom: 0; right: 0; transform-origin: bottom center; }
-        .grid-pos-bl .risk-card { top: 0; left: 0; transform-origin: top center; }
-        .grid-pos-br .risk-card { top: 0; right: 0; transform-origin: top center; }
-        .risk-card.landed { opacity: 1; transform: scale(1); }
-        .risk-card.active { 
-            background: rgba(15, 15, 15, 0.98); border-color: #fbbf24; z-index: 100 !important; 
-            box-shadow: 0 0 50px rgba(251, 191, 36, 0.3); height: 250px !important; 
-        }
-        .risk-card h3 { color: white; margin-bottom: 5px; font-size: 1rem; line-height: 1.2; transition: all 0.3s; }
-        .card-icon { color: #fbbf24; margin-bottom: 8px; width: 28px; height: 28px; transition: all 0.3s; }
-        .hidden-text { 
-            display: block; opacity: 0; max-height: 0; transform: translateY(10px);
-            transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s; 
-            font-size: 0.85rem; color: #ccc; margin-top: 0; line-height: 1.3;
-        }
-        .risk-card.active .hidden-text { opacity: 1; max-height: 200px; transform: translateY(0); margin-top: 10px; }
-        .risk-card.active .card-icon { transform: translateY(-10px) scale(0.9); opacity: 0.8; }
-        .risk-card.active h3 { transform: translateY(-5px); color: #fbbf24; }
-        .fly-from-tl { transform: translate(-50vw, -50vh) scale(0); }
-        .fly-from-tr { transform: translate(50vw, -50vh) scale(0); }
-        .fly-from-bl { transform: translate(-50vw, 50vh) scale(0); }
-        .fly-from-br { transform: translate(50vw, 50vh) scale(0); }
-
-        /* --- БЛОК 3: ПОСЛУГИ --- */
-        #block3.content-block { justify-content: space-between; padding-top: 40px; padding-bottom: 20px; }
-        .glass-title-panel {
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
-            padding: 15px 25px; margin-bottom: 5px; display: inline-block;
-        }
-        .services-matrix {
-            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
-            gap: 15px; width: 100%; max-width: 1000px; margin: 0; flex-grow: 1; align-content: center;
-        }
-        .service-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .service-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .photo-box {
-            width: 100%; aspect-ratio: 1 / 1; max-width: 200px; 
-            position: relative; border-radius: 12px; overflow: hidden;
-            background: #111; border: 2px solid rgba(255,255,255,0.1);
-            transition: all 0.6s ease;
-        }
-        .photo-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; }
-        .img-before { z-index: 1; opacity: 1; }
-        .img-after { z-index: 2; opacity: 0; }
-        .photo-box.state-after { border-color: #60a5fa; box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); animation: flicker-glow 2s infinite alternate; }
-        .photo-box.state-after .img-after { opacity: 1; }
-        @keyframes flicker-glow { 0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); transform: scale(1); } 100% { box-shadow: 0 0 25px rgba(96, 165, 250, 0.8); transform: scale(1.03); } }
-        .label-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase; z-index: 10; transition: background 0.3s; }
-        .mobile-marquee {
-            width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; margin-top: auto; display: flex; align-items: center; height: 60px; pointer-events: auto;
-        }
-        .marquee-track { display: flex; gap: 30px; padding: 0 20px; animation: marquee 25s linear infinite; width: max-content; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .desktop-static-bar {
-            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
-            padding: 15px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; max-width: 1200px; margin-top: auto;
-        }
-        .benefit-item { display: flex; align-items: center; gap: 10px; }
-        .desktop-static-bar .benefit-item { flex-direction: column; align-items: flex-start; gap: 8px; }
-        .desktop-static-bar .benefit-text { font-size: 11px; white-space: normal; line-height: 1.3; }
-        .mobile-marquee .benefit-item { flex-direction: row; white-space: nowrap; }
-        .mobile-marquee .benefit-text { font-size: 12px; }
-
-        @media (max-width: 768px) {
-            #block3.content-block { padding-top: 40px; gap: 5px; justify-content: flex-start; }
-            .services-matrix { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 5px; }
-            .photo-box { max-width: 115px; border-radius: 10px; }
-            .service-title { font-size: 0.8rem; }
-            #b3-title { font-size: 1.3rem; line-height: 1.2; }
-            #b3-subtitle { font-size: 11px; line-height: 1.3; }
-            .glass-title-panel { padding: 10px 15px; }
+            .mobile-view { display: none !important; }
         }
 
-        /* --- БЛОК 4: CINEMATIC SLIDER (MOBILE FIX) --- */
-        #block4.content-block {
+        /* --- MOBILE VIEW --- */
+        .mobile-view {
+            display: flex;
+            flex-direction: column;
             justify-content: center;
-            padding: 20px;
-            background: transparent;
-        }
-
-        .cinematic-stage {
+            height: 100vh;
+            width: 100vw;
             position: relative;
-            width: 95%; max-width: 1000px;
-            height: 60vh; max-height: 550px;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            overflow: hidden;
-            display: flex; flex-direction: column;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
         }
 
-        @media (min-width: 769px) { .cinematic-stage { height: 500px; background: rgba(10, 10, 10, 0.7); } }
-
-        .slides-wrapper { width: 100%; height: 100%; position: relative; }
-
-        .slide-item {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; opacity: 0; pointer-events: none;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .slide-item.active { opacity: 1; pointer-events: auto; }
-
-        /* Desktop Layout */
-        @media (min-width: 769px) {
-            .slide-item { flex-direction: row; }
-            .slide-img-col { width: 45%; height: 100%; position: relative; overflow: hidden; }
-            .slide-txt-col { width: 55%; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
-            /* Номер слайда на десктопі */
-            .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.05); position: absolute; top: 20px; right: 20px; line-height: 1; }
+        .header-mobile {
+            position: absolute;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 20;
         }
 
-        /* Mobile Layout Fixed */
-        @media (max-width: 768px) {
-            .slide-item { flex-direction: column; }
-            .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; }
-            .slide-txt-col { 
-                width: 100%; 
-                height: 60%; 
-                padding: 20px 20px 80px 20px; /* Великий відступ знизу для панелі */
-                overflow-y: auto; /* Скрол тільки для тексту */
-                /* Легкий градієнт в кінці, щоб показати що текст іде далі */
-                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-            }
+        /* --- CAROUSEL TRACK --- */
+        .carousel-container {
+            width: 100%;
+            /* Container allows overflow to be visible but creates scroll area */
+            overflow-x: scroll; 
+            overflow-y: hidden;
             
-            /* Номер слайда на мобільному - переносимо на картинку */
-            .slide-number { 
-                font-size: 3rem; 
-                font-weight: 800; 
-                color: rgba(255,255,255,0.6); 
-                position: absolute; 
-                top: 10px; right: 15px; 
-                line-height: 1;
-                text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            }
+            /* SNAP LOGIC */
+            scroll-snap-type: x mandatory;
+            
+            /* PADDING LOGIC:
+               Card is 65vw.
+               Screen is 100vw.
+               100 - 65 = 35vw remaining space.
+               35 / 2 = 17.5vw padding on each side to center the card.
+            */
+            padding: 0 17.5vw;
+            
+            display: flex;
+            align-items: center;
+            height: 550px;
+            
+            /* Hide scrollbar */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+
+        .card-wrapper {
+            /* Fixed width relative to viewport */
+            flex: 0 0 65vw; 
+            height: 450px;
+            scroll-snap-align: center;
+            scroll-snap-stop: always;
+            position: relative;
+            perspective: 800px;
+            
+            /* Margin between cards so they don't touch */
+            margin: 0 10px;
+            z-index: 1;
         }
 
-        /* Image Parallax Effect */
-        .slide-img-obj {
-            width: 100%; height: 100%; object-fit: cover;
-            transform: scale(1.15); transition: transform 1.5s ease-out;
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            background: #141414;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            
+            /* Hardware acceleration */
+            will-change: transform;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
-        .slide-item.active .slide-img-obj { transform: scale(1); }
 
-        /* Text Styles */
-        .case-label {
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
-            color: #fbbf24; font-weight: 700; margin-bottom: 15px;
-            display: flex; align-items: center; gap: 10px;
+        /* CARD CONTENT */
+        .c-text {
+            width: 55%;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: linear-gradient(135deg, #222 0%, #0a0a0a 100%);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            position: relative;
         }
-        .case-label::before { content: ''; width: 30px; height: 1px; background: #fbbf24; display: block; }
+
+        .c-photo {
+            width: 45%;
+        }
+        .c-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(0.8) contrast(1.1);
+        }
+
+        /* TEXT STYLES */
+        .c-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.8rem;
+            line-height: 1.35;
+            color: #ccc;
+            font-style: italic;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        .c-name {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        .c-role {
+            font-size: 0.6rem;
+            color: #ef4444;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .quote-bg {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 4rem;
+            font-family: serif;
+            color: rgba(255,255,255,0.05);
+            line-height: 0;
+            pointer-events: none;
+        }
+
+        /* --- VISUAL INDICATORS --- */
         
-        .case-desc { font-size: 0.95rem; line-height: 1.6; color: #e5e5e5; font-weight: 300; }
-        @media (min-width: 769px) { .case-desc { font-size: 1.05rem; } }
-
-        /* Controls Fixed */
-        .stage-controls {
-            position: absolute; bottom: 0; right: 0; width: 100%; height: 60px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; border-top: 1px solid rgba(255,255,255,0.05); 
-            background: rgba(15, 15, 15, 0.95); /* Більш щільний фон на мобільному */
+        /* 1. PAGINATION DOTS */
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1.5rem;
         }
-        @media (min-width: 769px) { 
-            .stage-controls { 
-                width: 55%; bottom: 0; right: 0; padding: 0 40px; 
-                background: rgba(0,0,0,0.2); /* Прозорий на десктопі */
-            } 
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+        .dot.active {
+            background: #ef4444;
+            transform: scale(1.2);
         }
 
-        .prog-bar { flex-grow: 1; height: 2px; background: rgba(255,255,255,0.1); margin: 0 20px; position: relative; }
-        .prog-fill { height: 100%; background: #fbbf24; width: 0%; transition: width 0.4s; }
+        /* 2. SWIPE HAND ANIMATION */
+        .swipe-hint {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 50;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         
-        .nav-arrows { display: flex; gap: 10px; }
-        .stage-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            color: white; width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.3s;
+        .hand-icon {
+            width: 40px;
+            height: 40px;
+            fill: rgba(255,255,255,0.9);
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+            animation: swipe-move 2s infinite ease-in-out;
         }
-        .stage-btn:hover { background: #fbbf24; color: black; border-color: #fbbf24; }
+
+        .swipe-text {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 10px;
+            animation: fade-pulse 2s infinite;
+        }
+
+        /* Animation Keyframes */
+        @keyframes swipe-move {
+            0% { transform: translateX(20px) rotate(10deg); opacity: 0; }
+            20% { opacity: 1; }
+            50% { transform: translateX(-20px) rotate(-10deg); }
+            80% { opacity: 1; }
+            100% { transform: translateX(20px) rotate(10deg); opacity: 0; }
+        }
+        
+        @keyframes fade-pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Hide hint when user interacts */
+        .mobile-view.interacted .swipe-hint {
+            opacity: 0;
+        }
 
     </style>
 </head>
-<body class="text-white antialiased">
+<body>
 
-    <div class="fixed-viewport">
-        <!-- Backgrounds -->
-        <img src="clean.WEBP" onerror="this.style.display='none'; document.body.style.background='#111'" alt="Чиста вентиляція" class="bg-layer z-0">
-        <img src="dirty.WEBP" onerror="this.style.display='none'" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
-        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
+    <div class="desktop-view"><div class="text-2xl">Use Mobile View</div></div>
 
-        <!-- БЛОК 1 -->
-        <div id="block1" class="content-block" style="z-index: 40;">
-            <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong">
-                <span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ
-            </h1>
-            <h2 id="hero-subtitle" class="cinematic-text text-2xl md:text-4xl font-light text-center mt-6 text-shadow-strong tracking-wide">
-                ПОВʼЯЗАНІ З БРУДНОЮ<br>ВЕНТИЛЯЦІЄЮ*
-            </h2>
-            <div id="hero-footnote" class="transition-opacity duration-500 text-shadow-strong">
-                * За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)
-            </div>
+    <div class="mobile-view" id="mobileContainer">
+        
+        <div class="header-mobile">
+            <h2 class="text-3xl font-bold text-white tracking-tight">Експерти</h2>
+            <div class="h-1 w-12 bg-red-600 mx-auto mt-2 rounded"></div>
         </div>
 
-        <!-- БЛОК 2 -->
-        <div id="block2" class="content-block">
-            <div id="riskContainer" class="risk-container">
-                <div class="desktop-title-wrapper hidden md:block text-center w-full max-w-xl transition-opacity duration-300">
-                    <h2 id="block2-title-desk" class="cinematic-text text-4xl md:text-6xl font-bold text-shadow-strong leading-tight">
-                        ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
-                    </h2>
-                </div>
-                <div class="cards-layout-wrapper">
-                    <div class="mobile-row md:contents">
-                        <div class="grid-cell grid-pos-tl">
-                            <div class="risk-card fly-from-tl card-js">
-                                <i data-lucide="flame" class="card-icon"></i>
-                                <h3 class="font-bold">Пожежа</h3>
-                                <p class="hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
-                                <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
-                            </div>
-                        </div>
-                        <div class="grid-cell grid-pos-tr">
-                            <div class="risk-card fly-from-tr card-js">
-                                <i data-lucide="file-warning" class="card-icon"></i>
-                                <h3 class="font-bold">Штрафи та закриття</h3>
-                                <p class="hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
-                                <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mobile-title-wrapper md:hidden text-center w-full">
-                        <h2 id="block2-title-mob" class="cinematic-text text-2xl font-bold text-shadow-strong leading-tight">
-                            ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
-                        </h2>
-                    </div>
-                    <div class="mobile-row md:contents">
-                        <div class="grid-cell grid-pos-bl">
-                            <div class="risk-card fly-from-bl card-js">
-                                <i data-lucide="user-x" class="card-icon"></i>
-                                <h3 class="font-bold">Втрата клієнтів</h3>
-                                <p class="hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
-                                <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
-                            </div>
-                        </div>
-                        <div class="grid-cell grid-pos-br">
-                            <div class="risk-card fly-from-br card-js">
-                                <i data-lucide="zap" class="card-icon"></i>
-                                <h3 class="font-bold">Витрата електроенергії</h3>
-                                <p class="hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
-                                <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- VISUAL HINT: HAND SWIPE -->
+        <div class="swipe-hint" id="swipeHint">
+            <svg class="hand-icon" viewBox="0 0 24 24">
+                <path d="M12,1L9,9L1,12L9,15L12,23L15,15L23,12L15,9L12,1Z" transform="rotate(45 12 12)"/> <!-- Abstract pointer/hand -->
+                <!-- Simple Finger Path -->
+                <path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z" />
+            </svg>
+            <div class="swipe-text">Потягніть</div>
         </div>
 
-        <!-- БЛОК 3 -->
-        <div id="block3" class="content-block">
-            <div class="text-center w-full max-w-5xl mb-1 px-2">
-                <div class="glass-title-panel cinematic-text">
-                    <h2 id="b3-title" class="text-xl md:text-3xl font-bold text-shadow-strong leading-tight">
-                        <span class="text-amber-500 font-extrabold uppercase">Професійна механічна очистка</span> повітроводів — ефективне вирішення проблеми жирового нагару та бруду
-                    </h2>
-                    <p id="b3-subtitle" class="text-[10px] md:text-sm text-blue-200 mt-2 font-medium italic">
-                        Працюємо вночі, щоб ваш бізнес працював вдень. Без зупинки кухні, без бруду в залі, з повним пакетом документів для ДСНС.
-                    </p>
-                </div>
-            </div>
-            <div class="services-matrix">
-                <div class="service-item cinematic-text" style="transition-delay: 0s;"><div class="service-title">Витяжні зонти</div><div class="photo-box" id="box-1"><img src="1.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="2.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-1">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.1s;"><div class="service-title">Фільтра</div><div class="photo-box" id="box-2"><img src="3.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="4.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-2">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.2s;"><div class="service-title">Повітропроводи</div><div class="photo-box" id="box-3"><img src="5.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="6.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-3">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.3s;"><div class="service-title">Вентилятори</div><div class="photo-box" id="box-4"><img src="7.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="8.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-4">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.4s;"><div class="service-title">Повітророзподільні пристрої</div><div class="photo-box" id="box-5"><img src="9.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="10.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-5">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.5s;"><div class="service-title">Інше</div><div class="photo-box" id="box-6"><img src="11.webp" onerror="this.style.opacity=0" class="photo-img img-before" alt="До"><img src="12.webp" onerror="this.style.opacity=0" class="photo-img img-after" alt="Після"></div></div>
-            </div>
-            <div class="mobile-marquee md:hidden cinematic-text" style="transition-delay: 0.6s;">
-                <div class="marquee-track">
-                    <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
-                    <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
-                    <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
-                    <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Акт утилізації та документи ДСНС</span></div>
-                    <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
-                    <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Використовуємо ефективну хімію (Іспанія)</span></div>
-                    <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Працюємо в нічний час та на висоті</span></div>
-                    <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Фото та відео-фіксація</span></div>
-                    <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Акт утилізації та документи ДСНС</span></div>
-                    <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><span class="benefit-text">Чистота робочого місця гарантована</span></div>
-                </div>
-            </div>
-            <div class="desktop-static-bar hidden md:grid cinematic-text" style="transition-delay: 0.6s;">
-                <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Використовуємо ефективну хімію (виробництво Іспанія)</p></div>
-                <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Працюємо в нічний час та на будь-якій висоті.</p></div>
-                <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Фото та відео-фіксація виконаної роботи.</p></div>
-                <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Надаємо акт утилізації жирових відходів та розробляємо документацію для ДСНС (по запиту)</p></div>
-                <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Захищаємо ваше робоче місце від потрапляння жиру у ході наших робіт.</p></div>
-            </div>
-        </div>
-
-        <!-- БЛОК 4: CINEMATIC SLIDER -->
-        <div id="block4" class="content-block">
+        <!-- CAROUSEL -->
+        <div class="carousel-container" id="track">
             
-            <div class="text-center w-full max-w-4xl px-4 mb-4 md:mb-8 cinematic-text">
-                 <h2 class="text-xl md:text-3xl font-bold text-shadow-strong leading-tight">
-                    <span class="text-amber-500 uppercase">Для нас кожний обʼєкт - особливий!</span><br>
-                    <span class="text-white/90 font-light text-base md:text-2xl mt-2 block">Ми ретельно готуємося аби вирішити будь-яку задачу.</span>
-                 </h2>
-            </div>
-            
-            <!-- Центральна "Сцена" -->
-            <div class="cinematic-stage cinematic-text" style="transition-delay: 0.2s;">
-                <div class="slides-wrapper" id="portfolioWrapper">
-                    <!-- Slides Generated by JS -->
-                </div>
-
-                <!-- Controls -->
-                <div class="stage-controls">
-                    <span class="text-amber-400 font-mono text-lg" id="currentSlideNum">01</span>
-                    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
-                    <span class="text-white/50 font-mono text-sm" id="totalSlideNum">06</span>
-                    
-                    <div class="nav-arrows ml-6">
-                        <button class="stage-btn" id="prevBtn"><i data-lucide="chevron-left"></i></button>
-                        <button class="stage-btn" id="nextBtn"><i data-lucide="chevron-right"></i></button>
+            <!-- Card 1 -->
+            <div class="card-wrapper">
+                <div class="card-inner">
+                    <div class="c-text">
+                        <div class="quote-bg">“</div>
+                        <p class="c-quote">У промисловій вентиляції для мене не існує слова «неможливо».</p>
+                        <div>
+                            <div class="c-name">Хроменко Єгор</div>
+                            <div class="c-role">Комерційний Директор</div>
+                        </div>
                     </div>
+                    <div class="c-photo"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop" alt="Director"></div>
                 </div>
             </div>
 
+            <!-- Card 2 -->
+            <div class="card-wrapper">
+                <div class="card-inner">
+                    <div class="c-text">
+                        <div class="quote-bg">“</div>
+                        <p class="c-quote">Коли клієнт каже 'це неможливо відмити', для нас це лише початок.</p>
+                        <div>
+                            <div class="c-name">Валіра</div>
+                            <div class="c-role">Операційний Партнер</div>
+                        </div>
+                    </div>
+                    <div class="c-photo"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop" alt="Partner"></div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card-wrapper">
+                <div class="card-inner">
+                    <div class="c-text">
+                        <div class="quote-bg">“</div>
+                        <p class="c-quote">Я знаю кожен вигин повітроводу на наших об'єктах.</p>
+                        <div>
+                            <div class="c-name">Олег</div>
+                            <div class="c-role">Старший Технік</div>
+                        </div>
+                    </div>
+                    <div class="c-photo"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" alt="Tech"></div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card-wrapper">
+                <div class="card-inner">
+                    <div class="c-text">
+                        <div class="quote-bg">“</div>
+                        <p class="c-quote">Ми працюємо, коли місто спить, щоб зранку ресторан відкрився.</p>
+                        <div>
+                            <div class="c-name">Андрій</div>
+                            <div class="c-role">Монтажник</div>
+                        </div>
+                    </div>
+                    <div class="c-photo"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop" alt="Tech"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PAGINATION DOTS -->
+        <div class="dots-container" id="dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
         </div>
 
     </div>
 
     <script>
-        // --- ДАНІ ДЛЯ ПОРТФОЛІО ---
-        const portfolioItems = [
-            { img: '41.webp', text: "У деяких системах ми не маємо технічної можливості дістати до проблемних ділянок. В таких випадках ми встановлюємо сервісні лючки які дозволяють швидко та зручно виконати обслуговування зараз та в майбутньому. Оптимально встановлення таких люків у застельовому просторі, де їх не видно але зручно до них дістатися." },
-            { img: '42.webp', text: "У ході робіт ми не тільки виконуємо свою роботу а й оглядаємо стан вашої вентсистеми і якщо знаходимо якісь недоліки - виправляємо їх. Як наприклад в цьому випадку, коли старий адаптер дифузора вивалився зі своїх кріплень і лежав на стелі армстронг. Обвал стелі міг відбутися в будь-який момент, а ціна цій трагедії життя та здоровʼя ти хто знаходився б під нею." },
-            { img: '43.webp', text: "Особливо цікава історія трапилася при обслуговуванні дренажного коліна до якого приєднано труба для відведення конденсату. За пів року до наших робіт, раптово з усіх щілей магістралі почала витікати чорна жижа. Раптово і незрозуміло чому, зіпсувавши десятки кілограм продукції під магістраллю. Коли ми розібрали коліно, побачили що все воно було забито креозотом, не завдавши збігати рідині. Як результат, вся ця рідина замість стікання в дренаж витікала з усіх можливих щілей." },
-            { img: '44.webp', text: "Проводячи роботу і поспілкувавшись з працівниками пекарні ми почули від них скаргу що один із витяжних зонтів гірше засмоктує повітря. Тому ми вирішили провести міні-діагностику системи і знайшли дуже цікаве місце. Там де дві гілки зʼєднуються в магістраль, встановлені зворотні клапани і от один із них заклинив через неправильно вкручений саморіз. Саме це і було причиною слабкої витяжки." },
-            { img: '45.webp', text: "Частіше за все, жир протікає через стики зʼєднання повітропроводів між собою. Практика показує, якщо жир потік - відновити його дуже не просто. Для цього треба повністью розʼєднати місце зʼєднання, зачистити його, обезжирити, проспиртувати, нанести новий герметик, АКУРАТНО зʼєднати назад, закрутити. Проблема в тому, що інколи, для того аби розʼєднати одне єдине місце зʼєднання, потрібно розібрати десятки метрів повітропроводу вліво та вправо. Єдине, що можна зробити в таких випадках з уже існуючою проблемою - це акуратно (майже ювелірно) очистити проблемне місце, обезжирити, проспиртувати і нанести герметик з надлишком. Варто відмітити що це не естетично і такі маніпуляції потім видно, але це краще ніж коли старий жир з вентиляції крапає на робоче місце." },
-            { img: '46.webp', text: "Інколи буває, що касета армстронга в яку врізано стельовий дифузор - тріскається від деформації. Вирішенням подібної проблеми ми також займаємось." }
-        ];
+        const track = document.getElementById('track');
+        const cards = document.querySelectorAll('.card-wrapper');
+        const dots = document.querySelectorAll('.dot');
+        const container = document.getElementById('mobileContainer');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-
-            // --- БЛОК 2: КАРТКИ ---
-            const cards = document.querySelectorAll('.card-js');
-            const container = document.getElementById('riskContainer');
-            cards.forEach(card => {
-                card.addEventListener('click', (e) => {
-                    e.stopPropagation(); 
-                    const isActive = card.classList.contains('active');
-                    cards.forEach(c => c.classList.remove('active'));
-                    if (!isActive) {
-                        card.classList.add('active');
-                        container.classList.add('has-active-card');
-                    } else {
-                        container.classList.remove('has-active-card');
-                    }
-                });
-            });
-            document.addEventListener('click', () => {
-                cards.forEach(c => c.classList.remove('active'));
-                if(container) container.classList.remove('has-active-card');
-            });
-
-            // --- БЛОК 4: CINEMATIC SLIDER ---
-            const wrapper = document.getElementById('portfolioWrapper');
-            const currentNumEl = document.getElementById('currentSlideNum');
-            const totalNumEl = document.getElementById('totalSlideNum');
-            const progFill = document.getElementById('progFill');
+        function updateCarousel() {
+            const center = track.scrollLeft + (track.offsetWidth / 2);
             
-            // Init Slides
-            portfolioItems.forEach((item, i) => {
-                const el = document.createElement('div');
-                el.className = `slide-item ${i===0 ? 'active' : ''}`;
-                el.innerHTML = `
-                    <div class="slide-img-col">
-                        <img src="${item.img}" class="slide-img-obj" loading="lazy">
-                        <div class="slide-number">0${i+1}</div>
-                    </div>
-                    <div class="slide-txt-col">
-                        <div class="case-label">CASE STUDY</div>
-                        <p class="case-desc">${item.text}</p>
-                    </div>
-                `;
-                wrapper.appendChild(el);
-            });
+            let activeIndex = 0;
 
-            let currentIndex = 0;
-            const slides = document.querySelectorAll('.slide-item');
-            totalNumEl.innerText = `0${slides.length}`;
-
-            function updateSliderUI() {
-                // Update slides
-                slides.forEach((s, i) => {
-                    if(i === currentIndex) s.classList.add('active');
-                    else s.classList.remove('active');
-                });
+            cards.forEach((card, index) => {
+                const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+                const distance = center - cardCenter;
                 
-                // Update numbers
-                currentNumEl.innerText = `0${currentIndex + 1}`;
+                // Determine active index for dots
+                if (Math.abs(distance) < card.offsetWidth / 2) {
+                    activeIndex = index;
+                }
+
+                // 3D EFFECT Logic
+                const inner = card.querySelector('.card-inner');
                 
-                // Update Progress
-                const pct = ((currentIndex + 1) / slides.length) * 100;
-                progFill.style.width = `${pct}%`;
-            }
+                // Normalize distance (-1 to 1)
+                const normalizedDist = distance / (track.offsetWidth * 0.6);
+                
+                // Rotate neighbor cards INWARD to face the center
+                const rotateY = normalizedDist * -25; 
+                
+                // Scale neighbor cards down
+                const scale = 1 - Math.abs(normalizedDist) * 0.15;
+                
+                // Darken neighbors
+                const brightness = 1 - Math.abs(normalizedDist) * 0.4;
 
-            // Controls
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-
-            nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex + 1) % slides.length;
-                updateSliderUI();
+                inner.style.transform = `perspective(800px) rotateY(${rotateY}deg) scale(${scale})`;
+                inner.style.filter = `brightness(${brightness})`;
+                
+                // Z-index layering
+                card.style.zIndex = 100 - Math.round(Math.abs(normalizedDist) * 10);
             });
-            prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-                updateSliderUI();
+
+            // Update Dots
+            dots.forEach((dot, idx) => {
+                if (idx === activeIndex) dot.classList.add('active');
+                else dot.classList.remove('active');
             });
+        }
 
-            // Swipe logic
-            let ts = 0;
-            const stage = document.querySelector('.cinematic-stage');
-            stage.addEventListener('touchstart', e => ts = e.touches[0].clientX, {passive: true});
-            stage.addEventListener('touchend', e => {
-                const te = e.changedTouches[0].clientX;
-                if(ts - te > 50) nextBtn.click();
-                if(te - ts > 50) prevBtn.click();
-            }, {passive: true});
-
-            // Init UI
-            updateSliderUI();
-
-            // --- SCROLL LOGIC ---
-            const dirtyImg = document.getElementById('dirtyImage');
-            const b1 = document.getElementById('block1');
-            const hTitle = document.getElementById('hero-title');
-            const hSub = document.getElementById('hero-subtitle');
-            const hFoot = document.getElementById('hero-footnote');
-            const b2 = document.getElementById('block2');
-            const b2TitleDesk = document.getElementById('block2-title-desk');
-            const b2TitleMob = document.getElementById('block2-title-mob');
-            const riskCards = document.querySelectorAll('.risk-card');
-            const b3 = document.getElementById('block3');
-            const b3Panel = document.querySelector('.glass-title-panel');
-            const b3Anims = document.querySelectorAll('.services-matrix .cinematic-text, .mobile-marquee, .desktop-static-bar');
-            
-            const b4 = document.getElementById('block4');
-            const b4Anims = document.querySelectorAll('#block4 .cinematic-text'); // Grab title & stage
-
-            let introDone = false;
-            let currentComparisonState = 'before';
-            let comparisonInterval = null;
-
-            setTimeout(() => { introDone = true; sync(); }, 500);
-
-            function sync() {
-                const sHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const scroll = window.scrollY;
-                const progress = scroll / sHeight;
-                const op = (1 - progress) * 100;
-
-                if(dirtyImg) dirtyImg.style.opacity = (1 - progress).toFixed(3);
-
-                // Block 1
-                if (op > 85) {
-                    b1.style.opacity = 1; b1.style.visibility = 'visible';
-                    if(introDone) {
-                        hTitle.classList.add('in-focus'); hSub.classList.add('in-focus'); hFoot.classList.add('opacity-100');
-                    }
-                } else {
-                    b1.style.opacity = 0; b1.style.visibility = 'hidden';
-                    hTitle.classList.remove('in-focus'); hSub.classList.remove('in-focus'); hFoot.classList.remove('opacity-100');
-                }
-
-                // Block 2
-                if (op <= 80 && op > 60) {
-                    b2.style.opacity = 1; b2.style.visibility = 'visible';
-                    if(b2TitleDesk) b2TitleDesk.classList.add('in-focus');
-                    if(b2TitleMob) b2TitleMob.classList.add('in-focus');
-                    riskCards.forEach(c => c.classList.add('landed'));
-                } else {
-                    b2.style.opacity = 0; b2.style.visibility = 'hidden';
-                    if(b2TitleDesk) b2TitleDesk.classList.remove('in-focus');
-                    if(b2TitleMob) b2TitleMob.classList.remove('in-focus');
-                    riskCards.forEach(c => c.classList.remove('landed', 'active'));
-                }
-
-                // Block 3
-                if (op <= 60 && op > 35) {
-                    b3.style.opacity = 1; b3.style.visibility = 'visible';
-                    if(b3Panel) b3Panel.classList.add('in-focus');
-                    b3Anims.forEach(el => el.classList.add('in-focus'));
-                    startComparisonLoop();
-                } else {
-                    b3.style.opacity = 0; b3.style.visibility = 'hidden';
-                    if(b3Panel) b3Panel.classList.remove('in-focus');
-                    b3Anims.forEach(el => el.classList.remove('in-focus'));
-                    stopComparisonLoop();
-                }
-
-                // Block 4
-                if (op <= 35) {
-                    b4.style.opacity = 1; b4.style.visibility = 'visible';
-                    b4Anims.forEach(el => el.classList.add('in-focus'));
-                } else {
-                    b4.style.opacity = 0; b4.style.visibility = 'hidden';
-                    b4Anims.forEach(el => el.classList.remove('in-focus'));
-                }
-            }
-
-            function startComparisonLoop() {
-                if (comparisonInterval) return;
-                comparisonInterval = setInterval(() => {
-                    currentComparisonState = currentComparisonState === 'before' ? 'after' : 'before';
-                    updateComparisonUI();
-                }, 2000);
-            }
-            function stopComparisonLoop() {
-                clearInterval(comparisonInterval);
-                comparisonInterval = null;
-                currentComparisonState = 'before';
-                updateComparisonUI();
-            }
-            function updateComparisonUI() {
-                for(let i=1; i<=6; i++) {
-                    const box = document.getElementById(`box-${i}`);
-                    const label = document.getElementById(`lbl-${i}`);
-                    if(!box) continue;
-                    if (currentComparisonState === 'after') {
-                        box.classList.add('state-after');
-                        if(label) { label.innerText = "Після"; label.style.background = "#3b82f6"; }
-                    } else {
-                        box.classList.remove('state-after');
-                        if(label) { label.innerText = "До"; label.style.background = "rgba(0,0,0,0.6)"; }
-                    }
-                }
-            }
-            window.addEventListener('scroll', sync);
-            sync(); 
+        // Hide hand hint on scroll
+        track.addEventListener('scroll', () => {
+            container.classList.add('interacted');
+            requestAnimationFrame(updateCarousel);
         });
+
+        window.addEventListener('resize', updateCarousel);
+        window.addEventListener('load', updateCarousel);
+        
+        // Initial call
+        updateCarousel();
     </script>
 </body>
 </html>
-
 
