@@ -6,23 +6,24 @@
     <title>Ventilation Cleaning Scrollytelling</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         html { scroll-behavior: smooth; }
         body {
             height: 1000vh; /* Довгий скрол для 5 блоків */
             margin: 0;
             background-color: #000;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            color: white;
         }
 
-        /* --- Global Layers --- */
+        /* --- GLOBAL LAYERS --- */
         .fixed-viewport {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
-
         .bg-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover; will-change: opacity;
@@ -37,10 +38,9 @@
             opacity: 0; transition: opacity 0.5s ease-out; 
             visibility: hidden;
         }
-        
         .content-block > * { pointer-events: auto; }
 
-        /* --- Animations --- */
+        /* --- ANIMATIONS --- */
         .cinematic-text {
             opacity: 0; filter: blur(20px); transform: scale(1.15) translateY(20px);
             transition: all 0.5s ease-out; will-change: transform, opacity, filter;
@@ -59,79 +59,125 @@
         }
         @media (min-width: 769px) { #hero-footnote { bottom: 20%; } }
 
-        /* --- BLOCK 2: RISKS (REBUILT FOR STABILITY) --- */
+        /* --- BLOCK 2: RISKS (REPAIRED & COMPACT) --- */
         .risk-wrapper {
-            position: relative; width: 100%; max-width: 1200px; height: 100%;
-            display: flex; flex-direction: column; justify-content: center;
+            position: relative; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        /* Desktop Positioning: Absolute Corners */
+        /* DESKTOP: Compact Centered Grid */
         @media (min-width: 769px) {
             .risk-desktop-title {
                 position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                text-align: center; z-index: 10; width: 100%;
+                text-align: center; z-index: 10; width: 100%; pointer-events: none;
             }
-            .risk-pos { position: absolute; width: 300px; height: 130px; }
-            .pos-tl { top: 10%; left: 0; }
-            .pos-tr { top: 10%; right: 0; }
-            .pos-bl { bottom: 15%; left: 0; }
-            .pos-br { bottom: 15%; right: 0; }
             
-            .risk-mobile-title { display: none; }
+            .risk-desktop-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                /* Верхній ряд, Проміжок для тексту, Нижній ряд */
+                grid-template-rows: 140px 120px 140px; 
+                gap: 20px; /* Compact gap */
+                width: 100%; max-width: 800px; /* Compact width */
+                position: relative; z-index: 20;
+            }
+
+            .d-grid-cell { position: relative; width: 100%; height: 100%; pointer-events: none; }
+            .risk-card { pointer-events: auto; } /* Re-enable clicks */
+
+            /* Positioning logic to hug the center */
+            .cell-tl { grid-column: 1; grid-row: 1; display: flex; align-items: flex-end; justify-content: flex-end; }
+            .cell-tr { grid-column: 2; grid-row: 1; display: flex; align-items: flex-end; justify-content: flex-start; }
+            .cell-bl { grid-column: 1; grid-row: 3; display: flex; align-items: flex-start; justify-content: flex-end; }
+            .cell-br { grid-column: 2; grid-row: 3; display: flex; align-items: flex-start; justify-content: flex-start; }
+
+            .risk-mobile-layout { display: none; }
+            
+            .risk-card { width: 300px; height: 130px; } /* Fixed desktop size */
+            
+            /* Simple expand for desktop */
+            .risk-card.active { height: 260px; z-index: 50; position: absolute; }
+            .cell-tl .risk-card.active { bottom: 0; right: 0; }
+            .cell-tr .risk-card.active { bottom: 0; left: 0; }
+            .cell-bl .risk-card.active { top: 0; right: 0; }
+            .cell-br .risk-card.active { top: 0; left: 0; }
         }
 
-        /* Mobile Positioning: Flex Column */
+        /* MOBILE: Expanding Up/Down */
         @media (max-width: 768px) {
             .risk-desktop-title { display: none; }
-            .risk-mobile-title { display: block; text-align: center; margin-bottom: 20px; }
+            .risk-desktop-grid { display: none; }
             
-            .risk-grid-mobile {
-                display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
+            .risk-mobile-layout {
+                display: flex; flex-direction: column; width: 100%;
+                justify-content: center; gap: 20px;
+                max-width: 400px;
             }
-            .risk-pos { position: relative; width: 100%; height: 110px; }
+
+            .risk-mobile-title { text-align: center; margin-bottom: 10px; z-index: 20; }
+            
+            .mobile-row {
+                display: flex; justify-content: space-between; gap: 10px; 
+                width: 100%; height: 120px; 
+                position: relative; z-index: 30;
+            }
+
+            .m-grid-cell { 
+                position: relative; width: 48%; height: 100%; 
+            }
+
+            .risk-card {
+                position: absolute; width: 100%; height: 110px;
+                left: 0;
+            }
+
+            /* UPWARDS EXPANSION for Top Row */
+            .row-top .m-grid-cell .risk-card {
+                bottom: 0; top: auto; transform-origin: bottom center;
+            }
+            
+            /* DOWNWARDS EXPANSION for Bottom Row */
+            .row-bottom .m-grid-cell .risk-card {
+                top: 0; bottom: auto; transform-origin: top center;
+            }
+
+            .risk-card.active { 
+                height: 240px !important; 
+                z-index: 100;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            }
         }
 
-        /* Card Visuals */
+        /* General Card Styles */
         .risk-card {
-            width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
             padding: 1.2rem; cursor: pointer;
             display: flex; flex-direction: column; justify-content: center;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            overflow: hidden; z-index: 20;
+            transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.3s, border-color 0.3s;
+            overflow: hidden;
         }
-
-        .risk-card.active {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) !important;
-            width: 320px; height: 260px;
-            background: rgba(15, 15, 15, 0.98); border-color: #fbbf24;
-            box-shadow: 0 0 50px rgba(251, 191, 36, 0.3);
-            z-index: 50;
-        }
-
+        .risk-card.active { background: rgba(15, 15, 15, 0.98); border-color: #fbbf24; }
         .risk-card h3 { color: white; margin-bottom: 5px; font-size: 1rem; line-height: 1.2; transition: 0.3s; }
         .card-icon { color: #fbbf24; margin-bottom: 8px; width: 28px; height: 28px; transition: 0.3s; }
-        
         .hidden-text {
             display: block; opacity: 0; max-height: 0; margin-top: 0; font-size: 0.85rem; color: #ccc;
-            transition: all 0.4s ease; overflow: hidden;
+            transition: all 0.3s ease; overflow: hidden;
         }
-        
         .risk-card.active .hidden-text { opacity: 1; max-height: 200px; margin-top: 10px; }
         .risk-card.active .card-icon { transform: scale(0.8); }
         .risk-card.active h3 { color: #fbbf24; }
-
-        /* Fly In Animations */
-        .fly-tl { transform: translate(-100px, -100px); opacity: 0; transition: 0.6s ease-out; }
-        .fly-tr { transform: translate(100px, -100px); opacity: 0; transition: 0.6s ease-out; }
-        .fly-bl { transform: translate(-100px, 100px); opacity: 0; transition: 0.6s ease-out; }
-        .fly-br { transform: translate(100px, 100px); opacity: 0; transition: 0.6s ease-out; }
         
+        /* Fly Animations */
+        .fly-tl { transform: translate(-50px, -50px); opacity: 0; transition: 0.6s ease-out; }
+        .fly-tr { transform: translate(50px, -50px); opacity: 0; transition: 0.6s ease-out; }
+        .fly-bl { transform: translate(-50px, 50px); opacity: 0; transition: 0.6s ease-out; }
+        .fly-br { transform: translate(50px, 50px); opacity: 0; transition: 0.6s ease-out; }
         .landed { transform: translate(0, 0); opacity: 1; }
 
-        /* --- BLOCK 3: SERVICES --- */
+
+        /* --- BLOCK 3: SERVICES (UPDATED BAR) --- */
         #block3.content-block { justify-content: space-between; padding-top: 40px; padding-bottom: 20px; }
         .glass-title-panel {
             background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
@@ -159,7 +205,15 @@
         .mobile-marquee { width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; margin-top: auto; display: flex; align-items: center; height: 60px; pointer-events: auto; }
         .marquee-track { display: flex; gap: 30px; padding: 0 20px; animation: marquee 25s linear infinite; width: max-content; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .desktop-static-bar { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 15px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; max-width: 1200px; margin-top: auto; }
+        
+        /* DESKTOP BAR (SEPARATED) */
+        .desktop-static-bar { 
+            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 15px; 
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; max-width: 1200px; 
+            margin-top: 40px; /* Separation */
+            transform: scale(0.9); /* Scaled down */
+            transform-origin: top center;
+        }
         .benefit-item { display: flex; align-items: center; gap: 10px; }
         .desktop-static-bar .benefit-item { flex-direction: column; align-items: flex-start; gap: 8px; }
         .desktop-static-bar .benefit-text { font-size: 11px; white-space: normal; line-height: 1.3; }
@@ -196,32 +250,85 @@
         .stage-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
         .stage-btn:hover { background: #fbbf24; color: black; border-color: #fbbf24; }
 
-        /* --- BLOCK 5: TEAM (FIXED) --- */
-        #block5.content-block { justify-content: center; padding: 0; background: linear-gradient(to top, #000 0%, transparent 20%, transparent 80%, #000 100%); }
-        .team-title-area { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 40; padding: 0 20px; }
+        /* --- BLOCK 5: TEAM (FROM ARCHIVE CODE) --- */
+        #block5.content-block {
+            justify-content: center; padding: 0; 
+            background: linear-gradient(to top, #000 0%, transparent 20%, transparent 80%, #000 100%);
+        }
+
+        .team-title-area {
+            position: absolute; top: 5%; width: 100%; text-align: center; z-index: 40; padding: 0 20px;
+        }
         .team-title-area h2 { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
         .team-title-area p { font-size: 0.9rem; color: #aaa; max-width: 600px; margin: 0 auto; font-weight: 300; }
-        .team-carousel { width: 100%; height: 75vh; display: flex; align-items: center; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 50vw; scrollbar-width: none; -ms-overflow-style: none; cursor: grab; margin-top: 40px; }
-        .team-carousel::-webkit-scrollbar { display: none; }
-        .team-card-wrapper { flex: 0 0 auto; width: 280px; height: 700px; max-height: 75vh; margin: 0 20px; scroll-snap-align: center; scroll-snap-stop: always; perspective: 1200px; position: relative; z-index: 10; }
-        @media (max-width: 768px) { .team-card-wrapper { width: 80vw; height: 65vh; margin: 0 10px; } }
-        .team-card { width: 100%; height: 100%; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.4s ease-out, filter 0.4s ease-out; will-change: transform; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
-        .tc-image { width: 100%; height: 60%; position: relative; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .tc-image img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-        .tc-info { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: flex-start; overflow-y: auto; }
-        .tc-name { font-weight: 800; font-size: 1.2rem; color: #fff; text-transform: uppercase; margin-bottom: 2px; }
-        .tc-role { color: #fbbf24; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
-        .tc-quote { font-style: italic; color: #e5e5e5; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px; border-left: 2px solid #ef4444; padding-left: 10px; max-height: 100px; overflow-y: auto; }
-        .tc-extra { font-size: 0.75rem; color: #888; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
-        .team-nav-dots { position: absolute; bottom: 3%; width: 100%; display: flex; justify-content: center; gap: 8px; z-index: 40; }
-        .t-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
-        .t-dot.active { background: #fbbf24; transform: scale(1.3); }
+
+        /* CAROUSEL TRACK - FROM ARCHIVE */
+        .carousel-container {
+            width: 100%;
+            overflow-x: scroll; overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            padding: 0 17.5vw; /* Center the 65vw card */
+            display: flex; align-items: center; height: 550px;
+            -ms-overflow-style: none; scrollbar-width: none;
+            cursor: grab;
+            margin-top: 40px;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+
+        .card-wrapper {
+            flex: 0 0 65vw; /* Mobile width */
+            height: 450px;
+            scroll-snap-align: center; scroll-snap-stop: always;
+            position: relative; perspective: 800px;
+            margin: 0 10px; z-index: 1;
+        }
+
+        @media (min-width: 769px) {
+            .carousel-container { padding: 0 35vw; }
+            .card-wrapper { flex: 0 0 30vw; height: 500px; }
+        }
+
+        .card-inner {
+            width: 100%; height: 100%;
+            background: #141414;
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.15);
+            display: flex; overflow: hidden; position: relative;
+            will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+
+        /* CARD CONTENT (Desktop/Mobile split inside card) */
+        .c-text {
+            width: 55%; padding: 1rem;
+            display: flex; flex-direction: column; justify-content: center;
+            background: linear-gradient(135deg, #222 0%, #0a0a0a 100%);
+            border-right: 1px solid rgba(255,255,255,0.05); position: relative;
+        }
+        .c-photo { width: 45%; }
+        .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
+
+        .c-quote {
+            font-family: 'Playfair Display', serif; font-size: 0.8rem; line-height: 1.35;
+            color: #ccc; font-style: italic; margin-bottom: 1rem; position: relative; z-index: 2;
+        }
+        .c-name { font-size: 0.85rem; font-weight: 800; color: #fff; text-transform: uppercase; }
+        .c-role { font-size: 0.6rem; color: #ef4444; font-weight: 700; text-transform: uppercase; }
+        .quote-bg {
+            position: absolute; top: 5px; left: 5px; font-size: 4rem;
+            font-family: serif; color: rgba(255,255,255,0.05); line-height: 0; pointer-events: none;
+        }
+
+        /* Dots */
+        .dots-container { display: flex; justify-content: center; gap: 8px; position: absolute; bottom: 5%; width: 100%; z-index: 50; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
+        .dot.active { background: #ef4444; transform: scale(1.2); }
 
     </style>
 </head>
 <body class="text-white antialiased">
 
     <div class="fixed-viewport">
+        <!-- BACKGROUNDS -->
         <img src="clean.WEBP" onerror="this.style.display='none'; document.body.style.background='#111'" alt="Чиста вентиляція" class="bg-layer z-0">
         <img src="dirty.WEBP" onerror="this.style.display='none'" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
@@ -233,68 +340,69 @@
             <div id="hero-footnote" class="transition-opacity duration-500 text-shadow-strong">* За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)</div>
         </div>
 
-        <!-- BLOCK 2: RISKS (COMPLETELY REBUILT) -->
+        <!-- BLOCK 2: RISKS (REPAIRED & COMPACT) -->
         <div id="block2" class="content-block">
             <div class="risk-wrapper">
                 
-                <!-- Title (Desktop) -->
+                <!-- Desktop Layout: Compact Grid -->
                 <div class="risk-desktop-title cinematic-text">
                     <h2 class="text-4xl md:text-6xl font-bold text-shadow-strong leading-tight">
                         ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
                     </h2>
                 </div>
-
-                <!-- Title (Mobile) -->
-                <div class="risk-mobile-title md:hidden cinematic-text">
-                    <h2 class="text-2xl font-bold text-shadow-strong leading-tight">
-                        ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
-                    </h2>
+                
+                <div class="risk-desktop-grid cinematic-text">
+                    <div class="d-grid-cell cell-tl"><div class="risk-card fly-tl card-js"><i data-lucide="flame" class="card-icon"></i><h3 class="font-bold">Пожежа</h3><p class="hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div>
+                    <div class="d-grid-cell cell-tr"><div class="risk-card fly-tr card-js"><i data-lucide="file-warning" class="card-icon"></i><h3 class="font-bold">Штрафи та закриття</h3><p class="hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div>
+                    <div class="d-grid-cell cell-bl"><div class="risk-card fly-bl card-js"><i data-lucide="user-x" class="card-icon"></i><h3 class="font-bold">Втрата клієнтів</h3><p class="hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div>
+                    <div class="d-grid-cell cell-br"><div class="risk-card fly-br card-js"><i data-lucide="zap" class="card-icon"></i><h3 class="font-bold">Витрата електроенергії</h3><p class="hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div>
                 </div>
 
-                <!-- CARDS CONTAINER (Absolute Desktop, Grid Mobile) -->
-                <div class="risk-grid-mobile">
-                    
-                    <!-- Card 1 -->
-                    <div class="risk-pos pos-tl">
-                        <div class="risk-card fly-tl card-js">
-                            <i data-lucide="flame" class="card-icon"></i>
-                            <h3 class="font-bold">Пожежа</h3>
-                            <p class="hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
-                            <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
+                <!-- Mobile Layout: Up/Down Expand Logic -->
+                <div class="risk-mobile-layout md:hidden">
+                    <div class="risk-mobile-title cinematic-text">
+                        <h2 class="text-2xl font-bold text-shadow-strong leading-tight">
+                            ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
+                        </h2>
+                    </div>
+
+                    <!-- Row 1: Expands UP -->
+                    <div class="mobile-row row-top">
+                        <div class="m-grid-cell">
+                            <div class="risk-card fly-tl card-js">
+                                <i data-lucide="flame" class="card-icon"></i><h3 class="font-bold">Пожежа</h3>
+                                <p class="hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
+                                <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div class="m-grid-cell">
+                            <div class="risk-card fly-tr card-js">
+                                <i data-lucide="file-warning" class="card-icon"></i><h3 class="font-bold">Штрафи</h3>
+                                <p class="hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
+                                <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Card 2 -->
-                    <div class="risk-pos pos-tr">
-                        <div class="risk-card fly-tr card-js">
-                            <i data-lucide="file-warning" class="card-icon"></i>
-                            <h3 class="font-bold">Штрафи та закриття</h3>
-                            <p class="hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
-                            <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
+                    <!-- Row 2: Expands DOWN -->
+                    <div class="mobile-row row-bottom">
+                        <div class="m-grid-cell">
+                            <div class="risk-card fly-bl card-js">
+                                <i data-lucide="user-x" class="card-icon"></i><h3 class="font-bold">Втрата клієнтів</h3>
+                                <p class="hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
+                                <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div class="m-grid-cell">
+                            <div class="risk-card fly-br card-js">
+                                <i data-lucide="zap" class="card-icon"></i><h3 class="font-bold">Електроенергія</h3>
+                                <p class="hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
+                                <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Card 3 -->
-                    <div class="risk-pos pos-bl">
-                        <div class="risk-card fly-bl card-js">
-                            <i data-lucide="user-x" class="card-icon"></i>
-                            <h3 class="font-bold">Втрата клієнтів</h3>
-                            <p class="hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
-                            <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
-                        </div>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="risk-pos pos-br">
-                        <div class="risk-card fly-br card-js">
-                            <i data-lucide="zap" class="card-icon"></i>
-                            <h3 class="font-bold">Витрата електроенергії</h3>
-                            <p class="hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
-                            <i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i>
-                        </div>
-                    </div>
-
                 </div>
+
             </div>
         </div>
 
@@ -324,14 +432,20 @@
             <div class="cinematic-stage cinematic-text" style="transition-delay: 0.2s;"><div class="slides-wrapper" id="portfolioWrapper"><!-- JS --></div><div class="stage-controls"><span class="text-amber-400 font-mono text-lg" id="currentSlideNum">01</span><div class="prog-bar"><div class="prog-fill" id="progFill"></div></div><span class="text-white/50 font-mono text-sm" id="totalSlideNum">06</span><div class="nav-arrows ml-6"><button class="stage-btn" id="prevBtn"><i data-lucide="chevron-left"></i></button><button class="stage-btn" id="nextBtn"><i data-lucide="chevron-right"></i></button></div></div></div>
         </div>
 
-        <!-- BLOCK 5 -->
+        <!-- BLOCK 5: TEAM (USING YOUR ARCHIVE CODE) -->
         <div id="block5" class="content-block">
             <div class="team-title-area cinematic-text">
                 <h2>НАША КОМАНДА</h2>
                 <p>Наша команда займається монтажем вентиляції, а отже ми знаємо як обслуговувати те що монтуємо</p>
             </div>
-            <div class="team-carousel" id="teamTrack"><!-- JS --></div>
-            <div class="team-nav-dots" id="teamDots"></div>
+            
+            <div class="carousel-container" id="teamTrack">
+                <!-- JS Generated from Archive Logic -->
+            </div>
+
+            <div class="dots-container" id="teamDots">
+                <!-- JS Generated -->
+            </div>
         </div>
 
     </div>
@@ -358,11 +472,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
 
-            // BLOCK 2 LOGIC
+            // BLOCK 2 LOGIC (RISKS)
             const cards = document.querySelectorAll('.card-js');
-            // FIX: Removed riskContainer reference for class toggling to allow individual card expansion without container side-effects if needed, 
-            // but kept for structure. Added safety check.
-            const container = document.getElementById('block2'); 
+            // FIX: Removed riskContainer reference to avoid click conflict
             
             cards.forEach(card => {
                 card.addEventListener('click', (e) => {
@@ -376,7 +488,7 @@
                 cards.forEach(c => c.classList.remove('active'));
             });
 
-            // BLOCK 4 LOGIC
+            // BLOCK 4 LOGIC (PORTFOLIO)
             const wrapper = document.getElementById('portfolioWrapper');
             const currentNumEl = document.getElementById('currentSlideNum');
             const totalNumEl = document.getElementById('totalSlideNum');
@@ -401,58 +513,64 @@
             document.getElementById('nextBtn').addEventListener('click', () => { currentSlide = (currentSlide + 1) % slides.length; updateSliderUI(); });
             document.getElementById('prevBtn').addEventListener('click', () => { currentSlide = (currentSlide - 1 + slides.length) % slides.length; updateSliderUI(); });
             
-            // BLOCK 5 TEAM LOGIC
+            // BLOCK 5 TEAM LOGIC (ARCHIVE INTEGRATION)
             const teamTrack = document.getElementById('teamTrack');
             const teamDotsContainer = document.getElementById('teamDots');
 
             teamMembers.forEach((member, i) => {
                 const w = document.createElement('div');
-                w.className = 'team-card-wrapper';
+                w.className = 'card-wrapper';
                 w.innerHTML = `
-                    <div class="team-card">
-                        <div class="tc-image">
-                            <img src="${member.img}" alt="${member.name}">
+                    <div class="card-inner">
+                        <div class="c-text">
+                            <div class="quote-bg">“</div>
+                            <p class="c-quote">${member.quote}</p>
+                            <div>
+                                <div class="c-name">${member.name}</div>
+                                <div class="c-role">${member.role}</div>
+                            </div>
                         </div>
-                        <div class="tc-info">
-                            <h3 class="tc-name">${member.name}</h3>
-                            <p class="tc-role">${member.role}</p>
-                            <div class="tc-quote">"${member.quote}"</div>
-                            ${member.extra ? `<p class="tc-extra">${member.extra}</p>` : ''}
-                        </div>
+                        <div class="c-photo"><img src="${member.img}" alt="${member.name}"></div>
                     </div>
                 `;
                 teamTrack.appendChild(w);
                 const dot = document.createElement('div');
-                dot.className = `t-dot ${i===0?'active':''}`;
+                dot.className = `dot ${i===0?'active':''}`;
                 teamDotsContainer.appendChild(dot);
             });
 
-            const teamWrappers = document.querySelectorAll('.team-card-wrapper');
-            const tDots = document.querySelectorAll('.t-dot');
+            const teamCards = document.querySelectorAll('.card-wrapper');
+            const dots = document.querySelectorAll('.dot');
 
-            function updateTeam3D() {
+            function updateCarousel() {
                 const center = teamTrack.scrollLeft + (teamTrack.offsetWidth / 2);
                 let activeIndex = 0;
-                teamWrappers.forEach((wrap, index) => {
-                    const cardCenter = wrap.offsetLeft + (wrap.offsetWidth / 2);
-                    const dist = center - cardCenter;
-                    const norm = dist / (window.innerWidth * 0.6);
-                    
-                    let rotate = norm * -45; if (rotate > 45) rotate = 45; if (rotate < -45) rotate = -45;
-                    let scale = 1 - Math.abs(norm) * 0.15; if (scale < 0.85) scale = 0.85;
-                    let bright = 1 - Math.abs(norm) * 0.5; if (bright < 0.3) bright = 0.3;
 
-                    const card = wrap.querySelector('.team-card');
-                    card.style.transform = `perspective(1000px) rotateY(${rotate}deg) scale(${scale})`;
-                    card.style.filter = `brightness(${bright})`;
-                    card.style.zIndex = 100 - Math.round(Math.abs(norm) * 10);
-                    if (Math.abs(dist) < wrap.offsetWidth / 2) activeIndex = index;
+                teamCards.forEach((card, index) => {
+                    const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+                    const distance = center - cardCenter;
+                    if (Math.abs(distance) < card.offsetWidth / 2) activeIndex = index;
+
+                    const inner = card.querySelector('.card-inner');
+                    const normalizedDist = distance / (teamTrack.offsetWidth * 0.6);
+                    const rotateY = normalizedDist * -25; 
+                    const scale = 1 - Math.abs(normalizedDist) * 0.15;
+                    const brightness = 1 - Math.abs(normalizedDist) * 0.4;
+
+                    inner.style.transform = `perspective(800px) rotateY(${rotateY}deg) scale(${scale})`;
+                    inner.style.filter = `brightness(${brightness})`;
+                    card.style.zIndex = 100 - Math.round(Math.abs(normalizedDist) * 10);
                 });
-                tDots.forEach((d, i) => { if (i === activeIndex) d.classList.add('active'); else d.classList.remove('active'); });
+
+                dots.forEach((dot, idx) => {
+                    if (idx === activeIndex) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                });
             }
-            teamTrack.addEventListener('scroll', () => requestAnimationFrame(updateTeam3D));
-            window.addEventListener('resize', updateTeam3D);
-            setTimeout(updateTeam3D, 100);
+
+            teamTrack.addEventListener('scroll', () => requestAnimationFrame(updateCarousel));
+            window.addEventListener('resize', updateCarousel);
+            setTimeout(updateCarousel, 100);
 
             // GLOBAL SCROLL SYNC
             const dirtyImg = document.getElementById('dirtyImage');
@@ -467,7 +585,6 @@
             
             // Selector for B2 cards animation
             const b2Anims = document.querySelectorAll('.risk-card, .risk-desktop-title, .risk-mobile-title');
-            
             const b3Anims = document.querySelectorAll('#block3 .cinematic-text, .mobile-marquee, .desktop-static-bar');
             const b4Anims = document.querySelectorAll('#block4 .cinematic-text');
             const b5Anims = document.querySelectorAll('.team-title-area');
@@ -494,7 +611,6 @@
 
                 if (op <= 80 && op > 60) { 
                     showBlock(1); 
-                    // Fly in effects
                     document.querySelectorAll('.fly-tl').forEach(el => el.classList.add('landed'));
                     document.querySelectorAll('.fly-tr').forEach(el => el.classList.add('landed'));
                     document.querySelectorAll('.fly-bl').forEach(el => el.classList.add('landed'));
@@ -515,7 +631,7 @@
                 if (op <= 40 && op > 20) { showBlock(3); b4Anims.forEach(el=>el.classList.add('in-focus')); }
                 else { hideBlock(3); b4Anims.forEach(el=>el.classList.remove('in-focus')); }
 
-                if (op <= 20) { showBlock(4); b5Anims.forEach(el=>el.classList.add('in-focus')); updateTeam3D(); }
+                if (op <= 20) { showBlock(4); b5Anims.forEach(el=>el.classList.add('in-focus')); updateCarousel(); }
                 else { hideBlock(4); b5Anims.forEach(el=>el.classList.remove('in-focus')); }
             }
 
