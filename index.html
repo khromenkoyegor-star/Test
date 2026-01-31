@@ -1,710 +1,545 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ventilation Cleaning Scrollytelling</title>
+    <title>Ventilation Cleaning Services - Professional Solutions</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlack: '#000000',
+                        threatRed: '#ef4444',
+                        premiumGold: '#fbbf24',
+                        cleanBlue: '#3b82f6',
+                        lightGray: '#CCCCCC',
+                        glass: 'rgba(255, 255, 255, 0.05)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        html { scroll-behavior: smooth; }
+        /* Custom Styles & Utilities */
         body {
-            height: 1000vh;
-            margin: 0;
-            background-color: #000;
-            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #000000;
+            color: #FFFFFF;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-            color: white;
         }
 
-        /* --- LAYERS --- */
-        .fixed-viewport {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .bg-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; will-change: opacity;
-        }
-
-        .content-block {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
-            z-index: 30; pointer-events: none; 
-            padding: 20px;
-            opacity: 0; transition: opacity 0.5s ease-out; 
-            visibility: hidden;
-        }
-        .content-block > * { pointer-events: auto; }
-
-        /* --- ANIMATIONS (General) --- */
-        .cinematic-text {
-            opacity: 0; filter: blur(20px); transform: scale(1.15) translateY(20px);
-            transition: all 0.5s ease-out; will-change: transform, opacity, filter;
-        }
-        .in-focus {
-            opacity: 1 !important; filter: blur(0) !important; transform: scale(1) translateY(0) !important;
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .text-shadow-strong { text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6); }
-
-        /* --- BLOCK 1: HERO --- */
-        #hero-footnote {
-            position: absolute; width: 100%; text-align: center; opacity: 0;
-            transition: opacity 0.5s ease; font-size: 0.8rem; color: rgba(255,255,255,0.7);
-            z-index: 50; bottom: 15%; 
-        }
-        @media (min-width: 769px) { #hero-footnote { bottom: 20%; } }
-
-
-        /* ==========================================================================
-           BLOCK 2: DESKTOP MIND MAP (RE-ENGINEERED)
-           ========================================================================== */
-        
-        /* 1. Container for Desktop */
-        .dt-mindmap-container {
-            position: relative;
-            width: 1000px;
-            height: 600px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* 2. Center Text */
-        .dt-center-title {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 350px;
-            text-align: center;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        /* 3. Anchors (The fixed points for 2x2 grid) */
-        .dt-anchor {
-            position: absolute;
-            width: 320px;
-            height: 120px; /* Collapsed Height */
-            z-index: 20;
-        }
-
-        /* Positioning Logic:
-           We use Top/Bottom/Left/Right: 50% to start from center lines,
-           then margins to create the "Mind Map" gap.
-        */
-        
-        /* TOP LEFT: Anchored by Bottom-Right corner */
-        .dt-pos-tl { bottom: 50%; right: 50%; margin-bottom: 50px; margin-right: 30px; }
-        
-        /* TOP RIGHT: Anchored by Bottom-Left corner */
-        .dt-pos-tr { bottom: 50%; left: 50%; margin-bottom: 50px; margin-left: 30px; }
-        
-        /* BOTTOM LEFT: Anchored by Top-Right corner */
-        .dt-pos-bl { top: 50%; right: 50%; margin-top: 50px; margin-right: 30px; }
-        
-        /* BOTTOM RIGHT: Anchored by Top-Left corner */
-        .dt-pos-br { top: 50%; left: 50%; margin-top: 50px; margin-left: 30px; }
-
-        /* 4. The Card (Glassmorphism) */
-        .dt-card {
-            position: absolute;
-            width: 100%; height: 100%;
-            
-            /* Glassmorphism */
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            
-            padding: 1.5rem;
-            display: flex; flex-direction: column; justify-content: center;
-            cursor: pointer;
-            overflow: hidden;
-            
-            /* Smooth Transition for Height and Style */
-            transition: height 0.5s cubic-bezier(0.25, 1, 0.5, 1), 
-                        background 0.3s, border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .dt-card:hover {
-            border-color: rgba(251, 191, 36, 0.5); /* Amber hint on hover */
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        /* 5. Expansion Direction */
-        /* Top cards anchored at bottom -> Grow UP */
-        .dt-pos-tl .dt-card, .dt-pos-tr .dt-card { bottom: 0; top: auto; transform-origin: bottom center; }
-        
-        /* Bottom cards anchored at top -> Grow DOWN */
-        .dt-pos-bl .dt-card, .dt-pos-br .dt-card { top: 0; bottom: auto; transform-origin: top center; }
-
-        /* 6. Active State (Expanded) */
-        .dt-card.active {
-            height: 280px; /* Expanded Height */
-            background: rgba(10, 10, 10, 0.85); /* Darker background for readability */
-            border-color: #fbbf24; /* Gold border */
-            z-index: 50;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-
-        /* 7. Entrance Animations (Fly in + Scale 0->1) */
-        /* Base hidden state defined by class 'fly-in-anim' */
-        .fly-in-anim {
-            opacity: 0;
-            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy pop-in */
-        }
-        
-        /* Initial positions (Far away + Scale 0) */
-        .from-tl { transform: translate(-100%, -100%) scale(0); }
-        .from-tr { transform: translate(100%, -100%) scale(0); }
-        .from-bl { transform: translate(-100%, 100%) scale(0); }
-        .from-br { transform: translate(100%, 100%) scale(0); }
-
-        /* Landed State */
-        .fly-in-anim.landed {
-            opacity: 1;
-            transform: translate(0, 0) scale(1);
-        }
-
-        /* Icons & Text */
-        .dt-icon-wrapper {
-            margin-bottom: 12px;
-            display: flex; align-items: center;
-            color: #fbbf24; /* Gold */
-            transition: transform 0.4s;
-        }
-        .dt-card.active .dt-icon-wrapper { transform: scale(0.9); }
-        .dt-card h3 { 
-            font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 5px; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            transition: color 0.3s;
-        }
-        .dt-card.active h3 { color: #fbbf24; }
-        
-        .dt-hidden-text {
-            display: block; opacity: 0; max-height: 0; 
-            margin-top: 0; font-size: 0.9rem; color: #e5e5e5; line-height: 1.5;
-            transition: all 0.4s ease 0.1s; overflow: hidden;
-        }
-        .dt-card.active .dt-hidden-text { 
-            opacity: 1; max-height: 200px; margin-top: 15px; 
-        }
-        .expand-hint {
-            position: absolute; top: 20px; right: 20px;
-            color: rgba(255,255,255,0.3); width: 16px; height: 16px;
-            transition: transform 0.3s;
-        }
-        .dt-card.active .expand-hint { transform: rotate(45deg); color: #fbbf24; }
-
-
-        /* ==========================================================================
-           BLOCK 2: MOBILE LAYOUT (UNCHANGED)
-           ========================================================================== */
-        @media (max-width: 768px) {
-            .dt-mindmap-container { display: none; }
-            
-            .risk-mobile-layout {
-                display: flex; flex-direction: column; width: 100%;
-                justify-content: center; gap: 20px;
-                max-width: 400px;
-            }
-            .risk-mobile-title { text-align: center; margin-bottom: 10px; z-index: 20; }
-            
-            .mobile-row {
-                display: flex; justify-content: space-between; gap: 10px; 
-                width: 100%; height: 120px; 
-                position: relative; z-index: 30;
-            }
-            .m-grid-cell { position: relative; width: 48%; height: 100%; }
-
-            .risk-card-mob {
-                position: absolute; width: 100%; height: 110px; left: 0;
-                background: rgba(255, 255, 255, 0.05);
-                backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 20px;
-                padding: 1rem;
-                display: flex; flex-direction: column; justify-content: center;
-                transition: height 0.3s ease;
-                overflow: hidden;
-            }
-            .row-top .m-grid-cell .risk-card-mob { bottom: 0; top: auto; transform-origin: bottom center; }
-            .row-bottom .m-grid-cell .risk-card-mob { top: 0; bottom: auto; transform-origin: top center; }
-
-            .risk-card-mob.active {
-                height: 240px !important;
-                z-index: 100;
-                background: rgba(15, 15, 15, 0.98);
-                border-color: #fbbf24;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.9);
-            }
-            .card-icon { color: #fbbf24; margin-bottom: 8px; width: 28px; height: 28px; transition: 0.3s; }
-            .hidden-text {
-                display: block; opacity: 0; max-height: 0; margin-top: 0; font-size: 0.85rem; color: #ccc;
-                transition: all 0.3s ease; overflow: hidden;
-            }
-            .active .hidden-text { opacity: 1; max-height: 200px; margin-top: 10px; }
-            .active .card-icon { transform: scale(0.8); }
-            .active h3 { color: #fbbf24; font-weight: 700; font-size: 1rem; }
-        }
-
-
-        /* --- BLOCK 3: SERVICES --- */
-        #block3.content-block { justify-content: space-between; padding-top: 40px; padding-bottom: 20px; }
-        .glass-title-panel {
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
-            padding: 15px 25px; margin-bottom: 5px; display: inline-block;
-        }
-        .services-matrix {
-            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
-            gap: 15px; width: 100%; max-width: 1000px; margin: 0; flex-grow: 1; align-content: center;
-        }
-        .service-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .service-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .photo-box {
-            width: 100%; aspect-ratio: 1 / 1; max-width: 200px; 
-            position: relative; border-radius: 12px; overflow: hidden;
-            background: #111; border: 2px solid rgba(255,255,255,0.1);
-            transition: all 0.6s ease;
-        }
-        .photo-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; }
-        .img-before { z-index: 1; opacity: 1; } .img-after { z-index: 2; opacity: 0; }
-        .photo-box.state-after { border-color: #60a5fa; box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); animation: flicker-glow 2s infinite alternate; }
-        .photo-box.state-after .img-after { opacity: 1; }
-        .label-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase; z-index: 10; transition: background 0.3s; }
-        
-        .desktop-static-bar { 
-            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 15px; 
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; max-width: 1200px; 
-            margin-top: 40px; transform: scale(0.9); transform-origin: top center;
-        }
-        .benefit-item { display: flex; align-items: center; gap: 10px; }
-        .desktop-static-bar .benefit-item { flex-direction: column; align-items: flex-start; gap: 8px; }
-        .desktop-static-bar .benefit-text { font-size: 11px; white-space: normal; line-height: 1.3; }
-        
-        .mobile-marquee { width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; margin-top: auto; display: flex; align-items: center; height: 60px; pointer-events: auto; }
-        .marquee-track { display: flex; gap: 30px; padding: 0 20px; animation: marquee 25s linear infinite; width: max-content; }
-        .mobile-marquee .benefit-item { flex-direction: row; white-space: nowrap; }
-        .mobile-marquee .benefit-text { font-size: 12px; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        @media (max-width: 768px) {
-            #block3.content-block { padding-top: 40px; gap: 5px; justify-content: flex-start; }
-            .services-matrix { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 5px; }
-            .photo-box { max-width: 115px; border-radius: 10px; } .service-title { font-size: 0.8rem; }
-            #b3-title { font-size: 1.3rem; line-height: 1.2; } #b3-subtitle { font-size: 11px; line-height: 1.3; }
-            .glass-title-panel { padding: 10px 15px; }
-        }
-
-        /* --- BLOCK 4: SLIDER --- */
-        #block4.content-block { justify-content: center; padding: 20px; background: transparent; }
-        .cinematic-stage { position: relative; width: 95%; max-width: 1000px; height: 60vh; max-height: 550px; background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); overflow: hidden; display: flex; flex-direction: column; }
-        @media (min-width: 769px) { .cinematic-stage { height: 500px; } }
-        .slides-wrapper { width: 100%; height: 100%; position: relative; }
-        .slide-item { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        .slide-item.active { opacity: 1; pointer-events: auto; }
-        @media (min-width: 769px) { .slide-item { flex-direction: row; } .slide-img-col { width: 45%; height: 100%; position: relative; overflow: hidden; } .slide-txt-col { width: 55%; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: center; } .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.05); position: absolute; top: 20px; right: 20px; line-height: 1; } }
-        @media (max-width: 768px) { .slide-item { flex-direction: column; } .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; } .slide-txt-col { width: 100%; height: 60%; padding: 20px 20px 80px 20px; overflow-y: auto; mask-image: linear-gradient(to bottom, black 85%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%); } .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.6); position: absolute; top: 10px; right: 15px; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.5); } }
-        .slide-img-obj { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); transition: transform 1.5s ease-out; }
-        .slide-item.active .slide-img-obj { transform: scale(1); }
-        .case-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #fbbf24; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .case-label::before { content: ''; width: 30px; height: 1px; background: #fbbf24; display: block; }
-        .case-desc { font-size: 0.95rem; line-height: 1.6; color: #e5e5e5; font-weight: 300; }
-        .stage-controls { position: absolute; bottom: 0; right: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(15, 15, 15, 0.95); }
-        @media (min-width: 769px) { .stage-controls { width: 55%; bottom: 0; right: 0; padding: 0 40px; background: rgba(0,0,0,0.2); } }
-        .prog-bar { flex-grow: 1; height: 2px; background: rgba(255,255,255,0.1); margin: 0 20px; position: relative; }
-        .prog-fill { height: 100%; background: #fbbf24; width: 0%; transition: width 0.4s; }
-        .nav-arrows { display: flex; gap: 10px; }
-        .stage-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
-        .stage-btn:hover { background: #fbbf24; color: black; border-color: #fbbf24; }
-
-        /* --- BLOCK 5: TEAM (FROM ARCHIVE) --- */
-        #block5.content-block {
-            justify-content: center; padding: 0; 
-            background: linear-gradient(to top, #000 0%, transparent 20%, transparent 80%, #000 100%);
-        }
-
-        .team-title-area {
-            position: absolute; top: 5%; width: 100%; text-align: center; z-index: 40; padding: 0 20px;
-        }
-        .team-title-area h2 { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-        .team-title-area p { font-size: 0.9rem; color: #aaa; max-width: 600px; margin: 0 auto; font-weight: 300; }
-
-        .carousel-container {
+        /* Scrollytelling Background Layers */
+        .scrolly-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            overflow-x: scroll; overflow-y: hidden;
-            scroll-snap-type: x mandatory;
-            padding: 0 17.5vw;
-            display: flex; align-items: center; height: 550px;
-            -ms-overflow-style: none; scrollbar-width: none;
-            cursor: grab;
-            margin-top: 40px;
+            height: 100vh;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 0.1s linear;
         }
-        .carousel-container::-webkit-scrollbar { display: none; }
-
-        .card-wrapper {
-            flex: 0 0 65vw;
-            height: 450px;
-            scroll-snap-align: center; scroll-snap-stop: always;
-            position: relative; perspective: 800px;
-            margin: 0 10px; z-index: 1;
-        }
-
-        @media (min-width: 769px) {
-            .carousel-container { padding: 0 35vw; }
-            .card-wrapper { flex: 0 0 30vw; height: 500px; }
-        }
-
-        .card-inner {
-            width: 100%; height: 100%;
-            background: #141414;
-            border-radius: 16px; border: 1px solid rgba(255,255,255,0.15);
-            display: flex; overflow: hidden; position: relative;
-            will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-
-        .c-text {
-            width: 55%; padding: 1rem;
-            display: flex; flex-direction: column; justify-content: center;
-            background: linear-gradient(135deg, #222 0%, #0a0a0a 100%);
-            border-right: 1px solid rgba(255,255,255,0.05); position: relative;
-        }
-        .c-photo { width: 45%; }
-        .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
-        .c-quote { font-family: 'Playfair Display', serif; font-size: 0.8rem; line-height: 1.35; color: #ccc; font-style: italic; margin-bottom: 1rem; position: relative; z-index: 2; }
-        .c-name { font-size: 0.85rem; font-weight: 800; color: #fff; text-transform: uppercase; }
-        .c-role { font-size: 0.6rem; color: #ef4444; font-weight: 700; text-transform: uppercase; }
-        .quote-bg { position: absolute; top: 5px; left: 5px; font-size: 4rem; font-family: serif; color: rgba(255,255,255,0.05); line-height: 0; pointer-events: none; }
         
-        .dots-container { display: flex; justify-content: center; gap: 8px; position: absolute; bottom: 5%; width: 100%; z-index: 50; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
-        .dot.active { background: #ef4444; transform: scale(1.2); }
+        #bg-clean {
+            /* Placeholder fallback background */
+            background-color: #111; 
+            z-index: -2;
+        }
+        
+        #bg-dirty {
+            z-index: -1;
+        }
 
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fbbf24;
+        }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: blur(10px);
+        }
+        
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Interactive Mind Map Transition */
+        .mind-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Service Matrix Hover */
+        .service-img-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .service-img-clean {
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .service-img-container:hover .service-img-clean {
+            opacity: 1;
+        }
+        .service-img-container:hover {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* 3D Carousel Perspective */
+        .carousel-container {
+            perspective: 1000px;
+        }
+        .carousel-item {
+            transition: all 0.5s ease;
+        }
+
+        /* Marquee Animation */
+        .marquee-content {
+            display: flex;
+            animation: scrolling 20s linear infinite;
+        }
+        @keyframes scrolling {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
     </style>
 </head>
-<body class="text-white antialiased">
+<body class="antialiased selection:bg-threatRed selection:text-white">
 
-    <div class="fixed-viewport">
-        <img src="clean.WEBP" onerror="this.style.display='none'; document.body.style.background='#111'" alt="Чиста вентиляція" class="bg-layer z-0">
-        <img src="dirty.WEBP" onerror="this.style.display='none'" alt="Брудна вентиляція" id="dirtyImage" class="bg-layer z-10">
-        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
-
-        <!-- BLOCK 1 -->
-        <div id="block1" class="content-block" style="z-index: 40;">
-            <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong"><span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ</h1>
-            <h2 id="hero-subtitle" class="cinematic-text text-2xl md:text-4xl font-light text-center mt-6 text-shadow-strong tracking-wide">ПОВʼЯЗАНІ З БРУДНОЮ<br>ВЕНТИЛЯЦІЄЮ*</h2>
-            <div id="hero-footnote" class="transition-opacity duration-500 text-shadow-strong">* За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)</div>
-        </div>
-
-        <!-- BLOCK 2: RISKS -->
-        <div id="block2" class="content-block">
-            <div class="risk-wrapper">
-                
-                <!-- === DESKTOP LAYOUT (NEW MIND MAP) === -->
-                <div class="dt-mindmap-container hidden md:flex">
-                    
-                    <!-- Center Title -->
-                    <div class="dt-center-title cinematic-text">
-                        <h2 class="text-5xl font-extrabold text-white text-shadow-strong leading-tight">
-                            ЧИМ РИЗИКУЄ<br>ВАШ БІЗНЕС?
-                        </h2>
-                    </div>
-
-                    <!-- TOP LEFT CARD -->
-                    <div class="dt-anchor dt-pos-tl">
-                        <div class="dt-card fly-in-anim from-tl card-js">
-                            <div class="dt-icon-wrapper"><i data-lucide="flame" style="width: 32px; height: 32px;"></i></div>
-                            <h3>Пожежа</h3>
-                            <p class="dt-hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
-                            <i data-lucide="plus" class="expand-hint"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- TOP RIGHT CARD -->
-                    <div class="dt-anchor dt-pos-tr">
-                        <div class="dt-card fly-in-anim from-tr card-js">
-                            <div class="dt-icon-wrapper"><i data-lucide="file-warning" style="width: 32px; height: 32px;"></i></div>
-                            <h3>Штрафи та закриття</h3>
-                            <p class="dt-hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
-                            <i data-lucide="plus" class="expand-hint"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- BOTTOM LEFT CARD -->
-                    <div class="dt-anchor dt-pos-bl">
-                        <div class="dt-card fly-in-anim from-bl card-js">
-                            <div class="dt-icon-wrapper"><i data-lucide="user-x" style="width: 32px; height: 32px;"></i></div>
-                            <h3>Втрата клієнтів</h3>
-                            <p class="dt-hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
-                            <i data-lucide="plus" class="expand-hint"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- BOTTOM RIGHT CARD -->
-                    <div class="dt-anchor dt-pos-br">
-                        <div class="dt-card fly-in-anim from-br card-js">
-                            <div class="dt-icon-wrapper"><i data-lucide="zap" style="width: 32px; height: 32px;"></i></div>
-                            <h3>Витрата електроенергії</h3>
-                            <p class="dt-hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
-                            <i data-lucide="plus" class="expand-hint"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- === MOBILE LAYOUT (EXISTING) === -->
-                <div class="risk-mobile-layout md:hidden">
-                    <div class="risk-mobile-title cinematic-text">
-                        <h2 class="text-2xl font-bold text-shadow-strong leading-tight">
-                            ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span>
-                        </h2>
-                    </div>
-                    <div class="mobile-row row-top">
-                        <div class="m-grid-cell">
-                            <div class="risk-card-mob fly-in-anim from-tl card-js"><i data-lucide="flame" class="card-icon"></i><h3 class="font-bold">Пожежа</h3><p class="hidden-text">Бруд у вентиляції спалахує миттєво.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
-                        </div>
-                        <div class="m-grid-cell">
-                            <div class="risk-card-mob fly-in-anim from-tr card-js"><i data-lucide="file-warning" class="card-icon"></i><h3 class="font-bold">Штрафи</h3><p class="hidden-text">Загроза зупинки діяльності.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
-                        </div>
-                    </div>
-                    <div class="mobile-row row-bottom">
-                        <div class="m-grid-cell">
-                            <div class="risk-card-mob fly-in-anim from-bl card-js"><i data-lucide="user-x" class="card-icon"></i><h3 class="font-bold">Втрата клієнтів</h3><p class="hidden-text">Запахи кухні в залі.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
-                        </div>
-                        <div class="m-grid-cell">
-                            <div class="risk-card-mob fly-in-anim from-br card-js"><i data-lucide="zap" class="card-icon"></i><h3 class="font-bold">Електроенергія</h3><p class="hidden-text">Перевитрата до 30%.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- BLOCK 3 -->
-        <div id="block3" class="content-block">
-            <div class="text-center w-full max-w-5xl mb-1 px-2">
-                <div class="glass-title-panel cinematic-text">
-                    <h2 id="b3-title" class="text-xl md:text-3xl font-bold text-shadow-strong leading-tight"><span class="text-amber-500 font-extrabold uppercase">Професійна механічна очистка</span> повітроводів — ефективне вирішення проблеми жирового нагару та бруду</h2>
-                    <p id="b3-subtitle" class="text-[10px] md:text-sm text-blue-200 mt-2 font-medium italic">Працюємо вночі, щоб ваш бізнес працював вдень. Без зупинки кухні, без бруду в залі, з повним пакетом документів для ДСНС.</p>
-                </div>
-            </div>
-            <div class="services-matrix">
-                <div class="service-item cinematic-text" style="transition-delay: 0s;"><div class="service-title">Витяжні зонти</div><div class="photo-box" id="box-1"><img src="1.webp" class="photo-img img-before" alt="До"><img src="2.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-1">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.1s;"><div class="service-title">Фільтра</div><div class="photo-box" id="box-2"><img src="3.webp" class="photo-img img-before" alt="До"><img src="4.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-2">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.2s;"><div class="service-title">Повітропроводи</div><div class="photo-box" id="box-3"><img src="5.webp" class="photo-img img-before" alt="До"><img src="6.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-3">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.3s;"><div class="service-title">Вентилятори</div><div class="photo-box" id="box-4"><img src="7.webp" class="photo-img img-before" alt="До"><img src="8.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-4">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.4s;"><div class="service-title">Повітророзподільні пристрої</div><div class="photo-box" id="box-5"><img src="9.webp" class="photo-img img-before" alt="До"><img src="10.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-5">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.5s;"><div class="service-title">Інше</div><div class="photo-box" id="box-6"><img src="11.webp" class="photo-img img-before" alt="До"><img src="12.webp" class="photo-img img-after" alt="Після"></div></div>
-            </div>
-            <div class="desktop-static-bar hidden md:grid cinematic-text" style="transition-delay: 0.6s;"><div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Використовуємо ефективну хімію (виробництво Іспанія)</p></div><div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Працюємо в нічний час та на будь-якій висоті.</p></div><div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Фото та відео-фіксація виконаної роботи.</p></div><div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Надаємо акт утилізації жирових відходів та розробляємо документацію для ДСНС (по запиту)</p></div><div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Захищаємо ваше робоче місце від потрапляння жиру у ході наших робіт.</p></div></div>
-        </div>
-
-        <!-- BLOCK 4 -->
-        <div id="block4" class="content-block">
-            <div class="text-center w-full max-w-4xl px-4 mb-4 md:mb-8 cinematic-text"><h2 class="text-xl md:text-3xl font-bold text-shadow-strong leading-tight"><span class="text-amber-500 uppercase">Для нас кожний обʼєкт - особливий!</span><br><span class="text-white/90 font-light text-base md:text-2xl mt-2 block">Ми ретельно готуємося аби вирішити будь-яку задачу.</span></h2></div>
-            <div class="cinematic-stage cinematic-text" style="transition-delay: 0.2s;"><div class="slides-wrapper" id="portfolioWrapper"><!-- JS --></div><div class="stage-controls"><span class="text-amber-400 font-mono text-lg" id="currentSlideNum">01</span><div class="prog-bar"><div class="prog-fill" id="progFill"></div></div><span class="text-white/50 font-mono text-sm" id="totalSlideNum">06</span><div class="nav-arrows ml-6"><button class="stage-btn" id="prevBtn"><i data-lucide="chevron-left"></i></button><button class="stage-btn" id="nextBtn"><i data-lucide="chevron-right"></i></button></div></div></div>
-        </div>
-
-        <!-- BLOCK 5 -->
-        <div id="block5" class="content-block">
-            <div class="team-title-area cinematic-text">
-                <h2>НАША КОМАНДА</h2>
-                <p>Наша команда займається монтажем вентиляції, а отже ми знаємо як обслуговувати те що монтуємо</p>
-            </div>
-            <div class="carousel-container" id="teamTrack"></div>
-            <div class="dots-container" id="teamDots"></div>
-        </div>
-
+    <!-- GLOBAL BACKGROUNDS (SCROLLYTELLING) -->
+    <!-- Replace src with actual paths: clean.WEBP and dirty.WEBP -->
+    <div id="bg-clean" class="scrolly-bg">
+        <img src="https://placehold.co/1920x1080/1a1a1a/333333?text=Clean+Ventilation+(clean.WEBP)" alt="Clean Vent" class="w-full h-full object-cover opacity-60">
+    </div>
+    <div id="bg-dirty" class="scrolly-bg">
+        <img src="https://placehold.co/1920x1080/000000/550000?text=Dirty+Ventilation+(dirty.WEBP)" alt="Dirty Vent" class="w-full h-full object-cover opacity-90 mix-blend-multiply">
     </div>
 
-    <script>
-        // DATA
-        const portfolioItems = [
-            { img: '41.webp', text: "У деяких системах ми не маємо технічної можливості дістати до проблемних ділянок. В таких випадках ми встановлюємо сервісні лючки які дозволяють швидко та зручно виконати обслуговування зараз та в майбутньому. Оптимально встановлення таких люків у застельовому просторі, де їх не видно але зручно до них дістатися." },
-            { img: '42.webp', text: "У ході робіт ми не тільки виконуємо свою роботу а й оглядаємо стан вашої вентсистеми і якщо знаходимо якісь недоліки - виправляємо їх. Як наприклад в цьому випадку, коли старий адаптер дифузора вивалився зі своїх кріплень і лежав на стелі армстронг. Обвал стелі міг відбутися в будь-який момент, а ціна цій трагедії життя та здоровʼя ти хто знаходився б під нею." },
-            { img: '43.webp', text: "Особливо цікава історія трапилася при обслуговуванні дренажного коліна до якого приєднано труба для відведення конденсату. За пів року до наших робіт, раптово з усіх щілей магістралі почала витікати чорна жижа. Раптово і незрозуміло чому, зіпсувавши десятки кілограм продукції під магістраллю. Коли ми розібрали коліно, побачили що все воно було забито креозотом, не завдавши збігати рідині. Як результат, вся ця рідина замість стікання в дренаж витікала з усіх можливих щілей." },
-            { img: '44.webp', text: "Проводячи роботу і поспілкувавшись з працівниками пекарні ми почули від них скаргу що один із витяжних зонтів гірше засмоктує повітря. Тому ми вирішили провести міні-діагностику системи і знайшли дуже цікаве місце. Там де дві гілки зʼєднуються в магістраль, встановлені зворотні клапани і от один із них заклинив через неправильно вкручений саморіз. Саме це і було причиною слабкої витяжки." },
-            { img: '45.webp', text: "Частіше за все, жир протікає через стики зʼєднання повітропроводів між собою. Практика показує, якщо жир потік - відновити його дуже не просто. Для цього треба повністью розʼєднати місце зʼєднання, зачистити його, обезжирити, проспиртувати, нанести новий герметик, АКУРАТНО зʼєднати назад, закрутити. Проблема в тому, що інколи, для того аби розʼєднати одне єдине місце зʼєднання, потрібно розібрати десятки метрів повітропроводу вліво та вправо. Єдине, що можна зробити в таких випадках з уже існуючою проблемою - це акуратно (майже ювелірно) очистити проблемне місце, обезжирити, проспиртувати і нанести герметик з надлишком. Варто відмітити що це не естетично і такі маніпуляції потім видно, але це краще ніж коли старий жир з вентиляції крапає на робоче місце." },
-            { img: '46.webp', text: "Інколи буває, що касета армстронга в яку врізано стельовий дифузор - тріскається від деформації. Вирішенням подібної проблеми ми також займаємось." }
-        ];
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="relative z-10">
 
-        const teamMembers = [
-            { name: "Хроменко Єгор", role: "Комерційний директор", quote: "Я починав свій шлях монтажником та проектувальником, щоб знати ціну кожній виконаній роботі. Для мене немає проблеми, яку неможливо вирішити; вирішити можна все, але неможливе вирішується важко і дорого.", extra: "голова державної екзаменаційної комісії ЧДТУ.", img: "5.1.webp" },
-            { name: "Внуков Валерій", role: "Технічний директор", quote: "Для багатьох висота — це страх; для мене висота — це робота, яка вчить: чим складніший підйом, тим чіткішою стає перспектива", extra: "", img: "5.2.webp" },
-            { name: "Ярослав Іванченко", role: "Бригадир", quote: "Я як хороший метал-альбом: готуюся довго, роблю якісно, і в результаті — качає всіх. Якщо я затримався з монтажем, значить я налаштовую ваш повітровод так само прискіпливо, як свій кардан.", extra: "", img: "5.3.webp" },
-            { name: "Пархоменко Дмитро", role: "Монтажник", quote: "Я вірю в чесні правила: клієнт отримує ідеально змонтовану систему, а я — справедливу винагороду за свою старанність.", extra: "", img: "5.4.webp" },
-            { name: "Коваленко Євгеній", role: "Інженер КВП", quote: "Найкраща автоматика — та, яку ви не помічаєте. Коли все працює — це моя заслуга, якої не видно.", extra: "", img: "5.5.webp" }
-        ];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-
-            // BLOCK 2 LOGIC (RISKS)
-            const cards = document.querySelectorAll('.card-js');
-            cards.forEach(card => {
-                card.addEventListener('click', (e) => {
-                    e.stopPropagation(); 
-                    const isActive = card.classList.contains('active');
-                    cards.forEach(c => c.classList.remove('active'));
-                    if (!isActive) { card.classList.add('active'); }
-                });
-            });
-            document.addEventListener('click', () => {
-                cards.forEach(c => c.classList.remove('active'));
-            });
-
-            // BLOCK 4 LOGIC (PORTFOLIO)
-            const wrapper = document.getElementById('portfolioWrapper');
-            const currentNumEl = document.getElementById('currentSlideNum');
-            const totalNumEl = document.getElementById('totalSlideNum');
-            const progFill = document.getElementById('progFill');
+        <!-- BLOCK 1: HERO -->
+        <section class="h-screen flex flex-col justify-center items-center text-center px-4 relative">
+            <div class="max-w-4xl mx-auto space-y-6 fade-up" id="hero-content">
+                <h1 class="text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter uppercase leading-tight">
+                    <span class="text-threatRed drop-shadow-2xl">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ
+                </h1>
+                <h2 class="text-xl md:text-3xl text-lightGray font-light tracking-widest uppercase border-b border-threatRed/30 pb-4 inline-block">
+                    ПОВʼЯЗАНІ З БРУДНОЮ ВЕНТИЛЯЦІЄЮ*
+                </h2>
+            </div>
             
-            portfolioItems.forEach((item, i) => {
-                const el = document.createElement('div');
-                el.className = `slide-item ${i===0 ? 'active' : ''}`;
-                el.innerHTML = `<div class="slide-img-col"><img src="${item.img}" class="slide-img-obj" loading="lazy"><div class="slide-number">0${i+1}</div></div><div class="slide-txt-col"><div class="case-label">CASE STUDY</div><p class="case-desc">${item.text}</p></div>`;
-                wrapper.appendChild(el);
-            });
+            <div class="absolute bottom-8 left-0 w-full text-center px-4 opacity-50 text-xs md:text-sm text-gray-400 font-sans">
+                * За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)
+            </div>
 
-            let currentSlide = 0;
-            const slides = document.querySelectorAll('.slide-item');
-            totalNumEl.innerText = `0${slides.length}`;
-            function updateSliderUI() {
-                slides.forEach((s, i) => { if(i === currentSlide) s.classList.add('active'); else s.classList.remove('active'); });
-                currentNumEl.innerText = `0${currentSlide + 1}`;
-                const pct = ((currentSlide + 1) / slides.length) * 100;
-                progFill.style.width = `${pct}%`;
-            }
-            document.getElementById('nextBtn').addEventListener('click', () => { currentSlide = (currentSlide + 1) % slides.length; updateSliderUI(); });
-            document.getElementById('prevBtn').addEventListener('click', () => { currentSlide = (currentSlide - 1 + slides.length) % slides.length; updateSliderUI(); });
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-20 animate-bounce">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </div>
+        </section>
+
+        <!-- BLOCK 2: ZONE OF RISK (MIND MAP) -->
+        <section class="min-h-screen py-20 px-4 flex items-center justify-center relative overflow-hidden bg-gradient-to-b from-transparent via-deepBlack/80 to-deepBlack">
             
-            // BLOCK 5 TEAM LOGIC (ARCHIVE INTEGRATION)
-            const teamTrack = document.getElementById('teamTrack');
-            const teamDotsContainer = document.getElementById('teamDots');
+            <div class="max-w-6xl w-full relative h-auto md:h-[600px] flex flex-col md:block">
+                
+                <!-- Center Text -->
+                <div class="md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 text-center mb-10 md:mb-0 z-20 fade-up">
+                    <h2 class="text-3xl md:text-5xl font-bold text-white drop-shadow-lg leading-tight">
+                        Чим ризикує<br><span class="text-premiumGold">ваш бізнес?</span>
+                    </h2>
+                </div>
 
-            teamMembers.forEach((member, i) => {
-                const w = document.createElement('div');
-                w.className = 'card-wrapper';
-                w.innerHTML = `
-                    <div class="card-inner">
-                        <div class="c-text">
-                            <div class="quote-bg">“</div>
-                            <p class="c-quote">${member.quote}</p>
-                            <div>
-                                <div class="c-name">${member.name}</div>
-                                <div class="c-role">${member.role}</div>
-                            </div>
-                        </div>
-                        <div class="c-photo"><img src="${member.img}" alt="${member.name}"></div>
+                <!-- CARDS CONTAINER (Grid on Mobile, Absolute positions on Desktop) -->
+                <!-- Use JS to handle clicks -->
+                
+                <!-- Card 1: Top Left -->
+                <div class="mind-card glass-card p-6 rounded-xl cursor-pointer mb-4 md:mb-0 md:absolute md:top-0 md:left-0 md:w-80 group overflow-hidden h-20 md:h-32 hover:border-threatRed/50" onclick="toggleCard(this, 'up')">
+                    <div class="flex items-center justify-between h-full relative z-10">
+                        <h3 class="text-xl font-bold text-white group-hover:text-threatRed transition-colors">Пожежа</h3>
+                        <svg class="w-8 h-8 text-premiumGold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path></svg>
                     </div>
-                `;
-                teamTrack.appendChild(w);
-                const dot = document.createElement('div');
-                dot.className = `dot ${i===0?'active':''}`;
-                teamDotsContainer.appendChild(dot);
+                    <p class="hidden-text mt-4 text-sm text-gray-300 border-t border-gray-700 pt-2 opacity-0 transform translate-y-4 transition-all duration-300">
+                        Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.
+                    </p>
+                </div>
+
+                <!-- Card 2: Top Right -->
+                <div class="mind-card glass-card p-6 rounded-xl cursor-pointer mb-4 md:mb-0 md:absolute md:top-0 md:right-0 md:w-80 group overflow-hidden h-20 md:h-32 hover:border-threatRed/50" onclick="toggleCard(this, 'up')">
+                    <div class="flex items-center justify-between h-full relative z-10">
+                        <h3 class="text-xl font-bold text-white group-hover:text-threatRed transition-colors">Штрафи та закриття</h3>
+                        <svg class="w-8 h-8 text-premiumGold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <p class="hidden-text mt-4 text-sm text-gray-300 border-t border-gray-700 pt-2 opacity-0 transform translate-y-4 transition-all duration-300">
+                        Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.
+                    </p>
+                </div>
+
+                <!-- Card 3: Bottom Left -->
+                <div class="mind-card glass-card p-6 rounded-xl cursor-pointer mb-4 md:mb-0 md:absolute md:bottom-0 md:left-0 md:w-80 group overflow-hidden h-20 md:h-32 hover:border-threatRed/50" onclick="toggleCard(this, 'down')">
+                    <div class="flex items-center justify-between h-full relative z-10">
+                        <h3 class="text-xl font-bold text-white group-hover:text-threatRed transition-colors">Втрата клієнтів</h3>
+                        <svg class="w-8 h-8 text-premiumGold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                    <p class="hidden-text mt-4 text-sm text-gray-300 border-t border-gray-700 pt-2 opacity-0 transform translate-y-4 transition-all duration-300">
+                        Неефективна витяжка = запахи кухні в залі для клієнтів.
+                    </p>
+                </div>
+
+                <!-- Card 4: Bottom Right -->
+                <div class="mind-card glass-card p-6 rounded-xl cursor-pointer mb-0 md:mb-0 md:absolute md:bottom-0 md:right-0 md:w-80 group overflow-hidden h-20 md:h-32 hover:border-threatRed/50" onclick="toggleCard(this, 'down')">
+                    <div class="flex items-center justify-between h-full relative z-10">
+                        <h3 class="text-xl font-bold text-white group-hover:text-threatRed transition-colors">Витрата електроенергії</h3>
+                        <svg class="w-8 h-8 text-premiumGold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <p class="hidden-text mt-4 text-sm text-gray-300 border-t border-gray-700 pt-2 opacity-0 transform translate-y-4 transition-all duration-300">
+                        Забруднений вентилятор споживає на 30% більше електроенергії.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BLOCK 3: SERVICES (SOLUTIONS) -->
+        <section class="py-20 bg-deepBlack relative">
+            <div class="max-w-7xl mx-auto px-4">
+                
+                <div class="glass-card inline-block px-6 py-3 rounded-full mb-12 fade-up">
+                    <h2 class="text-lg md:text-2xl font-semibold text-white">
+                        Професійна механічна очистка повітроводів — ефективне вирішення проблеми жирового нагару та бруду
+                    </h2>
+                </div>
+
+                <!-- Photo Matrix Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-16">
+                    <!-- Generating 12 placeholders for 1.webp to 12.webp -->
+                    <!-- Loop mechanism in plain HTML -->
+                    <script>
+                        for(let i=1; i<=12; i++) {
+                            document.write(`
+                                <div class="service-img-container aspect-square rounded-lg bg-gray-900 relative group cursor-crosshair fade-up" style="transition-delay: ${i*50}ms">
+                                    <img src="https://placehold.co/400x400/331010/ffffff?text=DIRTY+${i}.webp" alt="Dirty ${i}" class="absolute inset-0 w-full h-full object-cover">
+                                    <img src="https://placehold.co/400x400/103310/ffffff?text=CLEAN+${i}.webp" alt="Clean ${i}" class="service-img-clean absolute inset-0 w-full h-full object-cover">
+                                    <div class="absolute bottom-2 right-2 bg-black/50 px-2 py-1 text-xs rounded text-premiumGold opacity-0 group-hover:opacity-100 transition-opacity">After</div>
+                                </div>
+                            `);
+                        }
+                    </script>
+                </div>
+
+                <!-- Footer Block -->
+                <div class="border-t border-gray-800 pt-8">
+                    <!-- Mobile Marquee -->
+                    <div class="md:hidden overflow-hidden whitespace-nowrap">
+                        <div class="marquee-content text-sm text-gray-400">
+                            <span class="mx-4 flex items-center"><span class="text-premiumGold mr-2">✓</span> Безпека понад усе</span>
+                            <span class="mx-4 flex items-center"><span class="text-premiumGold mr-2">✓</span> Економія енергії</span>
+                            <span class="mx-4 flex items-center"><span class="text-premiumGold mr-2">✓</span> Відповідність НАССР</span>
+                            <span class="mx-4 flex items-center"><span class="text-premiumGold mr-2">✓</span> Чисте повітря</span>
+                             <span class="mx-4 flex items-center"><span class="text-premiumGold mr-2">✓</span> Безпека понад усе</span>
+                            <span class="mx-4 flex items-center"><span class="text-premiumGold mr-2">✓</span> Економія енергії</span>
+                            <span class="mx-4 flex items-center"><span class="text-premiumGold mr-2">✓</span> Відповідність НАССР</span>
+                            <span class="mx-4 flex items-center"><span class="text-premiumGold mr-2">✓</span> Чисте повітря</span>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Static Panel -->
+                    <div class="hidden md:flex justify-around items-center text-gray-300">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-premiumGold/10 flex items-center justify-center text-premiumGold">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <span class="font-medium">Відповідність нормам пожежної безпеки</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-cleanBlue/10 flex items-center justify-center text-cleanBlue">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <span class="font-medium">Відсутність сторонніх запахів</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </div>
+                            <span class="font-medium">Збільшення ККД обладнання</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOCK 4: PORTFOLIO (CASES) -->
+        <section class="py-20 bg-gradient-to-t from-black to-gray-900">
+            <div class="max-w-7xl mx-auto px-4">
+                <h2 class="text-4xl md:text-6xl font-bold mb-12 text-white/90 fade-up">Наші Кейси</h2>
+
+                <!-- Custom Slider -->
+                <div class="relative w-full overflow-hidden rounded-2xl glass-card border-none fade-up">
+                    <div id="portfolio-slider" class="relative min-h-[600px] md:min-h-[500px]">
+                        <!-- Slides will be injected by JS -->
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="absolute bottom-6 right-6 flex gap-4 z-20">
+                        <button onclick="changeSlide(-1)" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
+                            ←
+                        </button>
+                        <button onclick="changeSlide(1)" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
+                            →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOCK 5: TEAM -->
+        <section class="py-20 bg-black overflow-hidden min-h-screen flex flex-col justify-center">
+            <div class="max-w-7xl mx-auto px-4 w-full">
+                <h2 class="text-4xl font-bold mb-16 text-center"><span class="text-premiumGold">Команда</span> Професіоналів</h2>
+                
+                <div class="carousel-container relative h-[500px] flex items-center justify-center w-full">
+                    <div id="team-carousel" class="flex items-center justify-center w-full relative h-full">
+                        <!-- Cards injected by JS -->
+                    </div>
+                    
+                     <!-- Team Navigation -->
+                     <button onclick="rotateTeam(-1)" class="absolute left-2 md:left-10 z-50 p-4 bg-black/50 rounded-full text-white hover:text-premiumGold">❮</button>
+                     <button onclick="rotateTeam(1)" class="absolute right-2 md:right-10 z-50 p-4 bg-black/50 rounded-full text-white hover:text-premiumGold">❯</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simple Footer -->
+        <footer class="py-10 text-center border-t border-gray-900 text-gray-500 text-sm">
+            <p>&copy; 2024 Ventilation Cleaning Services. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <!-- LOGIC SCRIPT -->
+    <script>
+        // --- 1. Scrollytelling Background Logic ---
+        const bgDirty = document.getElementById('bg-dirty');
+        
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            // Calculate opacity: 1 at top, 0 when scrolled one viewport height
+            // Using logic: Opacity = 1 - (scroll / height)
+            let opacity = 1 - (scrollY / (windowHeight * 0.8));
+            opacity = Math.max(0, Math.min(1, opacity)); // Clamp between 0 and 1
+            
+            bgDirty.style.opacity = opacity;
+        });
+
+        // --- 2. Animation Observer (Fade Up) ---
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // --- 3. Mind Map Card Logic ---
+        function toggleCard(card, direction) {
+            // Check if card is already active
+            const isActive = card.classList.contains('active-card');
+            
+            // Reset all cards first
+            document.querySelectorAll('.mind-card').forEach(c => {
+                c.classList.remove('active-card', 'h-auto', 'z-50', 'bg-black/90', 'border-premiumGold');
+                c.classList.add('h-20', 'md:h-32'); // Return to compact size
+                c.querySelector('.hidden-text').classList.remove('opacity-100', 'translate-y-0');
+                c.querySelector('.hidden-text').classList.add('opacity-0', 'translate-y-4');
+                // Reset positions
+                c.style.transform = "translate(0,0)";
             });
 
-            const teamCards = document.querySelectorAll('.card-wrapper');
-            const teamDots = document.querySelectorAll('.dot');
+            if (!isActive) {
+                // Activate clicked card
+                card.classList.add('active-card', 'h-auto', 'z-50', 'bg-black/90', 'border-premiumGold');
+                card.classList.remove('h-20', 'md:h-32');
+                
+                // Show text
+                setTimeout(() => {
+                    const text = card.querySelector('.hidden-text');
+                    text.classList.remove('opacity-0', 'translate-y-4');
+                    text.classList.add('opacity-100', 'translate-y-0');
+                }, 100);
 
-            function updateCarousel() {
-                const center = teamTrack.scrollLeft + (teamTrack.offsetWidth / 2);
-                let activeIndex = 0;
-
-                teamCards.forEach((card, index) => {
-                    const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
-                    const distance = center - cardCenter;
-                    if (Math.abs(distance) < card.offsetWidth / 2) activeIndex = index;
-
-                    const inner = card.querySelector('.card-inner');
-                    const normalizedDist = distance / (teamTrack.offsetWidth * 0.6);
-                    const rotateY = normalizedDist * -25; 
-                    const scale = 1 - Math.abs(normalizedDist) * 0.15;
-                    const brightness = 1 - Math.abs(normalizedDist) * 0.4;
-
-                    inner.style.transform = `perspective(800px) rotateY(${rotateY}deg) scale(${scale})`;
-                    inner.style.filter = `brightness(${brightness})`;
-                    card.style.zIndex = 100 - Math.round(Math.abs(normalizedDist) * 10);
-                });
-
-                teamDots.forEach((dot, idx) => {
-                    if (idx === activeIndex) dot.classList.add('active');
-                    else dot.classList.remove('active');
-                });
+                // Desktop animation direction (simple vertical expansion logic via Flex/CSS, 
+                // but added visual emphasis for the "Direction" requirement)
+                // Note: The expanding height naturally pushes content down or up based on flow in mobile,
+                // On desktop absolute, we'd need complex transform calculations or anchor points.
+                // For this prototype, we simply expand the container and add Z-index.
             }
+        }
 
-            teamTrack.addEventListener('scroll', () => requestAnimationFrame(updateCarousel));
-            window.addEventListener('resize', updateCarousel);
-            setTimeout(updateCarousel, 100);
+        // --- 4. Portfolio Data & Logic ---
+        const portfolioData = [
+            { id: '01', img: '41.webp', text: "У деяких системах ми не маємо технічної можливості дістати до проблемних ділянок. В таких випадках ми встановлюємо сервісні лючки які дозволяють швидко та зручно виконати обслуговування зараз та в майбутньому. Оптимально встановлення таких люків у застельовому просторі, де їх не видно але зручно до них дістатися." },
+            { id: '02', img: '42.webp', text: "У ході робіт ми не тільки виконуємо свою роботу а й оглядаємо стан вашої вентсистеми і якщо знаходимо якісь недоліки - виправляємо їх. Як наприклад в цьому випадку, коли старий адаптер дифузора вивалився зі своїх кріплень і лежав на стелі армстронг. Обвал стелі міг відбутися в будь-який момент, а ціна цій трагедії життя та здоровʼя ти хто знаходився б під нею." },
+            { id: '03', img: '43.webp', text: "Особливо цікава історія трапилася при обслуговуванні дренажного коліна до якого приєднано труба для відведення конденсату. За пів року до наших робіт, раптово з усіх щілей магістралі почала витікати чорна жижа. Раптово і незрозуміло чому, зіпсувавши десятки кілограм продукції під магістраллю. Коли ми розібрали коліно, побачили що все воно було забито креозотом, не завдавши збігати рідині. Як результат, вся ця рідина замість стікання в дренаж витікала з усіх можливих щілей." },
+            { id: '04', img: '44.webp', text: "Проводячи роботу і поспілкувавшись з працівниками пекарні ми почули від них скаргу що один із витяжних зонтів гірше засмоктує повітря. Тому ми вирішили провести міні-діагностику системи і знайшли дуже цікаве місце. Там де дві гілки зʼєднуються в магістраль, встановлені зворотні клапани і от один із них заклинив через неправильно вкручений саморіз. Саме це і було причиною слабкої витяжки." },
+            { id: '05', img: '45.webp', text: "Частіше за все, жир протікає через стики зʼєднання повітропроводів між собою. Практика показує, якщо жир потік - відновити його дуже не просто. Для цього треба повністью розʼєднати місце зʼєднання, зачистити його, обезжирити, проспиртувати, нанести новий герметик, АКУРАТНО зʼєднати назад, закрутити. Проблема в тому, що інколи, для того аби розʼєднати одне єдине місце зʼєднання, потрібно розібрати десятки метрів повітропроводу вліво та вправо. Єдине, що можна зробити в таких випадках з уже існуючою проблемою - це акуратно (майже ювелірно) очистити проблемне місце, обезжирити, проспиртувати і нанести герметик з надлишком. Варто відмітити що це не естетично і такі маніпуляції потім видно, але це краще ніж коли старий жир з вентиляції крапає на робоче місце." },
+            { id: '06', img: '46.webp', text: "Інколи буває, що касета армстронга в яку врізано стельовий дифузор - тріскається від деформації. Вирішенням подібної проблеми ми також займаємось." }
+        ];
 
-            // GLOBAL SCROLL SYNC
-            const dirtyImg = document.getElementById('dirtyImage');
-            const blocks = [
-                document.getElementById('block1'),
-                document.getElementById('block2'),
-                document.getElementById('block3'),
-                document.getElementById('block4'),
-                document.getElementById('block5')
-            ];
-            const hTitle = document.getElementById('hero-title');
+        let currentSlide = 0;
+        const sliderContainer = document.getElementById('portfolio-slider');
+
+        function renderSlide() {
+            const item = portfolioData[currentSlide];
+            sliderContainer.innerHTML = `
+                <div class="flex flex-col md:flex-row h-full">
+                    <div class="w-full md:w-2/3 h-[300px] md:h-full relative">
+                        <img src="https://placehold.co/800x600/111/fff?text=${item.img}" class="w-full h-full object-cover" alt="Case ${item.id}">
+                        <div class="absolute top-4 left-4 bg-black/80 text-white text-3xl font-bold p-4 rounded border border-white/10 font-serif">
+                            ${item.id}
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/3 p-8 flex flex-col justify-center bg-black/80 backdrop-blur-sm border-l border-white/10">
+                        <p class="text-gray-300 leading-relaxed text-sm md:text-base font-light">
+                            ${item.text}
+                        </p>
+                    </div>
+                </div>
+            `;
+            // Add fade animation
+            sliderContainer.firstElementChild.animate([
+                { opacity: 0, transform: 'translateX(20px)' },
+                { opacity: 1, transform: 'translateX(0)' }
+            ], { duration: 500, easing: 'ease-out' });
+        }
+
+        function changeSlide(dir) {
+            currentSlide = (currentSlide + dir + portfolioData.length) % portfolioData.length;
+            renderSlide();
+        }
+        renderSlide();
+
+        // --- 5. Team Carousel Logic (3D Effect) ---
+        const teamData = [
+            { name: "Хроменко Єгор", role: "Комерційний директор", img: "5.1.webp", quote: "Я починав свій шлях монтажником та проектувальником, щоб знати ціну кожній виконаній роботі. Для мене немає проблеми, яку неможливо вирішити; вирішити можна все, але неможливе вирішується важко і дорого." },
+            { name: "Внуков Валерій", role: "Технічний директор", img: "5.2.webp", quote: "Для багатьох висота — це страх; для мене висота — це робота, яка вчить: чим складніший підйом, тим чіткішою стає перспектива" },
+            { name: "Ярослав Іванченко", role: "Бригадир, монтажник, сервісант", img: "5.3.webp", quote: "Я як хороший метал-альбом: готуюся довго, роблю якісно, і в результаті — качає всіх. Якщо я затримався з монтажем, значить я налаштовую ваш повітровод так само прискіпливо, як свій кардан перед концертом." },
+            { name: "Пархоменко Дмитро", role: "Монтажник, сервісант", img: "5.4.webp", quote: "Я вірю в чесні правила: клієнт отримує ідеально змонтовану систему, а я — справедливу винагороду за свою старанність." },
+            { name: "Коваленко Євгеній", role: "інженер КВП, електрик", img: "5.5.webp", quote: "Найкраща автоматика — та, яку ви не помічаєте. Коли все працює — це моя заслуга, якої не видно." }
+        ];
+
+        let teamIndex = 0;
+        const teamContainer = document.getElementById('team-carousel');
+
+        function renderTeam() {
+            teamContainer.innerHTML = '';
             
-            // Selector for B2 cards animation (INCLUDING DESKTOP TITLE & CARDS)
-            const b2Anims = document.querySelectorAll('.dt-center-title, .fly-in-anim, .risk-mobile-title, .risk-card-mob');
-            
-            const b3Anims = document.querySelectorAll('#block3 .cinematic-text, .mobile-marquee, .desktop-static-bar');
-            const b4Anims = document.querySelectorAll('#block4 .cinematic-text');
-            const b5Anims = document.querySelectorAll('.team-title-area');
-            let introDone = false;
+            teamData.forEach((member, i) => {
+                const el = document.createElement('div');
+                // Calculate relative position based on center index
+                const offset = i - teamIndex;
+                const absOffset = Math.abs(offset);
+                
+                // Hide elements too far away for performance and visual clarity
+                if (absOffset > 2) return;
 
-            setTimeout(() => { introDone = true; sync(); }, 500);
+                let styles = 'transition: all 0.5s ease; position: absolute; width: 300px;';
+                let classes = 'bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-2xl flex flex-col items-center text-center';
 
-            function showBlock(idx) { blocks[idx].style.opacity = 1; blocks[idx].style.visibility = 'visible'; }
-            function hideBlock(idx) { blocks[idx].style.opacity = 0; blocks[idx].style.visibility = 'hidden'; }
-
-            function sync() {
-                const sHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const scroll = window.scrollY;
-                const progress = scroll / sHeight;
-                const op = (1 - progress) * 100;
-
-                if(dirtyImg) dirtyImg.style.opacity = (1 - progress).toFixed(3);
-
-                if (op > 80) { showBlock(0); if(introDone) hTitle.classList.add('in-focus'); }
-                else { hideBlock(0); hTitle.classList.remove('in-focus'); }
-
-                if (op <= 80 && op > 60) { 
-                    showBlock(1); 
-                    // Add fade-in to all elements including desktop
-                    document.querySelectorAll('.fly-in-anim').forEach(el => el.classList.add('landed'));
-                    // Add in-focus to title
-                    if(document.querySelector('.dt-center-title')) document.querySelector('.dt-center-title').classList.add('in-focus');
-                } else { 
-                    hideBlock(1); 
-                    document.querySelectorAll('.fly-in-anim').forEach(el => el.classList.remove('landed'));
-                    if(document.querySelector('.dt-center-title')) document.querySelector('.dt-center-title').classList.remove('in-focus');
+                if (offset === 0) {
+                    // Active Center
+                    styles += 'transform: translateX(0) scale(1) z-index: 20; opacity: 1;';
+                    classes += ' border-premiumGold/50 box-shadow-gold';
+                } else if (offset === -1) {
+                    // Left 1
+                    styles += 'transform: translateX(-110%) scale(0.85) rotateY(15deg); z-index: 10; opacity: 0.6;';
+                } else if (offset === 1) {
+                    // Right 1
+                    styles += 'transform: translateX(110%) scale(0.85) rotateY(-15deg); z-index: 10; opacity: 0.6;';
+                } else {
+                    // Far edges
+                    styles += `transform: translateX(${offset * 100}%) scale(0.7); z-index: 0; opacity: 0;`;
                 }
 
-                if (op <= 60 && op > 40) { showBlock(2); b3Anims.forEach(el=>el.classList.add('in-focus')); }
-                else { hideBlock(2); b3Anims.forEach(el=>el.classList.remove('in-focus')); }
+                el.style.cssText = styles;
+                el.className = classes;
+                el.innerHTML = `
+                    <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-premiumGold mb-4">
+                        <img src="https://placehold.co/200x200/222/999?text=${member.img}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <p class="font-serif italic text-gray-400 mb-4 text-sm">"${member.quote.substring(0, 100)}..."</p>
+                    <h4 class="text-white font-bold text-lg">${member.name}</h4>
+                    <p class="text-premiumGold text-xs uppercase tracking-wider">${member.role}</p>
+                `;
+                
+                // Click to center
+                el.onclick = () => {
+                    teamIndex = i;
+                    renderTeam();
+                };
 
-                if (op <= 40 && op > 20) { showBlock(3); b4Anims.forEach(el=>el.classList.add('in-focus')); }
-                else { hideBlock(3); b4Anims.forEach(el=>el.classList.remove('in-focus')); }
+                teamContainer.appendChild(el);
+            });
+        }
 
-                if (op <= 20) { showBlock(4); b5Anims.forEach(el=>el.classList.add('in-focus')); updateCarousel(); }
-                else { hideBlock(4); b5Anims.forEach(el=>el.classList.remove('in-focus')); }
-            }
+        function rotateTeam(dir) {
+            teamIndex = Math.max(0, Math.min(teamData.length - 1, teamIndex + dir));
+            renderTeam();
+        }
+        renderTeam();
 
-            window.addEventListener('scroll', sync);
-            sync();
-        });
     </script>
 </body>
 </html>
-
 
