@@ -55,36 +55,33 @@
 
         /* --- BLOCK 1: HERO --- */
         #hero-footnote {
-            /* Now handled by cinematic-text logic, but base styles here */
             font-size: 0.8rem; color: rgba(255,255,255,0.7);
             position: absolute; bottom: 12%; width: 100%; text-align: center;
         }
         @media (min-width: 769px) { #hero-footnote { bottom: 15%; } }
 
-        /* --- BLOCK 2: RISKS (DESKTOP "SUN" LAYOUT) --- */
+        /* --- BLOCK 2: RISKS (DESKTOP) --- */
         .dt-mindmap-container {
             position: relative; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
         }
+        
+        /* FIX FOR DESKTOP CENTER TITLE */
         .dt-center-title {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 400px;
-            text-align: center; z-index: 10; pointer-events: none;
+            position: absolute; 
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%); 
+            width: 100%; max-width: 500px;
+            text-align: center; 
+            z-index: 10; pointer-events: none;
+            margin: 0; padding: 0; /* Reset margins to ensure strict centering */
         }
 
-        /* Anchors positioning: Fixed relative to center. 
-           Using percentages and margins to create the "gap" for the center title. */
-        .dt-anchor {
-            position: absolute; width: 320px; height: 120px; z-index: 20;
-        }
+        .dt-anchor { position: absolute; width: 320px; height: 120px; z-index: 20; }
         
-        /* Top Left: Anchored at Bottom Right of its box to the Center-Left of screen */
         .dt-pos-tl { bottom: 50%; right: 50%; margin-bottom: 80px; margin-right: 180px; }
-        /* Top Right */
         .dt-pos-tr { bottom: 50%; left: 50%; margin-bottom: 80px; margin-left: 180px; }
-        /* Bottom Left */
         .dt-pos-bl { top: 50%; right: 50%; margin-top: 80px; margin-right: 180px; }
-        /* Bottom Right */
         .dt-pos-br { top: 50%; left: 50%; margin-top: 80px; margin-left: 180px; }
 
         .dt-card {
@@ -99,10 +96,7 @@
         }
         .dt-card:hover { border-color: rgba(251, 191, 36, 0.5); background: rgba(255, 255, 255, 0.06); }
 
-        /* EXPANSION DIRECTION LOGIC */
-        /* Top cards grow UPWARDS (away from center) */
         .dt-pos-tl .dt-card, .dt-pos-tr .dt-card { bottom: 0; top: auto; transform-origin: bottom center; }
-        /* Bottom cards grow DOWNWARDS (away from center) */
         .dt-pos-bl .dt-card, .dt-pos-br .dt-card { top: 0; bottom: auto; transform-origin: top center; }
 
         .dt-card.active {
@@ -110,13 +104,11 @@
             border-color: #fbbf24; z-index: 50; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* FLY-IN ANIMATIONS (From edges to center) */
         .fly-in-anim { opacity: 0; transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .from-tl { transform: translate(-100vw, -100vh) scale(0.5); }
         .from-tr { transform: translate(100vw, -100vh) scale(0.5); }
         .from-bl { transform: translate(-100vw, 100vh) scale(0.5); }
         .from-br { transform: translate(100vw, 100vh) scale(0.5); }
-        
         .fly-in-anim.landed { opacity: 1; transform: translate(0, 0) scale(1); }
 
         .dt-icon-wrapper { color: #fbbf24; margin-bottom: 12px; transition: transform 0.4s; }
@@ -132,46 +124,61 @@
         }
         .dt-card.active .expand-hint { transform: rotate(45deg); color: #fbbf24; }
 
-        /* --- BLOCK 2: MOBILE LAYOUT (UPDATED) --- */
+        /* --- BLOCK 2: MOBILE LAYOUT (FIXED POSITIONING & EXPANSION) --- */
         @media (max-width: 768px) {
             .dt-mindmap-container { display: none; }
-            .risk-mobile-layout {
-                position: relative; width: 100%; height: 70vh;
-                display: flex; flex-direction: column; align-items: center;
-            }
-            .risk-mobile-title { 
-                text-align: center; margin-bottom: 20px; z-index: 20; 
-                margin-top: -40px; /* Moved higher up */
-            }
-            .risk-mobile-title h2 { font-size: 1.8rem; line-height: 1.1; } /* Increased size */
             
+            .risk-mobile-layout {
+                position: relative; width: 100%; height: 100%;
+                display: flex; flex-direction: column; align-items: center;
+                justify-content: flex-start; /* Start from top */
+                padding-top: 80px; /* Force title down from top edge */
+                gap: 20px;
+            }
+            
+            .risk-mobile-title { 
+                text-align: center; z-index: 20; width: 100%; margin-bottom: 10px;
+            }
+            .risk-mobile-title h2 { font-size: 1.8rem; line-height: 1.1; }
+
             .mobile-grid {
                 display: grid; grid-template-columns: 1fr 1fr; 
                 gap: 15px; width: 95%; max-width: 400px;
             }
-            .m-grid-cell { position: relative; height: 140px; } /* Increased height placeholder */
+            
+            .m-grid-cell { position: relative; height: 140px; }
             
             .risk-card-mob {
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                position: absolute; width: 100%; height: 100%; left: 0;
                 background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px);
                 border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
                 padding: 1rem; display: flex; flex-direction: column; justify-content: flex-start;
                 transition: height 0.3s ease, z-index 0s; overflow: hidden;
             }
             
+            /* FIXED EXPANSION DIRECTION FOR MOBILE */
+            /* Top Row: Grow UP */
+            .row-top .m-grid-cell .risk-card-mob {
+                bottom: 0; top: auto; transform-origin: bottom center;
+            }
+            /* Bottom Row: Grow DOWN */
+            .row-bottom .m-grid-cell .risk-card-mob {
+                top: 0; bottom: auto; transform-origin: top center;
+            }
+
             .risk-card-mob.active {
-                height: 260px !important; z-index: 100; /* Overlap others */
+                height: 260px !important; z-index: 100;
                 background: #111; border-color: #fbbf24;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             }
+            
             .card-icon { color: #fbbf24; margin-bottom: 8px; width: 32px; height: 32px; }
             .risk-card-mob h3 { font-size: 1rem; font-weight: 700; }
-            
             .hidden-text { display: block; opacity: 0; max-height: 0; font-size: 0.9rem; color: #ccc; transition: all 0.3s ease; line-height: 1.3; }
             .active .hidden-text { opacity: 1; max-height: 200px; margin-top: 10px; }
         }
 
-        /* --- BLOCK 3: SERVICES (UPDATED ANIMATION & MOBILE) --- */
+        /* --- BLOCK 3: SERVICES (FIXED MOBILE LAYOUT & MARQUEE) --- */
         #block3.content-block { justify-content: space-between; padding-top: 60px; padding-bottom: 20px; }
         
         .services-matrix {
@@ -188,20 +195,12 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             transition: border-color 0.5s, box-shadow 0.5s;
         }
-        .photo-img { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            object-fit: cover; transition: opacity 1s ease-in-out; 
-        }
+        .photo-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; }
         .img-before { z-index: 10; opacity: 1; }
-        .img-after { z-index: 5; opacity: 1; } /* After is always behind, we fade out Before */
+        .img-after { z-index: 5; opacity: 1; }
         
-        /* Animation State: "Clean" */
         .photo-box.show-clean .img-before { opacity: 0; }
-        .photo-box.show-clean { 
-            border-color: #3b82f6; 
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); 
-        }
-        
+        .photo-box.show-clean { border-color: #3b82f6; box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); }
         .label-badge { 
             position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); 
             padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; 
@@ -209,15 +208,22 @@
         }
 
         @media (max-width: 768px) {
-            #block3.content-block { padding-top: 80px; gap: 10px; justify-content: flex-start; }
+            /* FIXED POSITIONING FOR BLOCK 3 MOBILE */
+            #block3.content-block { 
+                padding-top: 50px; /* Lifted up title */
+                justify-content: flex-start; /* Stack from top */
+            }
             .services-matrix { 
-                grid-template-columns: repeat(2, 1fr); /* 2 Columns Mobile */
-                gap: 15px; margin-top: 10px; padding: 0 10px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px; 
+                margin-top: 0; 
+                padding: 0 10px;
+                margin-bottom: auto; /* Push remaining space to bottom for marquee */
             }
             .photo-box { max-width: 100%; border-radius: 12px; } 
             .service-title { font-size: 0.9rem; }
-            #b3-title { font-size: 1.4rem; line-height: 1.1; } 
-            #b3-subtitle { font-size: 11px; display: none; } /* Hide subtitle on mobile to save space */
+            #b3-title { font-size: 1.4rem; line-height: 1.1; margin-bottom: 5px; } 
+            #b3-subtitle { display: none; }
         }
 
         /* Marquee */
@@ -231,15 +237,16 @@
         
         .mobile-marquee { 
             width: 100%; overflow: hidden; background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(15px); 
-            border-top: 1px solid rgba(255, 255, 255, 0.15); margin-top: auto; 
-            display: flex; align-items: center; height: 50px; pointer-events: auto; 
+            border-top: 1px solid rgba(255, 255, 255, 0.15); 
+            margin-top: auto; 
+            margin-bottom: 30px; /* Lift from very bottom to be visible */
+            display: flex; align-items: center; height: 50px; pointer-events: auto; flex-shrink: 0;
         }
         .marquee-track { display: flex; gap: 40px; padding: 0 20px; animation: marquee 30s linear infinite; width: max-content; }
         .marquee-track .benefit-item { align-items: center; white-space: nowrap; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* --- REST OF STYLES (Blocks 4, 5) UNCHANGED --- */
-        /* ... (Block 4 & 5 CSS from previous version kept here) ... */
+        /* --- REST OF STYLES (Blocks 4, 5) --- */
         #block4.content-block { justify-content: center; padding: 20px; }
         .cinematic-stage { 
             position: relative; width: 95%; max-width: 1000px; height: 60vh; max-height: 550px; 
@@ -316,17 +323,21 @@
                         <h2 class="font-extrabold text-shadow-strong leading-tight text-white">ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span></h2>
                     </div>
                     <div class="mobile-grid">
-                        <div class="m-grid-cell">
-                            <div class="risk-card-mob fly-in-anim from-tl card-js"><i data-lucide="flame" class="card-icon"></i><h3 class="font-bold">Пожежа</h3><p class="hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                        <div class="row-top contents">
+                            <div class="m-grid-cell">
+                                <div class="risk-card-mob fly-in-anim from-tl card-js"><i data-lucide="flame" class="card-icon"></i><h3 class="font-bold">Пожежа</h3><p class="hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                            </div>
+                            <div class="m-grid-cell">
+                                <div class="risk-card-mob fly-in-anim from-tr card-js"><i data-lucide="file-warning" class="card-icon"></i><h3 class="font-bold">Штрафи</h3><p class="hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                            </div>
                         </div>
-                        <div class="m-grid-cell">
-                            <div class="risk-card-mob fly-in-anim from-tr card-js"><i data-lucide="file-warning" class="card-icon"></i><h3 class="font-bold">Штрафи</h3><p class="hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
-                        </div>
-                        <div class="m-grid-cell">
-                            <div class="risk-card-mob fly-in-anim from-bl card-js"><i data-lucide="user-x" class="card-icon"></i><h3 class="font-bold">Клієнти</h3><p class="hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
-                        </div>
-                        <div class="m-grid-cell">
-                            <div class="risk-card-mob fly-in-anim from-br card-js"><i data-lucide="zap" class="card-icon"></i><h3 class="font-bold">Електрика</h3><p class="hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                        <div class="row-bottom contents">
+                            <div class="m-grid-cell">
+                                <div class="risk-card-mob fly-in-anim from-bl card-js"><i data-lucide="user-x" class="card-icon"></i><h3 class="font-bold">Клієнти</h3><p class="hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                            </div>
+                            <div class="m-grid-cell">
+                                <div class="risk-card-mob fly-in-anim from-br card-js"><i data-lucide="zap" class="card-icon"></i><h3 class="font-bold">Електрика</h3><p class="hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -386,7 +397,6 @@
     </div>
 
     <script>
-        // --- DATA ---
         const portfolioItems = [
             { img: '41.webp', text: "У деяких системах ми не маємо технічної можливості дістати до проблемних ділянок. В таких випадках ми встановлюємо сервісні лючки які дозволяють швидко та зручно виконати обслуговування зараз та в майбутньому." },
             { img: '42.webp', text: "У ході робіт ми не тільки виконуємо свою роботу а й оглядаємо стан вашої вентсистеми. Тут старий адаптер дифузора вивалився зі своїх кріплень. Ми це виправили, попередивши можливий обвал." },
@@ -407,7 +417,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
 
-            // --- BLOCK 2: INTERACTIVITY ---
             const cards = document.querySelectorAll('.card-js');
             cards.forEach(card => {
                 card.addEventListener('click', (e) => {
@@ -419,7 +428,6 @@
             });
             document.addEventListener('click', () => cards.forEach(c => c.classList.remove('active')));
 
-            // --- BLOCK 3: BEFORE/AFTER ANIMATION LOGIC ---
             let serviceAnimInterval = null;
             function startServiceAnimation() {
                 if (serviceAnimInterval) return;
@@ -439,7 +447,6 @@
                 }
             }
 
-            // --- BLOCK 4: SLIDER ---
             const wrapper = document.getElementById('portfolioWrapper');
             portfolioItems.forEach((item, i) => {
                 const el = document.createElement('div');
@@ -460,7 +467,6 @@
             document.getElementById('nextBtn').addEventListener('click', () => { currentSlide = (currentSlide + 1) % slides.length; updateSlider(); });
             document.getElementById('prevBtn').addEventListener('click', () => { currentSlide = (currentSlide - 1 + slides.length) % slides.length; updateSlider(); });
 
-            // --- BLOCK 5: TEAM ---
             const teamTrack = document.getElementById('teamTrack');
             const teamDotsCont = document.getElementById('teamDots');
             teamMembers.forEach((m, i) => {
@@ -487,7 +493,6 @@
             teamTrack.addEventListener('scroll', () => requestAnimationFrame(updateTeam));
             setTimeout(updateTeam, 500);
 
-            // --- CORE SCROLLYTELLING LOGIC ---
             const dirtyImg = document.getElementById('dirtyImage');
             const scrollRanges = [
                 { id: 'block1', showStart: 100, showEnd: 90, fadeStart: 90, fadeEnd: 87 },
@@ -535,14 +540,12 @@
                         el.style.opacity = opacity;
                         if (opacity > 0.5) {
                             el.querySelectorAll('.cinematic-text, .fly-in-anim, .glass-title-panel').forEach(c => c.classList.add('in-focus', 'landed'));
-                            // Enable Block 3 Animation
                             if (range.id === 'block3') startServiceAnimation();
                         }
                     } else {
                         el.style.visibility = 'hidden';
                         el.style.opacity = 0;
                         el.querySelectorAll('.cinematic-text, .fly-in-anim, .glass-title-panel').forEach(c => c.classList.remove('in-focus', 'landed'));
-                        // Disable Block 3 Animation
                         if (range.id === 'block3') stopServiceAnimation();
                     }
                 });
@@ -555,3 +558,4 @@
     </script>
 </body>
 </html>
+
