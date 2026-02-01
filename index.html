@@ -3,786 +3,540 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Очистка систем вентиляції | Scrollytelling</title>
-    
-    <!-- Tailwind CSS (CDN for prototyping) -->
+    <title>Ventilation Cleaning Scrollytelling</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
-
-    <!-- Tailwind Config for Custom Colors -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        danger: '#ef4444',
-                        gold: '#fbbf24',
-                        dark: '#000000',
-                        glass: 'rgba(255, 255, 255, 0.05)',
-                        'glass-border': 'rgba(255, 255, 255, 0.1)',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    },
-                    boxShadow: {
-                        'glow': '0 0 20px rgba(251, 191, 36, 0.3)',
-                    }
-                }
-            }
-        }
-    </script>
-
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
+        /* --- GLOBAL & RESET --- */
+        html { scroll-behavior: smooth; }
         body {
-            background-color: #000000;
-            color: white;
-            /* Штучна висота для скролу. 100vh * кількість тактів */
-            height: 1200vh; 
+            height: 1200vh; /* Збільшив висоту для плавності ходу "тактів" миші */
             margin: 0;
+            background-color: #000;
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
             overflow-x: hidden;
-        }
-
-        /* Hide scrollbar for cleaner look */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #111;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px;
-        }
-
-        /* Fixed Background Layer */
-        .bg-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            transition: opacity 0.1s linear;
-            z-index: 0;
-        }
-
-        #bg-clean {
-            /* Fallback color if image missing */
-            background-color: #1a202c; 
-            background-image: url('clean.webp');
-            opacity: 1;
-            z-index: 1;
-        }
-
-        #bg-dirty {
-            /* Fallback color */
-            background-color: #000000;
-            background-image: url('dirty.webp');
-            opacity: 1; /* Changes via JS */
-            z-index: 2;
-        }
-
-        /* Overlay to darken images slightly for text readability */
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 3;
-            pointer-events: none;
-        }
-
-        /* Content Stages */
-        .stage-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            pointer-events: none; /* Allow scroll through */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .block-content {
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            filter: blur(10px);
-        }
-
-        .block-content.active {
-            opacity: 1;
-            transform: scale(1);
-            filter: blur(0px);
-            pointer-events: auto;
-        }
-
-        /* Utilities */
-        .glass-panel {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        /* Block 2: Mind Map Interactions */
-        .mind-card {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            overflow: hidden;
-            max-height: 100px; /* Collapsed height */
-        }
-        .mind-card.expanded {
-            max-height: 400px; /* Expanded height */
-            background: rgba(40, 40, 40, 0.9);
-            border-color: #fbbf24;
-        }
-        
-        /* Block 3: Services */
-        .service-img-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.5rem;
-        }
-        .service-img-clean {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        .service-img-container:hover .service-img-clean {
-            opacity: 1;
-        }
-        .service-img-container:hover {
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); /* Blue glow */
-        }
-
-        /* Marquee */
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 20s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* 3D Perspective for Team */
-        .perspective-container {
-            perspective: 1000px;
-        }
-        .team-card-3d {
-            transition: transform 0.6s, opacity 0.6s;
-            transform-style: preserve-3d;
-        }
-        
-        /* Debug Info */
-        #debug {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: red;
+            -webkit-tap-highlight-color: transparent;
             color: white;
-            padding: 5px;
-            z-index: 100;
-            font-size: 12px;
-            display: none; /* Turn on to debug scroll values */
         }
+
+        /* --- LAYERS --- */
+        .fixed-viewport {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .bg-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; will-change: opacity; pointer-events: none;
+        }
+
+        /* --- CONTENT BLOCKS --- */
+        .content-block {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center;
+            z-index: 30; pointer-events: none; 
+            padding: 20px;
+            opacity: 0; /* JS керує цим */
+            visibility: hidden;
+        }
+        .content-block > * { pointer-events: auto; }
+
+        /* --- ANIMATIONS --- */
+        .cinematic-text {
+            opacity: 0; filter: blur(20px); transform: scale(1.15) translateY(20px);
+            transition: all 0.5s ease-out; will-change: transform, opacity, filter;
+        }
+        .in-focus {
+            opacity: 1 !important; filter: blur(0) !important; transform: scale(1) translateY(0) !important;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .text-shadow-strong { text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6); }
+
+        /* --- BLOCK 1: HERO --- */
+        #hero-footnote {
+            position: absolute; width: 100%; text-align: center; opacity: 0;
+            transition: opacity 0.5s ease; font-size: 0.8rem; color: rgba(255,255,255,0.7);
+            z-index: 50; bottom: 15%; 
+        }
+        @media (min-width: 769px) { #hero-footnote { bottom: 20%; } }
+
+        /* --- BLOCK 2: RISKS (Desktop Mind Map & Mobile) --- */
+        .dt-mindmap-container {
+            position: relative; width: 1000px; height: 600px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .dt-center-title {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 350px;
+            text-align: center; z-index: 10; pointer-events: none;
+        }
+        .dt-anchor { position: absolute; width: 320px; height: 120px; z-index: 20; }
+        /* Positioning logic for 2x2 grid */
+        .dt-pos-tl { bottom: 50%; right: 50%; margin-bottom: 50px; margin-right: 30px; }
+        .dt-pos-tr { bottom: 50%; left: 50%; margin-bottom: 50px; margin-left: 30px; }
+        .dt-pos-bl { top: 50%; right: 50%; margin-top: 50px; margin-right: 30px; }
+        .dt-pos-br { top: 50%; left: 50%; margin-top: 50px; margin-left: 30px; }
+
+        .dt-card {
+            position: absolute; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem; display: flex; flex-direction: column; justify-content: center;
+            cursor: pointer; overflow: hidden;
+            transition: height 0.5s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s, border-color 0.3s;
+        }
+        .dt-card:hover { border-color: rgba(251, 191, 36, 0.5); background: rgba(255, 255, 255, 0.06); }
+        
+        /* Expansion directions */
+        .dt-pos-tl .dt-card, .dt-pos-tr .dt-card { bottom: 0; top: auto; transform-origin: bottom center; }
+        .dt-pos-bl .dt-card, .dt-pos-br .dt-card { top: 0; bottom: auto; transform-origin: top center; }
+
+        .dt-card.active {
+            height: 280px; background: rgba(10, 10, 10, 0.9);
+            border-color: #fbbf24; z-index: 50; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        /* Entrance Animation classes */
+        .fly-in-anim { opacity: 0; transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .from-tl { transform: translate(-100%, -100%) scale(0); }
+        .from-tr { transform: translate(100%, -100%) scale(0); }
+        .from-bl { transform: translate(-100%, 100%) scale(0); }
+        .from-br { transform: translate(100%, 100%) scale(0); }
+        
+        .fly-in-anim.landed { opacity: 1; transform: translate(0, 0) scale(1); }
+
+        .dt-icon-wrapper { color: #fbbf24; margin-bottom: 12px; transition: transform 0.4s; }
+        .dt-card.active .dt-icon-wrapper { transform: scale(0.9); }
+        .dt-card h3 { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 5px; transition: color 0.3s; }
+        .dt-card.active h3 { color: #fbbf24; }
+        
+        .dt-hidden-text {
+            display: block; opacity: 0; max-height: 0; margin-top: 0; font-size: 0.9rem; color: #e5e5e5; line-height: 1.5;
+            transition: all 0.4s ease 0.1s; overflow: hidden;
+        }
+        .dt-card.active .dt-hidden-text { opacity: 1; max-height: 200px; margin-top: 15px; }
+        
+        .expand-hint {
+            position: absolute; top: 20px; right: 20px; color: rgba(255,255,255,0.3); width: 16px; height: 16px; transition: transform 0.3s;
+        }
+        .dt-card.active .expand-hint { transform: rotate(45deg); color: #fbbf24; }
+
+        /* Mobile Block 2 */
+        @media (max-width: 768px) {
+            .dt-mindmap-container { display: none; }
+            .risk-mobile-layout {
+                display: flex; flex-direction: column; width: 100%; justify-content: center; gap: 20px; max-width: 400px;
+            }
+            .risk-mobile-title { text-align: center; margin-bottom: 10px; z-index: 20; }
+            .mobile-row { display: flex; justify-content: space-between; gap: 10px; width: 100%; height: 120px; position: relative; z-index: 30; }
+            .m-grid-cell { position: relative; width: 48%; height: 100%; }
+            .risk-card-mob {
+                position: absolute; width: 100%; height: 110px; left: 0;
+                background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
+                padding: 1rem; display: flex; flex-direction: column; justify-content: center;
+                transition: height 0.3s ease; overflow: hidden;
+            }
+            .row-top .m-grid-cell .risk-card-mob { bottom: 0; transform-origin: bottom center; }
+            .row-bottom .m-grid-cell .risk-card-mob { top: 0; transform-origin: top center; }
+            .risk-card-mob.active {
+                height: 240px !important; z-index: 100; background: rgba(15, 15, 15, 0.98);
+                border-color: #fbbf24; box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            }
+            .card-icon { color: #fbbf24; margin-bottom: 8px; width: 28px; height: 28px; transition: 0.3s; }
+            .hidden-text { display: block; opacity: 0; max-height: 0; font-size: 0.85rem; color: #ccc; transition: all 0.3s ease; }
+            .active .hidden-text { opacity: 1; max-height: 200px; margin-top: 10px; }
+        }
+
+        /* --- BLOCK 3: SERVICES --- */
+        #block3.content-block { justify-content: space-between; padding-top: 40px; padding-bottom: 20px; }
+        .glass-title-panel {
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
+            padding: 15px 25px; margin-bottom: 5px; display: inline-block;
+        }
+        .services-matrix {
+            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
+            gap: 15px; width: 100%; max-width: 1000px; flex-grow: 1; align-content: center;
+        }
+        .service-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .service-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: rgba(255,255,255,0.9); }
+        .photo-box {
+            width: 100%; aspect-ratio: 1 / 1; max-width: 200px; 
+            position: relative; border-radius: 12px; overflow: hidden;
+            background: #111; border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.6s ease;
+        }
+        .photo-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; }
+        .img-before { z-index: 1; opacity: 1; } .img-after { z-index: 2; opacity: 0; }
+        .photo-box.state-after { border-color: #60a5fa; box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); }
+        .photo-box.state-after .img-after { opacity: 1; }
+        .label-badge { 
+            position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); 
+            padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase; z-index: 10; 
+        }
+
+        .desktop-static-bar { 
+            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 15px; 
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; max-width: 1200px; 
+            margin-top: 40px; transform: scale(0.9); transform-origin: top center;
+        }
+        .benefit-item { display: flex; gap: 10px; }
+        .desktop-static-bar .benefit-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+        .desktop-static-bar .benefit-text { font-size: 11px; white-space: normal; line-height: 1.3; }
+        
+        .mobile-marquee { 
+            width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; margin-top: auto; 
+            display: flex; align-items: center; height: 60px; pointer-events: auto; 
+        }
+        .marquee-track { display: flex; gap: 30px; padding: 0 20px; animation: marquee 25s linear infinite; width: max-content; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        @media (max-width: 768px) {
+            #block3.content-block { padding-top: 40px; gap: 5px; justify-content: flex-start; }
+            .services-matrix { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 5px; }
+            .photo-box { max-width: 115px; } .service-title { font-size: 0.8rem; }
+            #b3-title { font-size: 1.3rem; line-height: 1.2; } #b3-subtitle { font-size: 11px; }
+        }
+
+        /* --- BLOCK 4: PORTFOLIO --- */
+        #block4.content-block { justify-content: center; padding: 20px; }
+        .cinematic-stage { 
+            position: relative; width: 95%; max-width: 1000px; height: 60vh; max-height: 550px; 
+            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); overflow: hidden; display: flex; flex-direction: column; 
+        }
+        @media (min-width: 769px) { .cinematic-stage { height: 500px; } }
+        .slides-wrapper { width: 100%; height: 100%; position: relative; }
+        .slide-item { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; 
+            opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .slide-item.active { opacity: 1; pointer-events: auto; }
+        
+        @media (min-width: 769px) { 
+            .slide-item { flex-direction: row; } 
+            .slide-img-col { width: 45%; height: 100%; position: relative; overflow: hidden; } 
+            .slide-txt-col { width: 55%; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+            .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.05); position: absolute; top: 20px; right: 20px; line-height: 1; }
+        }
+        @media (max-width: 768px) { 
+            .slide-item { flex-direction: column; } 
+            .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; } 
+            .slide-txt-col { width: 100%; height: 60%; padding: 20px 20px 80px 20px; overflow-y: auto; mask-image: linear-gradient(to bottom, black 85%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%); }
+            .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.6); position: absolute; top: 10px; right: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        }
+        .slide-img-obj { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); transition: transform 1.5s ease-out; }
+        .slide-item.active .slide-img-obj { transform: scale(1); }
+        .case-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #fbbf24; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .case-label::before { content: ''; width: 30px; height: 1px; background: #fbbf24; display: block; }
+        .case-desc { font-size: 0.95rem; line-height: 1.6; color: #e5e5e5; font-weight: 300; }
+        .stage-controls { 
+            position: absolute; bottom: 0; right: 0; width: 100%; height: 60px; 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(15, 15, 15, 0.95); 
+        }
+        @media (min-width: 769px) { .stage-controls { width: 55%; bottom: 0; right: 0; padding: 0 40px; background: rgba(0,0,0,0.2); } }
+        .prog-bar { flex-grow: 1; height: 2px; background: rgba(255,255,255,0.1); margin: 0 20px; position: relative; }
+        .prog-fill { height: 100%; background: #fbbf24; width: 0%; transition: width 0.4s; }
+        .nav-arrows { display: flex; gap: 10px; }
+        .stage-btn { 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; 
+            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; transition: all 0.3s; 
+        }
+        .stage-btn:hover { background: #fbbf24; color: black; border-color: #fbbf24; }
+
+        /* --- BLOCK 5: TEAM --- */
+        #block5.content-block {
+            justify-content: center; padding: 0; 
+            background: linear-gradient(to top, #000 0%, transparent 20%, transparent 80%, #000 100%);
+        }
+        .team-title-area { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 40; padding: 0 20px; }
+        .team-title-area h2 { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+        .team-title-area p { font-size: 0.9rem; color: #aaa; max-width: 600px; margin: 0 auto; font-weight: 300; }
+        .carousel-container {
+            width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory;
+            padding: 0 17.5vw; display: flex; align-items: center; height: 550px;
+            -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 40px;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        .card-wrapper {
+            flex: 0 0 65vw; height: 450px; scroll-snap-align: center; scroll-snap-stop: always;
+            position: relative; perspective: 800px; margin: 0 10px; z-index: 1;
+        }
+        @media (min-width: 769px) {
+            .carousel-container { padding: 0 35vw; }
+            .card-wrapper { flex: 0 0 30vw; height: 500px; }
+        }
+        .card-inner {
+            width: 100%; height: 100%; background: #141414;
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.15);
+            display: flex; overflow: hidden; position: relative;
+            will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+        .c-text {
+            width: 55%; padding: 1rem; display: flex; flex-direction: column; justify-content: center;
+            background: linear-gradient(135deg, #222 0%, #0a0a0a 100%);
+            border-right: 1px solid rgba(255,255,255,0.05); position: relative;
+        }
+        .c-photo { width: 45%; }
+        .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
+        .c-quote { font-family: 'Playfair Display', serif; font-size: 0.8rem; line-height: 1.35; color: #ccc; font-style: italic; margin-bottom: 1rem; position: relative; z-index: 2; }
+        .c-name { font-size: 0.85rem; font-weight: 800; color: #fff; text-transform: uppercase; }
+        .c-role { font-size: 0.6rem; color: #ef4444; font-weight: 700; text-transform: uppercase; }
+        .quote-bg { position: absolute; top: 5px; left: 5px; font-size: 4rem; font-family: serif; color: rgba(255,255,255,0.05); line-height: 0; pointer-events: none; }
+        .dots-container { display: flex; justify-content: center; gap: 8px; position: absolute; bottom: 5%; width: 100%; z-index: 50; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
+        .dot.active { background: #ef4444; transform: scale(1.2); }
+
+        /* --- PLACEHOLDER BLOCKS 6 & 7 (Tech) --- */
+        .placeholder-text { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.1); text-transform: uppercase; }
     </style>
 </head>
-<body>
+<body class="text-white antialiased">
 
-    <!-- Backgrounds -->
-    <div id="bg-clean" class="bg-layer">
-        <!-- Fallback image logic handled in CSS/JS if file missing -->
-        <!-- <img src="clean.webp" alt="Clean Ventilation" class="w-full h-full object-cover"> -->
-    </div>
-    <div id="bg-dirty" class="bg-layer">
-        <!-- <img src="dirty.webp" alt="Dirty Ventilation" class="w-full h-full object-cover"> -->
-    </div>
-    
-    <!-- Dark Overlay -->
-    <div class="overlay"></div>
+    <div class="fixed-viewport">
+        <img src="clean.webp" onerror="this.style.display='none'; document.body.style.background='#111'" alt="Clean Ventilation" class="bg-layer z-0">
+        <img src="dirty.webp" onerror="this.style.display='none'" alt="Dirty Ventilation" id="dirtyImage" class="bg-layer z-10" style="opacity: 1;">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-20 pointer-events-none"></div>
 
-    <!-- Main Content Container (Fixed Viewport) -->
-    <div class="stage-container p-4 md:p-8">
-
-        <!-- BLOCK 1: HERO -->
-        <!-- Logic: 100-90 visible -->
-        <div id="block-1" class="block-content active">
-            <div class="max-w-4xl text-center space-y-6">
-                <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-tight drop-shadow-2xl">
-                    <span class="text-danger">64%</span> ЗАГОРЯННЯ <br>НА КУХНЯХ
-                </h1>
-                <h2 class="text-2xl md:text-4xl font-bold text-gray-300 tracking-wide uppercase">
-                    ПОВʼЯЗАНІ З БРУДНОЮ ВЕНТИЛЯЦІЄЮ<span class="text-gold">*</span>
-                </h2>
-                <div class="mt-20 opacity-70">
-                    <div class="w-16 h-16 border-2 border-white rounded-full mx-auto animate-bounce flex items-center justify-center">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                    </div>
-                    <p class="text-sm mt-4 uppercase tracking-widest">Скрольте вниз</p>
-                </div>
-            </div>
-            <div class="absolute bottom-8 text-xs text-gray-500 text-center w-full">
-                * За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)
-            </div>
+        <div id="block1" class="content-block" style="z-index: 40;">
+            <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong"><span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ</h1>
+            <h2 id="hero-subtitle" class="cinematic-text text-2xl md:text-4xl font-light text-center mt-6 text-shadow-strong tracking-wide">ПОВʼЯЗАНІ З БРУДНОЮ<br>ВЕНТИЛЯЦІЄЮ*</h2>
+            <div id="hero-footnote" class="transition-opacity duration-500 text-shadow-strong">* За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)</div>
         </div>
 
-        <!-- BLOCK 2: MIND MAP (RISKS) -->
-        <!-- Logic: 87-75 visible -->
-        <div id="block-2" class="block-content">
-            <div class="relative w-full max-w-6xl h-full max-h-[800px] flex flex-col md:block">
-                
-                <!-- Center Title (Desktop) -->
-                <div class="hidden md:flex absolute inset-0 items-center justify-center z-20 pointer-events-none">
-                    <h2 class="text-4xl font-bold text-center drop-shadow-lg max-w-md">Чим ризикує ваш бізнес?</h2>
+        <div id="block2" class="content-block">
+            <div class="risk-wrapper">
+                <div class="dt-mindmap-container hidden md:flex">
+                    <div class="dt-center-title cinematic-text">
+                        <h2 class="text-5xl font-extrabold text-white text-shadow-strong leading-tight">ЧИМ РИЗИКУЄ<br>ВАШ БІЗНЕС?</h2>
+                    </div>
+                    <div class="dt-anchor dt-pos-tl"><div class="dt-card fly-in-anim from-tl card-js"><div class="dt-icon-wrapper"><i data-lucide="flame" style="width: 32px; height: 32px;"></i></div><h3>Пожежа</h3><p class="dt-hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p><i data-lucide="plus" class="expand-hint"></i></div></div>
+                    <div class="dt-anchor dt-pos-tr"><div class="dt-card fly-in-anim from-tr card-js"><div class="dt-icon-wrapper"><i data-lucide="file-warning" style="width: 32px; height: 32px;"></i></div><h3>Штрафи та закриття</h3><p class="dt-hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p><i data-lucide="plus" class="expand-hint"></i></div></div>
+                    <div class="dt-anchor dt-pos-bl"><div class="dt-card fly-in-anim from-bl card-js"><div class="dt-icon-wrapper"><i data-lucide="user-x" style="width: 32px; height: 32px;"></i></div><h3>Втрата клієнтів</h3><p class="dt-hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p><i data-lucide="plus" class="expand-hint"></i></div></div>
+                    <div class="dt-anchor dt-pos-br"><div class="dt-card fly-in-anim from-br card-js"><div class="dt-icon-wrapper"><i data-lucide="zap" style="width: 32px; height: 32px;"></i></div><h3>Витрата електроенергії</h3><p class="dt-hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p><i data-lucide="plus" class="expand-hint"></i></div></div>
                 </div>
-
-                <!-- Mobile Title -->
-                <h2 class="md:hidden text-3xl font-bold text-center mb-8 text-white">Чим ризикує ваш бізнес?</h2>
-
-                <!-- Grid Layout -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:h-full md:p-12">
-                    
-                    <!-- Top Left -->
-                    <div class="md:absolute md:top-10 md:left-10 md:w-80 z-10">
-                        <div class="mind-card glass-panel p-6 rounded-xl group" onclick="toggleCard(this, 'up')">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-xl font-bold text-gold">Пожежа</h3>
-                                <svg class="w-6 h-6 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /></svg>
-                            </div>
-                            <p class="text-gray-300 text-sm hidden-text opacity-50">Натисніть щоб дізнатись</p>
-                            <p class="text-white mt-4 hidden details">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p>
-                        </div>
-                    </div>
-
-                    <!-- Top Right -->
-                    <div class="md:absolute md:top-10 md:right-10 md:w-80 z-10">
-                        <div class="mind-card glass-panel p-6 rounded-xl" onclick="toggleCard(this, 'up')">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-xl font-bold text-gold">Штрафи та закриття</h3>
-                                <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                            </div>
-                            <p class="text-gray-300 text-sm hidden-text opacity-50">Натисніть щоб дізнатись</p>
-                            <p class="text-white mt-4 hidden details">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p>
-                        </div>
-                    </div>
-
-                    <!-- Bottom Left -->
-                    <div class="md:absolute md:bottom-10 md:left-10 md:w-80 z-10">
-                        <div class="mind-card glass-panel p-6 rounded-xl" onclick="toggleCard(this, 'down')">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-xl font-bold text-gold">Втрата клієнтів</h3>
-                                <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                            </div>
-                            <p class="text-gray-300 text-sm hidden-text opacity-50">Натисніть щоб дізнатись</p>
-                            <p class="text-white mt-4 hidden details">Неефективна витяжка = запахи кухні в залі для клієнтів.</p>
-                        </div>
-                    </div>
-
-                    <!-- Bottom Right -->
-                    <div class="md:absolute md:bottom-10 md:right-10 md:w-80 z-10">
-                        <div class="mind-card glass-panel p-6 rounded-xl" onclick="toggleCard(this, 'down')">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-xl font-bold text-gold">Витрата електроенергії</h3>
-                                <svg class="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            </div>
-                            <p class="text-gray-300 text-sm hidden-text opacity-50">Натисніть щоб дізнатись</p>
-                            <p class="text-white mt-4 hidden details">Забруднений вентилятор споживає на 30% більше електроенергії.</p>
-                        </div>
-                    </div>
-
+                <div class="risk-mobile-layout md:hidden">
+                    <div class="risk-mobile-title cinematic-text"><h2 class="text-2xl font-bold text-shadow-strong leading-tight">ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span></h2></div>
+                    <div class="mobile-row row-top"><div class="m-grid-cell"><div class="risk-card-mob fly-in-anim from-tl card-js"><i data-lucide="flame" class="card-icon"></i><h3 class="font-bold">Пожежа</h3><p class="hidden-text">Бруд у вентиляції спалахує миттєво.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div><div class="m-grid-cell"><div class="risk-card-mob fly-in-anim from-tr card-js"><i data-lucide="file-warning" class="card-icon"></i><h3 class="font-bold">Штрафи</h3><p class="hidden-text">Загроза зупинки діяльності.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div></div>
+                    <div class="mobile-row row-bottom"><div class="m-grid-cell"><div class="risk-card-mob fly-in-anim from-bl card-js"><i data-lucide="user-x" class="card-icon"></i><h3 class="font-bold">Втрата клієнтів</h3><p class="hidden-text">Запахи кухні в залі.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div><div class="m-grid-cell"><div class="risk-card-mob fly-in-anim from-br card-js"><i data-lucide="zap" class="card-icon"></i><h3 class="font-bold">Електроенергія</h3><p class="hidden-text">Перевитрата до 30%.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div></div>
                 </div>
             </div>
         </div>
 
-        <!-- BLOCK 3: SERVICES (SOLUTIONS) -->
-        <!-- Logic: 70-60 visible -->
-        <div id="block-3" class="block-content">
-            <div class="w-full max-w-7xl h-full flex flex-col justify-center">
-                <div class="glass-panel p-4 mb-6 text-center max-w-4xl mx-auto rounded-lg">
-                    <h2 class="text-xl md:text-3xl font-bold text-white">
-                        Професійна механічна очистка повітроводів — ефективне вирішення проблеми жирового нагару та бруду
-                    </h2>
-                </div>
-
-                <!-- Gallery Grid -->
-                <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4 mb-8 overflow-y-auto max-h-[60vh] md:max-h-none">
-                    <!-- Generating 12 Items via Loop Logic in JS, but hardcoding HTML for structure -->
-                    <!-- Item 1 -->
-                    <div class="aspect-square service-img-container bg-gray-800">
-                        <!-- Replace src with 1.webp -->
-                        <img src="https://via.placeholder.com/300/330000/FFFFFF?text=Dirty+1" class="w-full h-full object-cover" alt="Before">
-                        <img src="https://via.placeholder.com/300/003366/FFFFFF?text=Clean+1" class="w-full h-full object-cover service-img-clean" alt="After">
-                    </div>
-                    <!-- Item 2 -->
-                    <div class="aspect-square service-img-container bg-gray-800">
-                        <img src="https://via.placeholder.com/300/330000/FFFFFF?text=Dirty+2" class="w-full h-full object-cover">
-                        <img src="https://via.placeholder.com/300/003366/FFFFFF?text=Clean+2" class="w-full h-full object-cover service-img-clean">
-                    </div>
-                     <!-- Item 3 -->
-                     <div class="aspect-square service-img-container bg-gray-800">
-                        <img src="https://via.placeholder.com/300/330000/FFFFFF?text=Dirty+3" class="w-full h-full object-cover">
-                        <img src="https://via.placeholder.com/300/003366/FFFFFF?text=Clean+3" class="w-full h-full object-cover service-img-clean">
-                    </div>
-                     <!-- Item 4 -->
-                     <div class="aspect-square service-img-container bg-gray-800">
-                        <img src="https://via.placeholder.com/300/330000/FFFFFF?text=Dirty+4" class="w-full h-full object-cover">
-                        <img src="https://via.placeholder.com/300/003366/FFFFFF?text=Clean+4" class="w-full h-full object-cover service-img-clean">
-                    </div>
-                     <!-- Item 5 -->
-                     <div class="aspect-square service-img-container bg-gray-800">
-                        <img src="https://via.placeholder.com/300/330000/FFFFFF?text=Dirty+5" class="w-full h-full object-cover">
-                        <img src="https://via.placeholder.com/300/003366/FFFFFF?text=Clean+5" class="w-full h-full object-cover service-img-clean">
-                    </div>
-                     <!-- Item 6 -->
-                     <div class="aspect-square service-img-container bg-gray-800">
-                        <img src="https://via.placeholder.com/300/330000/FFFFFF?text=Dirty+6" class="w-full h-full object-cover">
-                        <img src="https://via.placeholder.com/300/003366/FFFFFF?text=Clean+6" class="w-full h-full object-cover service-img-clean">
-                    </div>
-                    <!-- Simplified for prototype, would be 12 items -->
-                </div>
-
-                <!-- Footer Block -->
-                <div class="glass-panel p-4 rounded-lg">
-                    <!-- Mobile -->
-                    <div class="md:hidden marquee-container text-gold text-sm font-bold">
-                        <div class="marquee-content">
-                            Швидкість виконання • Гарантія якості • Сертифіковані засоби • Досвідчена команда • &nbsp;
-                            Швидкість виконання • Гарантія якості • Сертифіковані засоби • Досвідчена команда • &nbsp;
-                        </div>
-                    </div>
-                    <!-- Desktop -->
-                    <div class="hidden md:flex justify-around items-center text-gray-200">
-                        <div class="flex items-center gap-2"><span class="text-gold text-2xl">✓</span> Відеоінспекція</div>
-                        <div class="flex items-center gap-2"><span class="text-gold text-2xl">✓</span> Акт виконаних робіт</div>
-                        <div class="flex items-center gap-2"><span class="text-gold text-2xl">✓</span> Гарантія чистоти</div>
-                        <div class="flex items-center gap-2"><span class="text-gold text-2xl">✓</span> Працюємо 24/7</div>
-                    </div>
+        <div id="block3" class="content-block">
+            <div class="text-center w-full max-w-5xl mb-1 px-2">
+                <div class="glass-title-panel cinematic-text">
+                    <h2 id="b3-title" class="text-xl md:text-3xl font-bold text-shadow-strong leading-tight"><span class="text-amber-500 font-extrabold uppercase">Професійна механічна очистка</span> повітроводів</h2>
+                    <p id="b3-subtitle" class="text-[10px] md:text-sm text-blue-200 mt-2 font-medium italic">Працюємо вночі, щоб ваш бізнес працював вдень.</p>
                 </div>
             </div>
-        </div>
-
-        <!-- BLOCK 4: PORTFOLIO (CASES) -->
-        <!-- Logic: 55-45 visible -->
-        <div id="block-4" class="block-content">
-            <div class="w-full max-w-6xl">
-                <h2 class="text-3xl font-bold mb-8 border-l-4 border-gold pl-4">Кейси (Портфоліо)</h2>
-                
-                <div class="relative glass-panel rounded-2xl overflow-hidden p-1 md:p-2 min-h-[500px] flex flex-col md:flex-row">
-                    <!-- Image Side -->
-                    <div class="w-full md:w-1/2 h-64 md:h-auto relative bg-gray-900">
-                        <img id="case-img" src="https://via.placeholder.com/800/222222/FFFFFF?text=Case+41" class="absolute inset-0 w-full h-full object-cover transition-all duration-500" alt="Case Study">
-                        <div class="absolute top-4 left-4 text-6xl font-black text-white/20" id="case-number">01</div>
-                    </div>
-                    
-                    <!-- Text Side -->
-                    <div class="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center">
-                        <div class="mb-6">
-                            <div class="h-1 w-20 bg-gold mb-4"></div>
-                            <p id="case-text" class="text-lg md:text-xl text-gray-200 leading-relaxed italic">
-                                Loading...
-                            </p>
-                        </div>
-                        
-                        <!-- Controls -->
-                        <div class="flex gap-4 mt-auto">
-                            <button onclick="changeCase(-1)" class="p-3 border border-white/20 rounded-full hover:bg-white/10 hover:border-gold transition-colors">
-                                ← Назад
-                            </button>
-                            <button onclick="changeCase(1)" class="p-3 border border-white/20 rounded-full hover:bg-white/10 hover:border-gold transition-colors">
-                                Вперед →
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="services-matrix">
+                <div class="service-item cinematic-text" style="transition-delay: 0s;"><div class="service-title">Витяжні зонти</div><div class="photo-box" id="box-1"><img src="1.webp" class="photo-img img-before" alt="До"><img src="2.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-1">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.1s;"><div class="service-title">Фільтра</div><div class="photo-box" id="box-2"><img src="3.webp" class="photo-img img-before" alt="До"><img src="4.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-2">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.2s;"><div class="service-title">Повітропроводи</div><div class="photo-box" id="box-3"><img src="5.webp" class="photo-img img-before" alt="До"><img src="6.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-3">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.3s;"><div class="service-title">Вентилятори</div><div class="photo-box" id="box-4"><img src="7.webp" class="photo-img img-before" alt="До"><img src="8.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-4">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.4s;"><div class="service-title">Пристрої</div><div class="photo-box" id="box-5"><img src="9.webp" class="photo-img img-before" alt="До"><img src="10.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-5">До</div></div></div>
+                <div class="service-item cinematic-text" style="transition-delay: 0.5s;"><div class="service-title">Інше</div><div class="photo-box" id="box-6"><img src="11.webp" class="photo-img img-before" alt="До"><img src="12.webp" class="photo-img img-after" alt="Після"></div></div>
             </div>
+            <div class="desktop-static-bar hidden md:grid cinematic-text" style="transition-delay: 0.6s;"><div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Використовуємо ефективну хімію (виробництво Іспанія)</p></div><div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Працюємо в нічний час та на будь-якій висоті.</p></div><div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Фото та відео-фіксація виконаної роботи.</p></div><div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Надаємо акт утилізації та документи для ДСНС.</p></div><div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Захищаємо ваше робоче місце від жиру.</p></div></div>
+            <div class="mobile-marquee md:hidden cinematic-text"><div class="marquee-track"><div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Працюємо вночі</span></div><div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Фото-звіт</span></div><div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Документи ДСНС</span></div></div></div>
         </div>
 
-        <!-- BLOCK 5: TEAM -->
-        <!-- Logic: 40-30 visible -->
-        <div id="block-5" class="block-content">
-            <div class="w-full max-w-6xl perspective-container">
-                <h2 class="text-center text-4xl font-bold mb-12"><span class="text-gold">Команда</span> Професіоналів</h2>
-                
-                <!-- 3D Carousel Container -->
-                <div class="relative h-[500px] w-full flex items-center justify-center">
-                    
-                    <button onclick="changeTeam(-1)" class="absolute left-0 z-50 p-4 text-3xl hover:text-gold">❮</button>
-                    
-                    <!-- Team Card Holder -->
-                    <div id="team-stage" class="relative w-full h-full flex justify-center items-center">
-                        <!-- Cards injected via JS -->
-                    </div>
+        <div id="block4" class="content-block">
+            <div class="text-center w-full max-w-4xl px-4 mb-4 md:mb-8 cinematic-text"><h2 class="text-xl md:text-3xl font-bold text-shadow-strong leading-tight"><span class="text-amber-500 uppercase">Для нас кожний обʼєкт - особливий!</span><br><span class="text-white/90 font-light text-base md:text-2xl mt-2 block">Ми ретельно готуємося аби вирішити будь-яку задачу.</span></h2></div>
+            <div class="cinematic-stage cinematic-text" style="transition-delay: 0.2s;"><div class="slides-wrapper" id="portfolioWrapper"></div><div class="stage-controls"><span class="text-amber-400 font-mono text-lg" id="currentSlideNum">01</span><div class="prog-bar"><div class="prog-fill" id="progFill"></div></div><span class="text-white/50 font-mono text-sm" id="totalSlideNum">06</span><div class="nav-arrows ml-6"><button class="stage-btn" id="prevBtn"><i data-lucide="chevron-left"></i></button><button class="stage-btn" id="nextBtn"><i data-lucide="chevron-right"></i></button></div></div></div>
+        </div>
 
-                    <button onclick="changeTeam(1)" class="absolute right-0 z-50 p-4 text-3xl hover:text-gold">❯</button>
-                </div>
+        <div id="block5" class="content-block">
+            <div class="team-title-area cinematic-text">
+                <h2>НАША КОМАНДА</h2>
+                <p>Наша команда займається монтажем вентиляції, а отже ми знаємо як обслуговувати те що монтуємо</p>
             </div>
+            <div class="carousel-container" id="teamTrack"></div>
+            <div class="dots-container" id="teamDots"></div>
         </div>
 
-        <!-- BLOCK 6: CONTACTS (Added to fulfill scroll logic) -->
-         <!-- Logic: 25-15 visible -->
-         <div id="block-6" class="block-content">
-            <div class="glass-panel p-10 rounded-2xl text-center max-w-2xl border-t-4 border-danger">
-                <h2 class="text-4xl font-bold mb-6">Готові до чистоти?</h2>
-                <p class="mb-8 text-xl">Замовте безкоштовну відеоінспекцію вашої системи вже сьогодні.</p>
-                <div class="flex flex-col gap-4">
-                    <button class="bg-danger text-white py-4 px-8 rounded-full font-bold text-xl hover:bg-red-600 transition shadow-lg shadow-red-900/50">
-                        Замовити дзвінок
-                    </button>
-                    <div class="text-gray-400">або телефонуйте</div>
-                    <a href="tel:+380000000000" class="text-3xl font-mono font-bold hover:text-gold transition">+38 (000) 000-00-00</a>
-                </div>
-            </div>
+        <div id="block6" class="content-block">
+            <div class="placeholder-text cinematic-text">БЛОК 6</div>
         </div>
 
-        <!-- BLOCK 7: FINAL (Added to fulfill scroll logic) -->
-        <!-- Logic: 10-0 visible -->
-        <div id="block-7" class="block-content">
-             <div class="text-center">
-                 <h1 class="text-6xl md:text-8xl font-black text-white mb-4">LOGOTYPE</h1>
-                 <p class="text-gold tracking-[0.5em] uppercase text-sm">Professional Ventilation Cleaning</p>
-                 <p class="mt-20 text-gray-600 text-xs">© 2024 Всі права захищено.</p>
-             </div>
+        <div id="block7" class="content-block">
+            <div class="placeholder-text cinematic-text">БЛОК 7</div>
         </div>
 
     </div>
-
-    <div id="debug">Scroll: 100%</div>
 
     <script>
-        // --- DATA OBJECTS ---
-
-        const cases = [
-            {
-                img: "41.webp",
-                text: "У деяких системах ми не маємо технічної можливості дістати до проблемних ділянок. В таких випадках ми встановлюємо сервісні лючки які дозволяють швидко та зручно виконати обслуговування зараз та в майбутньому. Оптимально встановлення таких люків у застельовому просторі, де їх не видно але зручно до них дістатися."
-            },
-            {
-                img: "42.webp",
-                text: "У ході робіт ми не тільки виконуємо свою роботу а й оглядаємо стан вашої вентсистеми і якщо знаходимо якісь недоліки - виправляємо їх. Як наприклад в цьому випадку, коли старий адаптер дифузора вивалився зі своїх кріплень і лежав на стелі армстронг. Обвал стелі міг відбутися в будь-який момент, а ціна цій трагедії життя та здоровʼя ти хто знаходився б під нею."
-            },
-            {
-                img: "43.webp",
-                text: "Особливо цікава історія трапилася при обслуговуванні дренажного коліна до якого приєднано труба для відведення конденсату. За пів року до наших робіт, раптово з усіх щілей магістралі почала витікати чорна жижа. Раптово і незрозуміло чому, зіпсувавши десятки кілограм продукції під магістраллю. Коли ми розібрали коліно, побачили що все воно було забито креозотом, не завдавши збігати рідині. Як результат, вся ця рідина замість стікання в дренаж витікала з усіх можливих щілей."
-            },
-            {
-                img: "44.webp",
-                text: "Проводячи роботу і поспілкувавшись з працівниками пекарні ми почули від них скаргу що один із витяжних зонтів гірше засмоктує повітря. Тому ми вирішили провести міні-діагностику системи і знайшли дуже цікаве місце. Там де дві гілки зʼєднуються в магістраль, встановлені зворотні клапани і от один із них заклинив через неправильно вкручений саморіз. Саме це і було причиною слабкої витяжки."
-            },
-            {
-                img: "45.webp",
-                text: "Частіше за все, жир протікає через стики зʼєднання повітропроводів між собою. Практика показує, якщо жир потік - відновити його дуже не просто. Для цього треба повністью розʼєднати місце зʼєднання, зачистити його, обезжирити, проспиртувати, нанести новий герметик, АКУРАТНО зʼєднати назад, закрутити. Проблема в тому, що інколи, для того аби розʼєднати одне єдине місце зʼєднання, потрібно розібрати десятки метрів повітропроводу вліво та вправо. Єдине, що можна зробити в таких випадках з уже існуючою проблемою - це акуратно (майже ювелірно) очистити проблемне місце, обезжирити, проспиртувати і нанести герметик з надлишком. Варто відмітити що це не естетично і такі маніпуляції потім видно, але це краще ніж коли старий жир з вентиляції крапає на робоче місце."
-            },
-            {
-                img: "46.webp",
-                text: "Інколи буває, що касета армстронга в яку врізано стельовий дифузор - тріскається від деформації. Вирішенням подібної проблеми ми також займаємось."
-            }
+        // --- DATA ---
+        const portfolioItems = [
+            { img: '41.webp', text: "У деяких системах ми не маємо технічної можливості дістати до проблемних ділянок. В таких випадках ми встановлюємо сервісні лючки які дозволяють швидко та зручно виконати обслуговування зараз та в майбутньому." },
+            { img: '42.webp', text: "У ході робіт ми не тільки виконуємо свою роботу а й оглядаємо стан вашої вентсистеми. Тут старий адаптер дифузора вивалився зі своїх кріплень. Ми це виправили, попередивши можливий обвал." },
+            { img: '43.webp', text: "Обслуговування дренажного коліна. Раптово з усіх щілей магістралі почала витікати чорна жижа. Причина: коліно було забито креозотом. Ми прочистили систему та відновили дренаж." },
+            { img: '44.webp', text: "Скарги на слабку тягу. Причина: заклинивший зворотний клапан через неправильно вкручений саморіз. Діагностика допомогла вирішити проблему, яку не помічали роками." },
+            { img: '45.webp', text: "Жир протікає через стики. Це складна проблема, що вимагає розбору системи або ювелірної герметизації. Ми виконуємо обидва варіанти, щоб жир не крапав на робоче місце." },
+            { img: '46.webp', text: "Заміна тріснутих касет армстронга та відновлення стельових дифузорів також входить до переліку наших сервісних послуг." }
         ];
 
-        const team = [
-            { name: "Хроменко Єгор", role: "Комерційний директор", img: "5.1.webp", quote: "Я починав свій шлях монтажником та проектувальником, щоб знати ціну кожній виконаній роботі. Для мене немає проблеми, яку неможливо вирішити; вирішити можна все, але неможливе вирішується важко і дорого." },
-            { name: "Внуков Валерій", role: "Технічний директор", img: "5.2.webp", quote: "Для багатьох висота — це страх; для мене висота — це робота, яка вчить: чим складніший підйом, тим чіткішою стає перспектива" },
-            { name: "Ярослав Іванченко", role: "Бригадир", img: "5.3.webp", quote: "Я як хороший метал-альбом: готуюся довго, роблю якісно, і в результаті — качає всіх. Якщо я затримався з монтажем, значить я налаштовую ваш повітровод так само прискіпливо, як свій кардан перед концертом." },
-            { name: "Пархоменко Дмитро", role: "Монтажник", img: "5.4.webp", quote: "Я вірю в чесні правила: клієнт отримує ідеально змонтовану систему, а я — справедливу винагороду за свою старанність. Для мене якісна робота — це найнадійніша валюта." },
-            { name: "Коваленко Євгеній", role: "Інженер КВП", img: "5.5.webp", quote: "Найкраща автоматика — та, яку ви не помічаєте. Коли все працює — це моя заслуга, якої не видно. Коли щось зупиняється — це стає моєю проблемою, яку я вирішую максимально швидко." }
+        const teamMembers = [
+            { name: "Хроменко Єгор", role: "Комерційний директор", quote: "Я починав свій шлях монтажником та проектувальником, щоб знати ціну кожній виконаній роботі. Вирішити можна все.", img: "5.1.webp" },
+            { name: "Внуков Валерій", role: "Технічний директор", quote: "Для багатьох висота — це страх; для мене висота — це робота. Чим складніший підйом, тим чіткіша перспектива.", img: "5.2.webp" },
+            { name: "Ярослав Іванченко", role: "Бригадир", quote: "Я як хороший метал-альбом: готуюся довго, роблю якісно. Я налаштовую ваш повітровод так само прискіпливо, як свій кардан.", img: "5.3.webp" },
+            { name: "Пархоменко Дмитро", role: "Монтажник", quote: "Я вірю в чесні правила: клієнт отримує ідеально змонтовану систему, а я — справедливу винагороду.", img: "5.4.webp" },
+            { name: "Коваленко Євгеній", role: "Інженер КВП", quote: "Найкраща автоматика — та, яку ви не помічаєте. Коли все працює — це моя заслуга, якої не видно.", img: "5.5.webp" }
         ];
 
-        // --- INIT STATE ---
-        let currentCaseIndex = 0;
-        let currentTeamIndex = 0;
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
 
-        // --- FUNCTIONS ---
-
-        // SCROLL LOGIC ENGINE
-        function handleScroll() {
-            const scrollTop = window.scrollY;
-            const docHeight = document.body.scrollHeight - window.innerHeight;
-            
-            // Convert to Percentage (100 at top, 0 at bottom as requested)
-            // 0 scroll = 100% val
-            const scrollVal = 100 - ((scrollTop / docHeight) * 100);
-            
-            // Update Dirty Image Opacity (Linear mapping from 100 to 0)
-            const dirtyImg = document.getElementById('bg-dirty');
-            dirtyImg.style.opacity = scrollVal / 100;
-
-            // Debug
-            // document.getElementById('debug').innerText = `Val: ${scrollVal.toFixed(1)}`;
-
-            // Block Logic based on User Ranges
-            toggleBlock('block-1', scrollVal, 100, 90, 87);
-            toggleBlock('block-2', scrollVal, 87, 75, 73);
-            toggleBlock('block-3', scrollVal, 73, 60, 58);
-            toggleBlock('block-4', scrollVal, 58, 45, 42);
-            toggleBlock('block-5', scrollVal, 42, 30, 27);
-            toggleBlock('block-6', scrollVal, 27, 15, 12);
-            toggleBlock('block-7', scrollVal, 12, 0, -10); // End
-        }
-
-        function toggleBlock(id, val, start, stableEnd, fadeEnd) {
-            const el = document.getElementById(id);
-            if (!el) return;
-
-            // Logic:
-            // > start: Hidden (waiting to appear) - handled by previous block fading
-            // start to stableEnd: Visible (Opacity 1) - actually, usually need a fade in buffer
-            // stableEnd to fadeEnd: Fade out
-            
-            // Let's smooth this. 
-            // Range: Start -> StableEnd -> FadeEnd
-            
-            let opacity = 0;
-            let scale = 0.95;
-
-            // FADE IN PHASE (e.g. from 90 to 87 for block 2? No, logic says "87-85 appear")
-            // Re-reading strict logic:
-            // 100-90: Block 1 Full
-            // 90-87: Block 1 Fade Out
-            // 87-85: Block 2 Fade In
-            // 85-75: Block 2 Full
-            
-            // To simplify, checking active ranges:
-            if (val <= start && val > stableEnd) {
-                // Main Visible Phase (mostly)
-                // Check transition zones
-                opacity = 1;
-                scale = 1;
-            } 
-            // Transition OUT (e.g. 90-87 for block 1)
-            else if (val <= stableEnd && val > fadeEnd) {
-                // Map range to 1 -> 0
-                const range = stableEnd - fadeEnd;
-                const progress = (val - fadeEnd) / range; // 0 to 1
-                opacity = progress;
-                scale = 0.95 + (0.05 * progress);
-            }
-            // Transition IN (previous block faded out, this one appearing)
-            // The prompt says "87-85 appears". 
-            // We need to look ahead. If we are in "Appear" range.
-            // Let's implement a generic approach based on the prompt's specific "Appear" ranges.
-            
-            // Specific overrides based on prompt Logic:
-            
-            // BLOCK 1 (100-90 Full, 90-87 Fade Out)
-            if (id === 'block-1') {
-                if (val > 90) opacity = 1;
-                else if (val > 87) opacity = (val - 87) / 3;
-                else opacity = 0;
-            }
-            
-            // BLOCK 2 (87-85 Appear, 85-75 Full, 75-73 Fade Out)
-            if (id === 'block-2') {
-                if (val > 87) opacity = 0;
-                else if (val > 85) opacity = 1 - (val - 85) / 2; // Invert logic for appear
-                else if (val > 75) opacity = 1;
-                else if (val > 73) opacity = (val - 73) / 2;
-                else opacity = 0;
-            }
-
-            // BLOCK 3 (73-70 Appear, 70-60 Full, 60-58 Fade Out)
-            if (id === 'block-3') {
-                if (val > 73) opacity = 0;
-                else if (val > 70) opacity = 1 - (val - 70) / 3;
-                else if (val > 60) opacity = 1;
-                else if (val > 58) opacity = (val - 58) / 2;
-                else opacity = 0;
-            }
-
-            // BLOCK 4 (58-55 Appear, 55-45 Full, 45-42 Fade Out)
-            if (id === 'block-4') {
-                if (val > 58) opacity = 0;
-                else if (val > 55) opacity = 1 - (val - 55) / 3;
-                else if (val > 45) opacity = 1;
-                else if (val > 42) opacity = (val - 42) / 3;
-                else opacity = 0;
-            }
-
-             // BLOCK 5 (42-40 Appear, 40-30 Full, 30-27 Fade Out)
-             if (id === 'block-5') {
-                if (val > 42) opacity = 0;
-                else if (val > 40) opacity = 1 - (val - 40) / 2;
-                else if (val > 30) opacity = 1;
-                else if (val > 27) opacity = (val - 27) / 3;
-                else opacity = 0;
-            }
-
-            // BLOCK 6 (27-25 Appear, 25-15 Full, 15-12 Fade Out)
-            if (id === 'block-6') {
-                if (val > 27) opacity = 0;
-                else if (val > 25) opacity = 1 - (val - 25) / 2;
-                else if (val > 15) opacity = 1;
-                else if (val > 12) opacity = (val - 12) / 3;
-                else opacity = 0;
-            }
-
-            // BLOCK 7 (12-10 Appear, 10-0 Full)
-            if (id === 'block-7') {
-                if (val > 12) opacity = 0;
-                else if (val > 10) opacity = 1 - (val - 10) / 2;
-                else opacity = 1;
-            }
-
-            // Apply Styles
-            if (opacity > 0) {
-                el.classList.add('active');
-                el.style.opacity = opacity;
-                // Subtle scale effect linked to opacity for "breathing" feel
-                el.style.transform = `scale(${0.95 + (0.05 * opacity)})`;
-            } else {
-                el.classList.remove('active');
-                el.style.opacity = 0;
-            }
-        }
-
-        // BLOCK 2 INTERACTION
-        function toggleCard(card, direction) {
-            // Collapse others
-            document.querySelectorAll('.mind-card').forEach(c => {
-                if(c !== card) {
-                    c.classList.remove('expanded');
-                    c.querySelector('.details').classList.add('hidden');
-                    c.querySelector('.hidden-text').classList.remove('hidden');
-                }
+            // --- BLOCK 2: INTERACTIVITY ---
+            const cards = document.querySelectorAll('.card-js');
+            cards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation(); 
+                    const isActive = card.classList.contains('active');
+                    cards.forEach(c => c.classList.remove('active'));
+                    if (!isActive) card.classList.add('active');
+                });
             });
+            document.addEventListener('click', () => cards.forEach(c => c.classList.remove('active')));
 
-            // Toggle current
-            card.classList.toggle('expanded');
-            const details = card.querySelector('.details');
-            const hint = card.querySelector('.hidden-text');
-            
-            if(card.classList.contains('expanded')) {
-                details.classList.remove('hidden');
-                hint.classList.add('hidden');
-            } else {
-                details.classList.add('hidden');
-                hint.classList.remove('hidden');
-            }
-        }
-
-        // BLOCK 4 LOGIC (Portfolio)
-        function updateCaseDisplay() {
-            const data = cases[currentCaseIndex];
-            // Since we don't have real images, use placeholder with text
-            // In production: document.getElementById('case-img').src = data.img;
-            document.getElementById('case-img').src = `https://via.placeholder.com/800/222222/FFFFFF?text=Case+${data.img}`; 
-            
-            document.getElementById('case-number').innerText = `0${currentCaseIndex + 1}`;
-            document.getElementById('case-text').innerText = data.text;
-        }
-
-        function changeCase(dir) {
-            currentCaseIndex += dir;
-            if (currentCaseIndex < 0) currentCaseIndex = cases.length - 1;
-            if (currentCaseIndex >= cases.length) currentCaseIndex = 0;
-            
-            // Fade out text briefly
-            const textEl = document.getElementById('case-text');
-            textEl.style.opacity = 0;
-            
-            setTimeout(() => {
-                updateCaseDisplay();
-                textEl.style.opacity = 1;
-            }, 200);
-        }
-
-        // BLOCK 5 LOGIC (Team)
-        function renderTeam() {
-            const container = document.getElementById('team-stage');
-            container.innerHTML = '';
-
-            team.forEach((member, index) => {
-                const diff = index - currentTeamIndex;
-                const card = document.createElement('div');
-                card.className = 'team-card-3d glass-panel absolute w-64 md:w-80 p-6 rounded-xl flex flex-col items-center text-center transition-all duration-500';
-                
-                // 3D Transform Logic
-                let transform = '';
-                let opacity = 0;
-                let zIndex = 0;
-
-                if (diff === 0) {
-                    // Center
-                    transform = 'translateX(0) scale(1) rotateY(0deg)';
-                    opacity = 1;
-                    zIndex = 10;
-                } else if (diff === 1 || (currentTeamIndex === team.length - 1 && index === 0)) {
-                    // Right
-                    transform = 'translateX(100%) scale(0.8) rotateY(-25deg)';
-                    opacity = 0.6;
-                    zIndex = 5;
-                } else if (diff === -1 || (currentTeamIndex === 0 && index === team.length - 1)) {
-                    // Left
-                    transform = 'translateX(-100%) scale(0.8) rotateY(25deg)';
-                    opacity = 0.6;
-                    zIndex = 5;
-                } else {
-                    // Hidden
-                    transform = 'scale(0.5)';
-                    opacity = 0;
-                    zIndex = 0;
-                }
-                
-                // Adjust for wrapping (infinite carousel visual)
-                // Simplified for this prototype: Just hiding non-adjacent
-
-                card.style.transform = transform;
-                card.style.opacity = opacity;
-                card.style.zIndex = zIndex;
-
-                if (opacity > 0) {
-                    card.innerHTML = `
-                        <div class="w-24 h-24 rounded-full overflow-hidden mb-4 border-2 border-gold shadow-glow">
-                             <img src="https://via.placeholder.com/150/000000/FFFFFF?text=${member.name.split(' ')[0]}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition">
-                        </div>
-                        <h3 class="text-xl font-bold">${member.name}</h3>
-                        <p class="text-gold text-sm mb-4 uppercase tracking-wider">${member.role}</p>
-                        <p class="font-serif italic text-sm text-gray-300">"${member.quote}"</p>
-                    `;
-                    container.appendChild(card);
-                }
+            // --- BLOCK 4: SLIDER ---
+            const wrapper = document.getElementById('portfolioWrapper');
+            portfolioItems.forEach((item, i) => {
+                const el = document.createElement('div');
+                el.className = `slide-item ${i===0 ? 'active' : ''}`;
+                el.innerHTML = `<div class="slide-img-col"><img src="${item.img}" class="slide-img-obj" loading="lazy"><div class="slide-number">0${i+1}</div></div><div class="slide-txt-col"><div class="case-label">CASE STUDY</div><p class="case-desc">${item.text}</p></div>`;
+                wrapper.appendChild(el);
             });
-        }
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide-item');
+            const progFill = document.getElementById('progFill');
+            const curNum = document.getElementById('currentSlideNum');
+            
+            function updateSlider() {
+                slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+                curNum.innerText = `0${currentSlide + 1}`;
+                progFill.style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
+            }
+            document.getElementById('nextBtn').addEventListener('click', () => { currentSlide = (currentSlide + 1) % slides.length; updateSlider(); });
+            document.getElementById('prevBtn').addEventListener('click', () => { currentSlide = (currentSlide - 1 + slides.length) % slides.length; updateSlider(); });
 
-        function changeTeam(dir) {
-            currentTeamIndex += dir;
-            if (currentTeamIndex < 0) currentTeamIndex = team.length - 1;
-            if (currentTeamIndex >= team.length) currentTeamIndex = 0;
-            renderTeam();
-        }
+            // --- BLOCK 5: TEAM (3D Carousel) ---
+            const teamTrack = document.getElementById('teamTrack');
+            const teamDotsCont = document.getElementById('teamDots');
+            teamMembers.forEach((m, i) => {
+                const d = document.createElement('div'); d.className = `card-wrapper`;
+                d.innerHTML = `<div class="card-inner"><div class="c-text"><div class="quote-bg">“</div><p class="c-quote">${m.quote}</p><div><div class="c-name">${m.name}</div><div class="c-role">${m.role}</div></div></div><div class="c-photo"><img src="${m.img}" alt="${m.name}"></div></div>`;
+                teamTrack.appendChild(d);
+                const dot = document.createElement('div'); dot.className = `dot ${i===0?'active':''}`;
+                teamDotsCont.appendChild(dot);
+            });
+            
+            function updateTeam() {
+                const center = teamTrack.scrollLeft + (teamTrack.offsetWidth / 2);
+                const cards = document.querySelectorAll('.card-wrapper');
+                let activeIdx = 0;
+                cards.forEach((card, idx) => {
+                    const dist = center - (card.offsetLeft + card.offsetWidth/2);
+                    if(Math.abs(dist) < card.offsetWidth/2) activeIdx = idx;
+                    const norm = dist / (teamTrack.offsetWidth * 0.6);
+                    card.querySelector('.card-inner').style.transform = `perspective(800px) rotateY(${norm * -25}deg) scale(${1 - Math.abs(norm)*0.15})`;
+                    card.style.zIndex = 100 - Math.round(Math.abs(norm)*10);
+                });
+                document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i===activeIdx));
+            }
+            teamTrack.addEventListener('scroll', () => requestAnimationFrame(updateTeam));
+            setTimeout(updateTeam, 500);
 
-        // --- INITIALIZATION ---
-        window.addEventListener('scroll', () => requestAnimationFrame(handleScroll));
-        window.addEventListener('load', () => {
-            handleScroll(); // Init positions
-            updateCaseDisplay(); // Init portfolio
-            renderTeam(); // Init team
+            // --- CORE SCROLLYTELLING LOGIC ---
+            const dirtyImg = document.getElementById('dirtyImage');
+            
+            // Масив діапазонів згідно з твоєю інструкцією (100 -> 0)
+            const scrollRanges = [
+                { id: 'block1', showStart: 100, showEnd: 90, fadeStart: 90, fadeEnd: 87 },
+                { id: 'block2', appearStart: 87, appearEnd: 85, showStart: 85, showEnd: 75, fadeStart: 75, fadeEnd: 73 },
+                { id: 'block3', appearStart: 73, appearEnd: 70, showStart: 70, showEnd: 60, fadeStart: 60, fadeEnd: 58 },
+                { id: 'block4', appearStart: 58, appearEnd: 55, showStart: 55, showEnd: 45, fadeStart: 45, fadeEnd: 42 },
+                { id: 'block5', appearStart: 42, appearEnd: 40, showStart: 40, showEnd: 30, fadeStart: 30, fadeEnd: 27 },
+                { id: 'block6', appearStart: 27, appearEnd: 25, showStart: 25, showEnd: 15, fadeStart: 15, fadeEnd: 12 },
+                { id: 'block7', appearStart: 12, appearEnd: 10, showStart: 10, showEnd: 0,  fadeStart: -1, fadeEnd: -1 }
+            ];
+
+            function mapRange(value, inMin, inMax, outMin, outMax) {
+                return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+            }
+
+            function sync() {
+                const totalH = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollY = window.scrollY;
+                // "Value" від 100 (верх) до 0 (низ)
+                const val = 100 - ((scrollY / totalH) * 100);
+
+                // 1. Керування фоном (Dirty Image opacity 1 -> 0)
+                // Оскільки val йде від 100 до 0, opacity просто дорівнює val / 100
+                if(dirtyImg) dirtyImg.style.opacity = Math.max(0, Math.min(1, val / 100));
+
+                // 2. Керування блоками
+                scrollRanges.forEach(range => {
+                    const el = document.getElementById(range.id);
+                    if(!el) return;
+
+                    let opacity = 0;
+                    let visible = false;
+
+                    // Логіка появи (Appear)
+                    if (range.appearStart !== undefined && val <= range.appearStart && val > range.appearEnd) {
+                        // val падає від 87 до 85 -> opacity росте 0 до 1
+                        opacity = mapRange(val, range.appearStart, range.appearEnd, 0, 1);
+                        visible = true;
+                    }
+                    // Логіка показу (Show Static)
+                    else if (val <= range.showStart && val > range.showEnd) {
+                        opacity = 1;
+                        visible = true;
+                    }
+                    // Логіка згасання (Fade Out)
+                    else if (val <= range.fadeStart && val > range.fadeEnd) {
+                        // val падає від 90 до 87 -> opacity падає 1 до 0
+                        opacity = mapRange(val, range.fadeStart, range.fadeEnd, 1, 0);
+                        visible = true;
+                    }
+
+                    // Застосування стилів
+                    if (visible) {
+                        el.style.visibility = 'visible';
+                        el.style.opacity = opacity;
+                        // Запуск внутрішніх анімацій (cinematic-text, fly-in, etc.)
+                        if (opacity > 0.5) {
+                            el.querySelectorAll('.cinematic-text, .fly-in-anim, .glass-title-panel').forEach(c => c.classList.add('in-focus', 'landed'));
+                            // Фото-ефект для блоку 3
+                            if(range.id === 'block3') {
+                                document.querySelectorAll('.photo-box').forEach(b => b.classList.add('state-after'));
+                            }
+                        }
+                    } else {
+                        el.style.visibility = 'hidden';
+                        el.style.opacity = 0;
+                        el.querySelectorAll('.cinematic-text, .fly-in-anim, .glass-title-panel').forEach(c => c.classList.remove('in-focus', 'landed'));
+                        if(range.id === 'block3') {
+                            document.querySelectorAll('.photo-box').forEach(b => b.classList.remove('state-after'));
+                        }
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', sync);
+            window.addEventListener('resize', sync);
+            sync(); // Init
         });
-
     </script>
 </body>
 </html>
-
