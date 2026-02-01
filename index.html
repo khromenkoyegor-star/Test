@@ -11,7 +11,7 @@
         /* --- GLOBAL & RESET --- */
         html { scroll-behavior: smooth; }
         body {
-            height: 1200vh; /* Збільшив висоту для плавності ходу "тактів" миші */
+            height: 1200vh;
             margin: 0;
             background-color: #000;
             font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
@@ -37,7 +37,7 @@
             align-items: center; justify-content: center;
             z-index: 30; pointer-events: none; 
             padding: 20px;
-            opacity: 0; /* JS керує цим */
+            opacity: 0; 
             visibility: hidden;
         }
         .content-block > * { pointer-events: auto; }
@@ -55,28 +55,37 @@
 
         /* --- BLOCK 1: HERO --- */
         #hero-footnote {
-            position: absolute; width: 100%; text-align: center; opacity: 0;
-            transition: opacity 0.5s ease; font-size: 0.8rem; color: rgba(255,255,255,0.7);
-            z-index: 50; bottom: 15%; 
+            /* Now handled by cinematic-text logic, but base styles here */
+            font-size: 0.8rem; color: rgba(255,255,255,0.7);
+            position: absolute; bottom: 12%; width: 100%; text-align: center;
         }
-        @media (min-width: 769px) { #hero-footnote { bottom: 20%; } }
+        @media (min-width: 769px) { #hero-footnote { bottom: 15%; } }
 
-        /* --- BLOCK 2: RISKS (Desktop Mind Map & Mobile) --- */
+        /* --- BLOCK 2: RISKS (DESKTOP "SUN" LAYOUT) --- */
         .dt-mindmap-container {
-            position: relative; width: 1000px; height: 600px;
+            position: relative; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
         }
         .dt-center-title {
             position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 350px;
+            transform: translate(-50%, -50%); width: 400px;
             text-align: center; z-index: 10; pointer-events: none;
         }
-        .dt-anchor { position: absolute; width: 320px; height: 120px; z-index: 20; }
-        /* Positioning logic for 2x2 grid */
-        .dt-pos-tl { bottom: 50%; right: 50%; margin-bottom: 50px; margin-right: 30px; }
-        .dt-pos-tr { bottom: 50%; left: 50%; margin-bottom: 50px; margin-left: 30px; }
-        .dt-pos-bl { top: 50%; right: 50%; margin-top: 50px; margin-right: 30px; }
-        .dt-pos-br { top: 50%; left: 50%; margin-top: 50px; margin-left: 30px; }
+
+        /* Anchors positioning: Fixed relative to center. 
+           Using percentages and margins to create the "gap" for the center title. */
+        .dt-anchor {
+            position: absolute; width: 320px; height: 120px; z-index: 20;
+        }
+        
+        /* Top Left: Anchored at Bottom Right of its box to the Center-Left of screen */
+        .dt-pos-tl { bottom: 50%; right: 50%; margin-bottom: 80px; margin-right: 180px; }
+        /* Top Right */
+        .dt-pos-tr { bottom: 50%; left: 50%; margin-bottom: 80px; margin-left: 180px; }
+        /* Bottom Left */
+        .dt-pos-bl { top: 50%; right: 50%; margin-top: 80px; margin-right: 180px; }
+        /* Bottom Right */
+        .dt-pos-br { top: 50%; left: 50%; margin-top: 80px; margin-left: 180px; }
 
         .dt-card {
             position: absolute; width: 100%; height: 100%;
@@ -89,121 +98,148 @@
             transition: height 0.5s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s, border-color 0.3s;
         }
         .dt-card:hover { border-color: rgba(251, 191, 36, 0.5); background: rgba(255, 255, 255, 0.06); }
-        
-        /* Expansion directions */
+
+        /* EXPANSION DIRECTION LOGIC */
+        /* Top cards grow UPWARDS (away from center) */
         .dt-pos-tl .dt-card, .dt-pos-tr .dt-card { bottom: 0; top: auto; transform-origin: bottom center; }
+        /* Bottom cards grow DOWNWARDS (away from center) */
         .dt-pos-bl .dt-card, .dt-pos-br .dt-card { top: 0; bottom: auto; transform-origin: top center; }
 
         .dt-card.active {
-            height: 280px; background: rgba(10, 10, 10, 0.9);
+            height: 280px; background: rgba(10, 10, 10, 0.95);
             border-color: #fbbf24; z-index: 50; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* Entrance Animation classes */
-        .fly-in-anim { opacity: 0; transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .from-tl { transform: translate(-100%, -100%) scale(0); }
-        .from-tr { transform: translate(100%, -100%) scale(0); }
-        .from-bl { transform: translate(-100%, 100%) scale(0); }
-        .from-br { transform: translate(100%, 100%) scale(0); }
+        /* FLY-IN ANIMATIONS (From edges to center) */
+        .fly-in-anim { opacity: 0; transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .from-tl { transform: translate(-100vw, -100vh) scale(0.5); }
+        .from-tr { transform: translate(100vw, -100vh) scale(0.5); }
+        .from-bl { transform: translate(-100vw, 100vh) scale(0.5); }
+        .from-br { transform: translate(100vw, 100vh) scale(0.5); }
         
         .fly-in-anim.landed { opacity: 1; transform: translate(0, 0) scale(1); }
 
         .dt-icon-wrapper { color: #fbbf24; margin-bottom: 12px; transition: transform 0.4s; }
-        .dt-card.active .dt-icon-wrapper { transform: scale(0.9); }
         .dt-card h3 { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 5px; transition: color 0.3s; }
         .dt-card.active h3 { color: #fbbf24; }
-        
         .dt-hidden-text {
             display: block; opacity: 0; max-height: 0; margin-top: 0; font-size: 0.9rem; color: #e5e5e5; line-height: 1.5;
             transition: all 0.4s ease 0.1s; overflow: hidden;
         }
         .dt-card.active .dt-hidden-text { opacity: 1; max-height: 200px; margin-top: 15px; }
-        
         .expand-hint {
             position: absolute; top: 20px; right: 20px; color: rgba(255,255,255,0.3); width: 16px; height: 16px; transition: transform 0.3s;
         }
         .dt-card.active .expand-hint { transform: rotate(45deg); color: #fbbf24; }
 
-        /* Mobile Block 2 */
+        /* --- BLOCK 2: MOBILE LAYOUT (UPDATED) --- */
         @media (max-width: 768px) {
             .dt-mindmap-container { display: none; }
             .risk-mobile-layout {
-                display: flex; flex-direction: column; width: 100%; justify-content: center; gap: 20px; max-width: 400px;
+                position: relative; width: 100%; height: 70vh;
+                display: flex; flex-direction: column; align-items: center;
             }
-            .risk-mobile-title { text-align: center; margin-bottom: 10px; z-index: 20; }
-            .mobile-row { display: flex; justify-content: space-between; gap: 10px; width: 100%; height: 120px; position: relative; z-index: 30; }
-            .m-grid-cell { position: relative; width: 48%; height: 100%; }
+            .risk-mobile-title { 
+                text-align: center; margin-bottom: 20px; z-index: 20; 
+                margin-top: -40px; /* Moved higher up */
+            }
+            .risk-mobile-title h2 { font-size: 1.8rem; line-height: 1.1; } /* Increased size */
+            
+            .mobile-grid {
+                display: grid; grid-template-columns: 1fr 1fr; 
+                gap: 15px; width: 95%; max-width: 400px;
+            }
+            .m-grid-cell { position: relative; height: 140px; } /* Increased height placeholder */
+            
             .risk-card-mob {
-                position: absolute; width: 100%; height: 110px; left: 0;
-                background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
-                padding: 1rem; display: flex; flex-direction: column; justify-content: center;
-                transition: height 0.3s ease; overflow: hidden;
+                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
+                padding: 1rem; display: flex; flex-direction: column; justify-content: flex-start;
+                transition: height 0.3s ease, z-index 0s; overflow: hidden;
             }
-            .row-top .m-grid-cell .risk-card-mob { bottom: 0; transform-origin: bottom center; }
-            .row-bottom .m-grid-cell .risk-card-mob { top: 0; transform-origin: top center; }
+            
             .risk-card-mob.active {
-                height: 240px !important; z-index: 100; background: rgba(15, 15, 15, 0.98);
-                border-color: #fbbf24; box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+                height: 260px !important; z-index: 100; /* Overlap others */
+                background: #111; border-color: #fbbf24;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             }
-            .card-icon { color: #fbbf24; margin-bottom: 8px; width: 28px; height: 28px; transition: 0.3s; }
-            .hidden-text { display: block; opacity: 0; max-height: 0; font-size: 0.85rem; color: #ccc; transition: all 0.3s ease; }
+            .card-icon { color: #fbbf24; margin-bottom: 8px; width: 32px; height: 32px; }
+            .risk-card-mob h3 { font-size: 1rem; font-weight: 700; }
+            
+            .hidden-text { display: block; opacity: 0; max-height: 0; font-size: 0.9rem; color: #ccc; transition: all 0.3s ease; line-height: 1.3; }
             .active .hidden-text { opacity: 1; max-height: 200px; margin-top: 10px; }
         }
 
-        /* --- BLOCK 3: SERVICES --- */
-        #block3.content-block { justify-content: space-between; padding-top: 40px; padding-bottom: 20px; }
-        .glass-title-panel {
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
-            padding: 15px 25px; margin-bottom: 5px; display: inline-block;
-        }
+        /* --- BLOCK 3: SERVICES (UPDATED ANIMATION & MOBILE) --- */
+        #block3.content-block { justify-content: space-between; padding-top: 60px; padding-bottom: 20px; }
+        
         .services-matrix {
-            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
-            gap: 15px; width: 100%; max-width: 1000px; flex-grow: 1; align-content: center;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; 
+            width: 100%; max-width: 1000px; flex-grow: 1; align-content: center;
         }
         .service-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .service-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: rgba(255,255,255,0.9); }
+        .service-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 5px black; }
+        
         .photo-box {
-            width: 100%; aspect-ratio: 1 / 1; max-width: 200px; 
-            position: relative; border-radius: 12px; overflow: hidden;
-            background: #111; border: 2px solid rgba(255,255,255,0.1);
-            transition: all 0.6s ease;
+            width: 100%; aspect-ratio: 1 / 1; max-width: 220px; 
+            position: relative; border-radius: 16px; overflow: hidden;
+            background: #000; border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transition: border-color 0.5s, box-shadow 0.5s;
         }
-        .photo-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; }
-        .img-before { z-index: 1; opacity: 1; } .img-after { z-index: 2; opacity: 0; }
-        .photo-box.state-after { border-color: #60a5fa; box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); }
-        .photo-box.state-after .img-after { opacity: 1; }
+        .photo-img { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            object-fit: cover; transition: opacity 1s ease-in-out; 
+        }
+        .img-before { z-index: 10; opacity: 1; }
+        .img-after { z-index: 5; opacity: 1; } /* After is always behind, we fade out Before */
+        
+        /* Animation State: "Clean" */
+        .photo-box.show-clean .img-before { opacity: 0; }
+        .photo-box.show-clean { 
+            border-color: #3b82f6; 
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); 
+        }
+        
         .label-badge { 
-            position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); 
-            padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase; z-index: 10; 
+            position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); 
+            padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; 
+            text-transform: uppercase; z-index: 20; color: white; transition: 0.3s;
         }
 
+        @media (max-width: 768px) {
+            #block3.content-block { padding-top: 80px; gap: 10px; justify-content: flex-start; }
+            .services-matrix { 
+                grid-template-columns: repeat(2, 1fr); /* 2 Columns Mobile */
+                gap: 15px; margin-top: 10px; padding: 0 10px;
+            }
+            .photo-box { max-width: 100%; border-radius: 12px; } 
+            .service-title { font-size: 0.9rem; }
+            #b3-title { font-size: 1.4rem; line-height: 1.1; } 
+            #b3-subtitle { font-size: 11px; display: none; } /* Hide subtitle on mobile to save space */
+        }
+
+        /* Marquee */
         .desktop-static-bar { 
             background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 15px; 
             display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; max-width: 1200px; 
-            margin-top: 40px; transform: scale(0.9); transform-origin: top center;
+            margin-top: auto; margin-bottom: 20px; transform: scale(0.95);
         }
-        .benefit-item { display: flex; gap: 10px; }
-        .desktop-static-bar .benefit-item { flex-direction: column; align-items: flex-start; gap: 8px; }
-        .desktop-static-bar .benefit-text { font-size: 11px; white-space: normal; line-height: 1.3; }
+        .benefit-item { display: flex; gap: 10px; align-items: flex-start; }
+        .benefit-text { font-size: 11px; white-space: normal; line-height: 1.3; color: #ddd; }
         
         .mobile-marquee { 
-            width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); 
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; margin-top: auto; 
-            display: flex; align-items: center; height: 60px; pointer-events: auto; 
+            width: 100%; overflow: hidden; background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(15px); 
+            border-top: 1px solid rgba(255, 255, 255, 0.15); margin-top: auto; 
+            display: flex; align-items: center; height: 50px; pointer-events: auto; 
         }
-        .marquee-track { display: flex; gap: 30px; padding: 0 20px; animation: marquee 25s linear infinite; width: max-content; }
+        .marquee-track { display: flex; gap: 40px; padding: 0 20px; animation: marquee 30s linear infinite; width: max-content; }
+        .marquee-track .benefit-item { align-items: center; white-space: nowrap; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        @media (max-width: 768px) {
-            #block3.content-block { padding-top: 40px; gap: 5px; justify-content: flex-start; }
-            .services-matrix { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 5px; }
-            .photo-box { max-width: 115px; } .service-title { font-size: 0.8rem; }
-            #b3-title { font-size: 1.3rem; line-height: 1.2; } #b3-subtitle { font-size: 11px; }
-        }
-
-        /* --- BLOCK 4: PORTFOLIO --- */
+        /* --- REST OF STYLES (Blocks 4, 5) UNCHANGED --- */
+        /* ... (Block 4 & 5 CSS from previous version kept here) ... */
         #block4.content-block { justify-content: center; padding: 20px; }
         .cinematic-stage { 
             position: relative; width: 95%; max-width: 1000px; height: 60vh; max-height: 550px; 
@@ -212,81 +248,33 @@
         }
         @media (min-width: 769px) { .cinematic-stage { height: 500px; } }
         .slides-wrapper { width: 100%; height: 100%; position: relative; }
-        .slide-item { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; 
-            opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
+        .slide-item { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .slide-item.active { opacity: 1; pointer-events: auto; }
-        
-        @media (min-width: 769px) { 
-            .slide-item { flex-direction: row; } 
-            .slide-img-col { width: 45%; height: 100%; position: relative; overflow: hidden; } 
-            .slide-txt-col { width: 55%; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
-            .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.05); position: absolute; top: 20px; right: 20px; line-height: 1; }
-        }
-        @media (max-width: 768px) { 
-            .slide-item { flex-direction: column; } 
-            .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; } 
-            .slide-txt-col { width: 100%; height: 60%; padding: 20px 20px 80px 20px; overflow-y: auto; mask-image: linear-gradient(to bottom, black 85%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%); }
-            .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.6); position: absolute; top: 10px; right: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        }
+        @media (min-width: 769px) { .slide-item { flex-direction: row; } .slide-img-col { width: 45%; height: 100%; position: relative; overflow: hidden; } .slide-txt-col { width: 55%; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: center; } .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.05); position: absolute; top: 20px; right: 20px; line-height: 1; } }
+        @media (max-width: 768px) { .slide-item { flex-direction: column; } .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; } .slide-txt-col { width: 100%; height: 60%; padding: 20px 20px 80px 20px; overflow-y: auto; mask-image: linear-gradient(to bottom, black 85%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%); } .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.6); position: absolute; top: 10px; right: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); } }
         .slide-img-obj { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); transition: transform 1.5s ease-out; }
         .slide-item.active .slide-img-obj { transform: scale(1); }
         .case-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #fbbf24; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
         .case-label::before { content: ''; width: 30px; height: 1px; background: #fbbf24; display: block; }
         .case-desc { font-size: 0.95rem; line-height: 1.6; color: #e5e5e5; font-weight: 300; }
-        .stage-controls { 
-            position: absolute; bottom: 0; right: 0; width: 100%; height: 60px; 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(15, 15, 15, 0.95); 
-        }
+        .stage-controls { position: absolute; bottom: 0; right: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(15, 15, 15, 0.95); }
         @media (min-width: 769px) { .stage-controls { width: 55%; bottom: 0; right: 0; padding: 0 40px; background: rgba(0,0,0,0.2); } }
         .prog-bar { flex-grow: 1; height: 2px; background: rgba(255,255,255,0.1); margin: 0 20px; position: relative; }
         .prog-fill { height: 100%; background: #fbbf24; width: 0%; transition: width 0.4s; }
         .nav-arrows { display: flex; gap: 10px; }
-        .stage-btn { 
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; 
-            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: all 0.3s; 
-        }
+        .stage-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
         .stage-btn:hover { background: #fbbf24; color: black; border-color: #fbbf24; }
-
-        /* --- BLOCK 5: TEAM --- */
-        #block5.content-block {
-            justify-content: center; padding: 0; 
-            background: linear-gradient(to top, #000 0%, transparent 20%, transparent 80%, #000 100%);
-        }
+        #block5.content-block { justify-content: center; padding: 0; background: linear-gradient(to top, #000 0%, transparent 20%, transparent 80%, #000 100%); }
         .team-title-area { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 40; padding: 0 20px; }
         .team-title-area h2 { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
         .team-title-area p { font-size: 0.9rem; color: #aaa; max-width: 600px; margin: 0 auto; font-weight: 300; }
-        .carousel-container {
-            width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory;
-            padding: 0 17.5vw; display: flex; align-items: center; height: 550px;
-            -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 40px;
-        }
+        .carousel-container { width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 17.5vw; display: flex; align-items: center; height: 550px; -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 40px; }
         .carousel-container::-webkit-scrollbar { display: none; }
-        .card-wrapper {
-            flex: 0 0 65vw; height: 450px; scroll-snap-align: center; scroll-snap-stop: always;
-            position: relative; perspective: 800px; margin: 0 10px; z-index: 1;
-        }
-        @media (min-width: 769px) {
-            .carousel-container { padding: 0 35vw; }
-            .card-wrapper { flex: 0 0 30vw; height: 500px; }
-        }
-        .card-inner {
-            width: 100%; height: 100%; background: #141414;
-            border-radius: 16px; border: 1px solid rgba(255,255,255,0.15);
-            display: flex; overflow: hidden; position: relative;
-            will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-        .c-text {
-            width: 55%; padding: 1rem; display: flex; flex-direction: column; justify-content: center;
-            background: linear-gradient(135deg, #222 0%, #0a0a0a 100%);
-            border-right: 1px solid rgba(255,255,255,0.05); position: relative;
-        }
-        .c-photo { width: 45%; }
-        .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
+        .card-wrapper { flex: 0 0 65vw; height: 450px; scroll-snap-align: center; scroll-snap-stop: always; position: relative; perspective: 800px; margin: 0 10px; z-index: 1; }
+        @media (min-width: 769px) { .carousel-container { padding: 0 35vw; } .card-wrapper { flex: 0 0 30vw; height: 500px; } }
+        .card-inner { width: 100%; height: 100%; background: #141414; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); display: flex; overflow: hidden; position: relative; will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        .c-text { width: 55%; padding: 1rem; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(135deg, #222 0%, #0a0a0a 100%); border-right: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .c-photo { width: 45%; } .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
         .c-quote { font-family: 'Playfair Display', serif; font-size: 0.8rem; line-height: 1.35; color: #ccc; font-style: italic; margin-bottom: 1rem; position: relative; z-index: 2; }
         .c-name { font-size: 0.85rem; font-weight: 800; color: #fff; text-transform: uppercase; }
         .c-role { font-size: 0.6rem; color: #ef4444; font-weight: 700; text-transform: uppercase; }
@@ -294,8 +282,6 @@
         .dots-container { display: flex; justify-content: center; gap: 8px; position: absolute; bottom: 5%; width: 100%; z-index: 50; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
         .dot.active { background: #ef4444; transform: scale(1.2); }
-
-        /* --- PLACEHOLDER BLOCKS 6 & 7 (Tech) --- */
         .placeholder-text { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.1); text-transform: uppercase; }
     </style>
 </head>
@@ -309,11 +295,12 @@
         <div id="block1" class="content-block" style="z-index: 40;">
             <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong"><span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ</h1>
             <h2 id="hero-subtitle" class="cinematic-text text-2xl md:text-4xl font-light text-center mt-6 text-shadow-strong tracking-wide">ПОВʼЯЗАНІ З БРУДНОЮ<br>ВЕНТИЛЯЦІЄЮ*</h2>
-            <div id="hero-footnote" class="transition-opacity duration-500 text-shadow-strong">* За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)</div>
+            <div id="hero-footnote" class="cinematic-text text-shadow-strong">* За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)</div>
         </div>
 
         <div id="block2" class="content-block">
-            <div class="risk-wrapper">
+            <div class="risk-wrapper w-full h-full">
+                
                 <div class="dt-mindmap-container hidden md:flex">
                     <div class="dt-center-title cinematic-text">
                         <h2 class="text-5xl font-extrabold text-white text-shadow-strong leading-tight">ЧИМ РИЗИКУЄ<br>ВАШ БІЗНЕС?</h2>
@@ -323,10 +310,25 @@
                     <div class="dt-anchor dt-pos-bl"><div class="dt-card fly-in-anim from-bl card-js"><div class="dt-icon-wrapper"><i data-lucide="user-x" style="width: 32px; height: 32px;"></i></div><h3>Втрата клієнтів</h3><p class="dt-hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p><i data-lucide="plus" class="expand-hint"></i></div></div>
                     <div class="dt-anchor dt-pos-br"><div class="dt-card fly-in-anim from-br card-js"><div class="dt-icon-wrapper"><i data-lucide="zap" style="width: 32px; height: 32px;"></i></div><h3>Витрата електроенергії</h3><p class="dt-hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p><i data-lucide="plus" class="expand-hint"></i></div></div>
                 </div>
+
                 <div class="risk-mobile-layout md:hidden">
-                    <div class="risk-mobile-title cinematic-text"><h2 class="text-2xl font-bold text-shadow-strong leading-tight">ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span></h2></div>
-                    <div class="mobile-row row-top"><div class="m-grid-cell"><div class="risk-card-mob fly-in-anim from-tl card-js"><i data-lucide="flame" class="card-icon"></i><h3 class="font-bold">Пожежа</h3><p class="hidden-text">Бруд у вентиляції спалахує миттєво.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div><div class="m-grid-cell"><div class="risk-card-mob fly-in-anim from-tr card-js"><i data-lucide="file-warning" class="card-icon"></i><h3 class="font-bold">Штрафи</h3><p class="hidden-text">Загроза зупинки діяльності.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div></div>
-                    <div class="mobile-row row-bottom"><div class="m-grid-cell"><div class="risk-card-mob fly-in-anim from-bl card-js"><i data-lucide="user-x" class="card-icon"></i><h3 class="font-bold">Втрата клієнтів</h3><p class="hidden-text">Запахи кухні в залі.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div><div class="m-grid-cell"><div class="risk-card-mob fly-in-anim from-br card-js"><i data-lucide="zap" class="card-icon"></i><h3 class="font-bold">Електроенергія</h3><p class="hidden-text">Перевитрата до 30%.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div></div></div>
+                    <div class="risk-mobile-title cinematic-text">
+                        <h2 class="font-extrabold text-shadow-strong leading-tight text-white">ЧИМ РИЗИКУЄ<br><span class="text-orange-500">ВАШ БІЗНЕС?</span></h2>
+                    </div>
+                    <div class="mobile-grid">
+                        <div class="m-grid-cell">
+                            <div class="risk-card-mob fly-in-anim from-tl card-js"><i data-lucide="flame" class="card-icon"></i><h3 class="font-bold">Пожежа</h3><p class="hidden-text">Бруд у вентиляції спалахує миттєво і поширює вогонь по всій будівлі за хвилини.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                        </div>
+                        <div class="m-grid-cell">
+                            <div class="risk-card-mob fly-in-anim from-tr card-js"><i data-lucide="file-warning" class="card-icon"></i><h3 class="font-bold">Штрафи</h3><p class="hidden-text">Порушення ст. 175 КУПАП та вимог НАССР може призвести до зупинки діяльності.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                        </div>
+                        <div class="m-grid-cell">
+                            <div class="risk-card-mob fly-in-anim from-bl card-js"><i data-lucide="user-x" class="card-icon"></i><h3 class="font-bold">Клієнти</h3><p class="hidden-text">Неефективна витяжка = запахи кухні в залі для клієнтів.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                        </div>
+                        <div class="m-grid-cell">
+                            <div class="risk-card-mob fly-in-anim from-br card-js"><i data-lucide="zap" class="card-icon"></i><h3 class="font-bold">Електрика</h3><p class="hidden-text">Забруднений вентилятор споживає на 30% більше електроенергії.</p><i data-lucide="plus" class="absolute top-4 right-4 text-white/30 w-5 h-5 pointer-events-none"></i></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -338,16 +340,30 @@
                     <p id="b3-subtitle" class="text-[10px] md:text-sm text-blue-200 mt-2 font-medium italic">Працюємо вночі, щоб ваш бізнес працював вдень.</p>
                 </div>
             </div>
+            
             <div class="services-matrix">
-                <div class="service-item cinematic-text" style="transition-delay: 0s;"><div class="service-title">Витяжні зонти</div><div class="photo-box" id="box-1"><img src="1.webp" class="photo-img img-before" alt="До"><img src="2.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-1">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.1s;"><div class="service-title">Фільтра</div><div class="photo-box" id="box-2"><img src="3.webp" class="photo-img img-before" alt="До"><img src="4.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-2">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.2s;"><div class="service-title">Повітропроводи</div><div class="photo-box" id="box-3"><img src="5.webp" class="photo-img img-before" alt="До"><img src="6.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-3">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.3s;"><div class="service-title">Вентилятори</div><div class="photo-box" id="box-4"><img src="7.webp" class="photo-img img-before" alt="До"><img src="8.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-4">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.4s;"><div class="service-title">Пристрої</div><div class="photo-box" id="box-5"><img src="9.webp" class="photo-img img-before" alt="До"><img src="10.webp" class="photo-img img-after" alt="Після"><div class="label-badge" id="lbl-5">До</div></div></div>
-                <div class="service-item cinematic-text" style="transition-delay: 0.5s;"><div class="service-title">Інше</div><div class="photo-box" id="box-6"><img src="11.webp" class="photo-img img-before" alt="До"><img src="12.webp" class="photo-img img-after" alt="Після"></div></div>
+                <div class="service-item cinematic-text"><div class="service-title">Витяжні зонти</div><div class="photo-box js-anim-box"><img src="1.webp" class="photo-img img-before" alt="Брудно"><img src="2.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
+                <div class="service-item cinematic-text"><div class="service-title">Фільтра</div><div class="photo-box js-anim-box"><img src="3.webp" class="photo-img img-before" alt="Брудно"><img src="4.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
+                <div class="service-item cinematic-text"><div class="service-title">Повітропроводи</div><div class="photo-box js-anim-box"><img src="5.webp" class="photo-img img-before" alt="Брудно"><img src="6.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
+                <div class="service-item cinematic-text"><div class="service-title">Вентилятори</div><div class="photo-box js-anim-box"><img src="7.webp" class="photo-img img-before" alt="Брудно"><img src="8.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
+                <div class="service-item cinematic-text"><div class="service-title">Пристрої</div><div class="photo-box js-anim-box"><img src="9.webp" class="photo-img img-before" alt="Брудно"><img src="10.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
+                <div class="service-item cinematic-text"><div class="service-title">Інше</div><div class="photo-box js-anim-box"><img src="11.webp" class="photo-img img-before" alt="Брудно"><img src="12.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
             </div>
+
             <div class="desktop-static-bar hidden md:grid cinematic-text" style="transition-delay: 0.6s;"><div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Використовуємо ефективну хімію (виробництво Іспанія)</p></div><div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Працюємо в нічний час та на будь-якій висоті.</p></div><div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Фото та відео-фіксація виконаної роботи.</p></div><div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Надаємо акт утилізації та документи для ДСНС.</p></div><div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Захищаємо ваше робоче місце від жиру.</p></div></div>
-            <div class="mobile-marquee md:hidden cinematic-text"><div class="marquee-track"><div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Працюємо вночі</span></div><div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Фото-звіт</span></div><div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Документи ДСНС</span></div></div></div>
+            
+            <div class="mobile-marquee md:hidden cinematic-text">
+                <div class="marquee-track">
+                    <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Іспанська хімія</span></div>
+                    <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Нічні роботи</span></div>
+                    <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Фото-фіксація</span></div>
+                    <div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Документи ДСНС</span></div>
+                    <div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Захист кухні</span></div>
+                    <div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Іспанська хімія</span></div>
+                    <div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Нічні роботи</span></div>
+                    <div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-4 h-4"></i><span class="benefit-text">Фото-фіксація</span></div>
+                </div>
+            </div>
         </div>
 
         <div id="block4" class="content-block">
@@ -364,13 +380,8 @@
             <div class="dots-container" id="teamDots"></div>
         </div>
 
-        <div id="block6" class="content-block">
-            <div class="placeholder-text cinematic-text">БЛОК 6</div>
-        </div>
-
-        <div id="block7" class="content-block">
-            <div class="placeholder-text cinematic-text">БЛОК 7</div>
-        </div>
+        <div id="block6" class="content-block"><div class="placeholder-text cinematic-text">БЛОК 6</div></div>
+        <div id="block7" class="content-block"><div class="placeholder-text cinematic-text">БЛОК 7</div></div>
 
     </div>
 
@@ -408,6 +419,26 @@
             });
             document.addEventListener('click', () => cards.forEach(c => c.classList.remove('active')));
 
+            // --- BLOCK 3: BEFORE/AFTER ANIMATION LOGIC ---
+            let serviceAnimInterval = null;
+            function startServiceAnimation() {
+                if (serviceAnimInterval) return;
+                const boxes = document.querySelectorAll('.js-anim-box');
+                const badges = document.querySelectorAll('.label-badge');
+                serviceAnimInterval = setInterval(() => {
+                    boxes.forEach(box => box.classList.toggle('show-clean'));
+                    badges.forEach(badge => {
+                        badge.innerText = badge.innerText === 'ДО' ? 'ПІСЛЯ' : 'ДО';
+                    });
+                }, 2000);
+            }
+            function stopServiceAnimation() {
+                if (serviceAnimInterval) {
+                    clearInterval(serviceAnimInterval);
+                    serviceAnimInterval = null;
+                }
+            }
+
             // --- BLOCK 4: SLIDER ---
             const wrapper = document.getElementById('portfolioWrapper');
             portfolioItems.forEach((item, i) => {
@@ -429,7 +460,7 @@
             document.getElementById('nextBtn').addEventListener('click', () => { currentSlide = (currentSlide + 1) % slides.length; updateSlider(); });
             document.getElementById('prevBtn').addEventListener('click', () => { currentSlide = (currentSlide - 1 + slides.length) % slides.length; updateSlider(); });
 
-            // --- BLOCK 5: TEAM (3D Carousel) ---
+            // --- BLOCK 5: TEAM ---
             const teamTrack = document.getElementById('teamTrack');
             const teamDotsCont = document.getElementById('teamDots');
             teamMembers.forEach((m, i) => {
@@ -458,8 +489,6 @@
 
             // --- CORE SCROLLYTELLING LOGIC ---
             const dirtyImg = document.getElementById('dirtyImage');
-            
-            // Масив діапазонів згідно з твоєю інструкцією (100 -> 0)
             const scrollRanges = [
                 { id: 'block1', showStart: 100, showEnd: 90, fadeStart: 90, fadeEnd: 87 },
                 { id: 'block2', appearStart: 87, appearEnd: 85, showStart: 85, showEnd: 75, fadeStart: 75, fadeEnd: 73 },
@@ -477,14 +506,10 @@
             function sync() {
                 const totalH = document.documentElement.scrollHeight - window.innerHeight;
                 const scrollY = window.scrollY;
-                // "Value" від 100 (верх) до 0 (низ)
                 const val = 100 - ((scrollY / totalH) * 100);
 
-                // 1. Керування фоном (Dirty Image opacity 1 -> 0)
-                // Оскільки val йде від 100 до 0, opacity просто дорівнює val / 100
                 if(dirtyImg) dirtyImg.style.opacity = Math.max(0, Math.min(1, val / 100));
 
-                // 2. Керування блоками
                 scrollRanges.forEach(range => {
                     const el = document.getElementById(range.id);
                     if(!el) return;
@@ -492,50 +517,40 @@
                     let opacity = 0;
                     let visible = false;
 
-                    // Логіка появи (Appear)
                     if (range.appearStart !== undefined && val <= range.appearStart && val > range.appearEnd) {
-                        // val падає від 87 до 85 -> opacity росте 0 до 1
                         opacity = mapRange(val, range.appearStart, range.appearEnd, 0, 1);
                         visible = true;
                     }
-                    // Логіка показу (Show Static)
                     else if (val <= range.showStart && val > range.showEnd) {
                         opacity = 1;
                         visible = true;
                     }
-                    // Логіка згасання (Fade Out)
                     else if (val <= range.fadeStart && val > range.fadeEnd) {
-                        // val падає від 90 до 87 -> opacity падає 1 до 0
                         opacity = mapRange(val, range.fadeStart, range.fadeEnd, 1, 0);
                         visible = true;
                     }
 
-                    // Застосування стилів
                     if (visible) {
                         el.style.visibility = 'visible';
                         el.style.opacity = opacity;
-                        // Запуск внутрішніх анімацій (cinematic-text, fly-in, etc.)
                         if (opacity > 0.5) {
                             el.querySelectorAll('.cinematic-text, .fly-in-anim, .glass-title-panel').forEach(c => c.classList.add('in-focus', 'landed'));
-                            // Фото-ефект для блоку 3
-                            if(range.id === 'block3') {
-                                document.querySelectorAll('.photo-box').forEach(b => b.classList.add('state-after'));
-                            }
+                            // Enable Block 3 Animation
+                            if (range.id === 'block3') startServiceAnimation();
                         }
                     } else {
                         el.style.visibility = 'hidden';
                         el.style.opacity = 0;
                         el.querySelectorAll('.cinematic-text, .fly-in-anim, .glass-title-panel').forEach(c => c.classList.remove('in-focus', 'landed'));
-                        if(range.id === 'block3') {
-                            document.querySelectorAll('.photo-box').forEach(b => b.classList.remove('state-after'));
-                        }
+                        // Disable Block 3 Animation
+                        if (range.id === 'block3') stopServiceAnimation();
                     }
                 });
             }
 
             window.addEventListener('scroll', sync);
             window.addEventListener('resize', sync);
-            sync(); // Init
+            sync();
         });
     </script>
 </body>
