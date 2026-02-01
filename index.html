@@ -237,7 +237,7 @@
         .team-title-area h2 { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
         .team-title-area p { font-size: 0.9rem; color: #aaa; max-width: 600px; margin: 0 auto; font-weight: 300; }
         
-        /* === UPDATED TEAM CAROUSEL STYLES (Task 2 & 3) === */
+        /* === BLOCK 5: CAROUSEL STYLES (REVERTED DESKTOP POSITIONING) === */
         .carousel-container { 
             width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; 
             padding: 0 17.5vw; /* Mobile Padding - centered */
@@ -254,8 +254,8 @@
         
         @media (min-width: 769px) { 
             .carousel-container { 
-                padding: 0 10vw; /* UPDATED: Left aligned padding for Desktop */
-                justify-content: flex-start;
+                padding: 0 35vw; /* REVERTED TO CENTERED PADDING */
+                /* Removed justify-content: flex-start */
             } 
             .card-wrapper { 
                 flex: 0 0 38vw; /* Increased width by ~20% for Desktop */
@@ -263,10 +263,10 @@
             } 
         }
 
-        /* UPDATED Card Backgrounds */
+        /* Card Backgrounds (Translucent as requested) */
         .card-inner { 
             width: 100%; height: 100%; 
-            background: transparent; /* Removed solid background */
+            background: transparent; 
             border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); 
             display: flex; overflow: hidden; position: relative; 
             will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s; 
@@ -275,7 +275,6 @@
         
         .c-text { 
             width: 55%; padding: 1.2rem; display: flex; flex-direction: column; justify-content: center; 
-            /* Transparent background for text area */
             background: linear-gradient(135deg, rgba(34,34,34, 0.6) 0%, rgba(10,10,10, 0.6) 100%);
             backdrop-filter: blur(10px);
             border-right: 1px solid rgba(255,255,255,0.05); position: relative; 
@@ -296,12 +295,11 @@
         .dot.active { background: #ef4444; transform: scale(1.2); }
         .placeholder-text { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.1); text-transform: uppercase; }
 
-        /* --- BLOCK 6: PRICES (STYLES - Task 1 Updated) --- */
+        /* --- BLOCK 6: PRICES --- */
         #block6.content-block { justify-content: center; padding: 20px; }
         .price-card-container {
             width: 95%; max-width: 800px;
-            /* Updated transparency: 0.4 instead of 0.7 */
-            background: rgba(20, 20, 20, 0.4);
+            background: rgba(20, 20, 20, 0.4); /* Transparency 0.4 */
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 24px;
@@ -397,7 +395,7 @@
                 <div class="service-item cinematic-text"><div class="service-title">Фільтра</div><div class="photo-box js-anim-box"><img src="3.webp" class="photo-img img-before" alt="Брудно"><img src="4.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
                 <div class="service-item cinematic-text"><div class="service-title">Повітропроводи</div><div class="photo-box js-anim-box"><img src="5.webp" class="photo-img img-before" alt="Брудно"><img src="6.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
                 <div class="service-item cinematic-text"><div class="service-title">Вентилятори</div><div class="photo-box js-anim-box"><img src="7.webp" class="photo-img img-before" alt="Брудно"><img src="8.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
-                <div class="service-item cinematic-text"><div class="service-title">Повітророзподільчі пристрої</div><div class="photo-box js-anim-box"><img src="9.webp" class="photo-img img-before" alt="Брудно"><img src="10.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
+                <div class="service-item cinematic-text"><div class="service-title"><span class="md:hidden">Дифузори</span><span class="hidden md:block">Повітророзподільчі пристрої</span></div><div class="photo-box js-anim-box"><img src="9.webp" class="photo-img img-before" alt="Брудно"><img src="10.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
                 <div class="service-item cinematic-text"><div class="service-title">Інше</div><div class="photo-box js-anim-box"><img src="11.webp" class="photo-img img-before" alt="Брудно"><img src="12.webp" class="photo-img img-after" alt="Чисто"><div class="label-badge">До</div></div></div>
             </div>
             <div class="desktop-static-bar hidden md:grid cinematic-text" style="transition-delay: 0.6s;"><div class="benefit-item"><i data-lucide="beaker" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Використовуємо ефективну хімію (виробництво Іспанія)</p></div><div class="benefit-item"><i data-lucide="moon" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Працюємо в нічний час та на будь-якій висоті.</p></div><div class="benefit-item"><i data-lucide="camera" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Фото та відео-фіксація виконаної роботи.</p></div><div class="benefit-item"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Надаємо акт утилізації та документи для ДСНС.</p></div><div class="benefit-item"><i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i><p class="benefit-text">Захищаємо ваше робоче місце від жиру.</p></div></div>
@@ -528,7 +526,6 @@
             teamMembers.forEach((m, i) => {
                 const d = document.createElement('div'); d.className = `card-wrapper`;
                 const extraHtml = m.extra ? `<p class="text-[10px] text-gray-400 mt-2 italic leading-tight">${m.extra}</p>` : '';
-                
                 d.innerHTML = `
                 <div class="card-inner">
                     <div class="c-text">
@@ -628,4 +625,3 @@
     </script>
 </body>
 </html>
-1
