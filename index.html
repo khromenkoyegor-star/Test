@@ -222,7 +222,6 @@
         @media (max-width: 768px) { .slide-item { flex-direction: column; } .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; } .slide-txt-col { width: 100%; height: 60%; padding: 20px 20px 80px 20px; overflow-y: auto; mask-image: linear-gradient(to bottom, black 85%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%); } .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.6); position: absolute; top: 10px; right: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); } }
         .slide-img-obj { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); transition: transform 1.5s ease-out; }
         .slide-item.active .slide-img-obj { transform: scale(1); }
-        /* Removed .case-label style since text is removed, but keeping class for safety if referenced */
         .case-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #fbbf24; font-weight: 700; margin-bottom: 15px; display: none; align-items: center; gap: 10px; }
         .case-desc { font-size: 0.95rem; line-height: 1.6; color: #e5e5e5; font-weight: 300; }
         .stage-controls { position: absolute; bottom: 0; right: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(15, 15, 15, 0.95); }
@@ -237,16 +236,55 @@
         .team-title-area { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 40; padding: 0 20px; }
         .team-title-area h2 { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
         .team-title-area p { font-size: 0.9rem; color: #aaa; max-width: 600px; margin: 0 auto; font-weight: 300; }
-        .carousel-container { width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 17.5vw; display: flex; align-items: center; height: 550px; -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 40px; }
+        
+        /* === UPDATED TEAM CAROUSEL STYLES (Task 2 & 3) === */
+        .carousel-container { 
+            width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; 
+            padding: 0 17.5vw; /* Mobile Padding - centered */
+            display: flex; align-items: center; height: 550px; 
+            -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 40px; 
+        }
         .carousel-container::-webkit-scrollbar { display: none; }
-        .card-wrapper { flex: 0 0 65vw; height: 450px; scroll-snap-align: center; scroll-snap-stop: always; position: relative; perspective: 800px; margin: 0 10px; z-index: 1; }
-        @media (min-width: 769px) { .carousel-container { padding: 0 35vw; } .card-wrapper { flex: 0 0 30vw; height: 500px; } }
-        .card-inner { width: 100%; height: 100%; background: #141414; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); display: flex; overflow: hidden; position: relative; will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
-        .c-text { width: 55%; padding: 1.2rem; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(135deg, #222 0%, #0a0a0a 100%); border-right: 1px solid rgba(255,255,255,0.05); position: relative; }
-        .c-photo { width: 45%; } .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
+
+        .card-wrapper { 
+            flex: 0 0 80vw; /* Increased width by ~20% for Mobile */
+            height: 450px; scroll-snap-align: center; scroll-snap-stop: always; 
+            position: relative; perspective: 800px; margin: 0 10px; z-index: 1; 
+        }
+        
+        @media (min-width: 769px) { 
+            .carousel-container { 
+                padding: 0 5vw; /* UPDATED: Left aligned padding for Desktop */
+                justify-content: flex-start;
+            } 
+            .card-wrapper { 
+                flex: 0 0 38vw; /* Increased width by ~20% for Desktop */
+                height: 500px; 
+            } 
+        }
+
+        /* UPDATED Card Backgrounds */
+        .card-inner { 
+            width: 100%; height: 100%; 
+            background: transparent; /* Removed solid background */
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); 
+            display: flex; overflow: hidden; position: relative; 
+            will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8); 
+        }
+        
+        .c-text { 
+            width: 55%; padding: 1.2rem; display: flex; flex-direction: column; justify-content: center; 
+            /* Transparent background for text area */
+            background: linear-gradient(135deg, rgba(34,34,34, 0.6) 0%, rgba(10,10,10, 0.6) 100%);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255,255,255,0.05); position: relative; 
+        }
+        
+        .c-photo { width: 45%; } 
+        .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
         
         .c-quote { font-family: 'Playfair Display', serif; font-size: 0.75rem; line-height: 1.3; color: #ccc; font-style: italic; margin-bottom: 0.8rem; position: relative; z-index: 2; flex-grow: 1; overflow-y: auto; max-height: 250px; }
-        /* Scrollbar hide for quote if needed */
         .c-quote::-webkit-scrollbar { width: 2px; }
         .c-quote::-webkit-scrollbar-thumb { background: #555; }
         
@@ -258,11 +296,12 @@
         .dot.active { background: #ef4444; transform: scale(1.2); }
         .placeholder-text { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.1); text-transform: uppercase; }
 
-        /* --- BLOCK 6: PRICES (STYLES) --- */
+        /* --- BLOCK 6: PRICES (STYLES - Task 1 Updated) --- */
         #block6.content-block { justify-content: center; padding: 20px; }
         .price-card-container {
             width: 95%; max-width: 800px;
-            background: rgba(20, 20, 20, 0.7);
+            /* Updated transparency: 0.4 instead of 0.7 */
+            background: rgba(20, 20, 20, 0.4);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 24px;
@@ -486,7 +525,6 @@
 
             const teamTrack = document.getElementById('teamTrack');
             const teamDotsCont = document.getElementById('teamDots');
-            
             teamMembers.forEach((m, i) => {
                 const d = document.createElement('div'); d.className = `card-wrapper`;
                 const extraHtml = m.extra ? `<p class="text-[10px] text-gray-400 mt-2 italic leading-tight">${m.extra}</p>` : '';
@@ -590,3 +628,4 @@
     </script>
 </body>
 </html>
+1
