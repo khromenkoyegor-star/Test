@@ -20,6 +20,75 @@
             color: white;
         }
 
+        /* --- NAVIGATION (LIQUID GLASS) --- */
+        .glass-nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: 65px;
+            z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0 10px;
+        }
+        
+        .nav-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            overflow-x: auto; /* Scroll for mobile */
+            overflow-y: hidden;
+            max-width: 100%;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+            -ms-overflow-style: none; /* Hide scrollbar IE */
+        }
+        .nav-container::-webkit-scrollbar { display: none; }
+
+        .nav-item {
+            position: relative;
+            z-index: 2;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        
+        .nav-item.active-item { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .nav-item:hover { color: #fff; }
+
+        .nav-logo-img {
+            width: 24px; height: 24px; object-fit: contain;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
+        }
+
+        /* The Liquid Highlighter */
+        #nav-highlighter {
+            position: absolute;
+            top: 4px; bottom: 4px; left: 0;
+            height: calc(100% - 8px);
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            z-index: 1;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.1), 0 0 10px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+            opacity: 0; /* Hidden initially until JS sets it */
+        }
+
         /* --- LAYERS --- */
         .fixed-viewport {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
@@ -37,6 +106,8 @@
             align-items: center; justify-content: center;
             z-index: 30; pointer-events: none; 
             padding: 20px;
+            /* Added padding-top to prevent menu overlap */
+            padding-top: 80px; 
             opacity: 0; 
             visibility: hidden;
         }
@@ -136,7 +207,7 @@
                 position: relative; width: 100%; height: 100%;
                 display: flex; flex-direction: column; 
                 align-items: center; justify-content: center;
-                gap: 20px; padding-top: 60px;
+                gap: 20px; padding-top: 80px;
             }
             .risk-mobile-title { text-align: center; z-index: 20; width: 100%; margin: 10px 0; }
             .risk-mobile-title h2 { font-size: 1.8rem; line-height: 1.1; }
@@ -167,7 +238,7 @@
         }
 
         /* --- BLOCK 3: SERVICES --- */
-        #block3.content-block { justify-content: space-between; padding-top: 60px; padding-bottom: 20px; }
+        #block3.content-block { justify-content: space-between; padding-top: 80px; padding-bottom: 20px; }
         .services-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 1000px; flex-grow: 1; align-content: center; }
         .service-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
         .service-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: rgba(255,255,255,0.9); text-shadow: 0 2px 5px black; }
@@ -187,7 +258,7 @@
         .label-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; z-index: 20; color: white; transition: 0.3s; }
 
         @media (max-width: 768px) {
-            #block3.content-block { padding-top: 50px; justify-content: flex-start; }
+            #block3.content-block { padding-top: 80px; justify-content: flex-start; }
             .services-matrix { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 0; padding: 0 10px; margin-bottom: auto; }
             .photo-box { max-width: 100%; border-radius: 12px; } 
             .service-title { font-size: 0.9rem; }
@@ -209,7 +280,7 @@
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* --- BLOCK 4 & 5 --- */
-        #block4.content-block { justify-content: center; padding: 20px; }
+        #block4.content-block { justify-content: center; padding: 20px; padding-top: 80px; }
         .cinematic-stage { position: relative; width: 95%; max-width: 1000px; height: 60vh; max-height: 550px; background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); overflow: hidden; display: flex; flex-direction: column; }
         @media (min-width: 769px) { .cinematic-stage { height: 500px; } }
         .slides-wrapper { width: 100%; height: 100%; position: relative; }
@@ -230,11 +301,11 @@
         .stage-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
         .stage-btn:hover { background: #fbbf24; color: black; border-color: #fbbf24; }
         
-        #block5.content-block { justify-content: center; padding: 0; background: linear-gradient(to top, #000 0%, transparent 20%, transparent 80%, #000 100%); }
-        .team-title-area { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 40; padding: 0 20px; }
+        #block5.content-block { justify-content: center; padding: 0; background: linear-gradient(to top, #000 0%, transparent 20%, transparent 80%, #000 100%); padding-top: 80px; }
+        .team-title-area { position: absolute; top: 10%; width: 100%; text-align: center; z-index: 40; padding: 0 20px; }
         .team-title-area h2 { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
         .team-title-area p { font-size: 0.9rem; color: #aaa; max-width: 600px; margin: 0 auto; font-weight: 300; }
-        .carousel-container { width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 17.5vw; display: flex; align-items: center; height: 550px; -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 40px; }
+        .carousel-container { width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 17.5vw; display: flex; align-items: center; height: 550px; -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 60px; }
         .carousel-container::-webkit-scrollbar { display: none; }
         .card-wrapper { flex: 0 0 80vw; height: 450px; scroll-snap-align: center; scroll-snap-stop: always; position: relative; perspective: 800px; margin: 0 10px; z-index: 1; }
         @media (min-width: 769px) { .carousel-container { padding: 0 35vw; } .card-wrapper { flex: 0 0 38vw; height: 500px; } }
@@ -253,7 +324,7 @@
         .placeholder-text { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.1); text-transform: uppercase; }
 
         /* --- BLOCK 6: PRICES --- */
-        #block6.content-block { justify-content: center; padding: 20px; }
+        #block6.content-block { justify-content: center; padding: 20px; padding-top: 80px; }
         .price-card-container {
             width: 95%; max-width: 800px;
             background: rgba(20, 20, 20, 0.4); 
@@ -289,10 +360,24 @@
         .report-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); transform: translateY(-2px); }
 
         /* --- BLOCK 7: Styles --- */
-        /* Removed .text-outline-heavy class */
     </style>
 </head>
 <body class="text-white antialiased">
+
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <div id="nav-highlighter"></div>
+            <div class="nav-item" data-target="98" onclick="scrollToBlock(98)">
+                <img src="logo.webp" alt="Logo" class="nav-logo-img" onerror="this.src='https://via.placeholder.com/24x24/333/fff?text=L'">
+            </div>
+            <div class="nav-item" data-target="80" onclick="scrollToBlock(80)">Навіщо?</div>
+            <div class="nav-item" data-target="65" onclick="scrollToBlock(65)">Послуги</div>
+            <div class="nav-item" data-target="50" onclick="scrollToBlock(50)">Кейси</div>
+            <div class="nav-item" data-target="35" onclick="scrollToBlock(35)">Команда</div>
+            <div class="nav-item" data-target="20" onclick="scrollToBlock(20)">Прайс</div>
+            <div class="nav-item" data-target="5" onclick="scrollToBlock(5)">Контакти</div>
+        </div>
+    </nav>
 
     <div class="fixed-viewport">
         <img src="clean.webp" onerror="this.style.display='none'; document.body.style.background='#111'" alt="Clean Ventilation" class="bg-layer z-0">
@@ -459,6 +544,17 @@
             { name: "Коваленко Євгеній", role: "Інженер КВП, електрик", quote: "Найкраща автоматика — та, яку ви не помічаєте. Коли все працює — це моя заслуга, якої не видно. Коли щось зупиняється — це стає моєю проблемою, яку я вирішую максимально швидко. Я не люблю хаос, тому повертаю системі розум прискіпливо і надійно", extra: "", img: "5.5.webp" }
         ];
 
+        // --- NAV SCROLL LOGIC ---
+        function scrollToBlock(targetVal) {
+            // Formula: (100 - TargetVal) / 100 * (TotalHeight - WindowHeight)
+            const totalH = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPos = ((100 - targetVal) / 100) * totalH;
+            window.scrollTo({
+                top: scrollPos,
+                behavior: 'smooth'
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             const cards = document.querySelectorAll('.card-js');
@@ -551,14 +647,17 @@
             setTimeout(updateTeam, 500);
 
             const dirtyImg = document.getElementById('dirtyImage');
+            const navHighlighter = document.getElementById('nav-highlighter');
+            const navItems = document.querySelectorAll('.nav-item');
+
             const scrollRanges = [
-                { id: 'block1', showStart: 100, showEnd: 90, fadeStart: 90, fadeEnd: 87 },
-                { id: 'block2', appearStart: 87, appearEnd: 85, showStart: 85, showEnd: 75, fadeStart: 75, fadeEnd: 73 },
-                { id: 'block3', appearStart: 73, appearEnd: 70, showStart: 70, showEnd: 60, fadeStart: 60, fadeEnd: 58 },
-                { id: 'block4', appearStart: 58, appearEnd: 55, showStart: 55, showEnd: 45, fadeStart: 45, fadeEnd: 42 },
-                { id: 'block5', appearStart: 42, appearEnd: 40, showStart: 40, showEnd: 30, fadeStart: 30, fadeEnd: 27 },
-                { id: 'block6', appearStart: 27, appearEnd: 25, showStart: 25, showEnd: 15, fadeStart: 15, fadeEnd: 12 },
-                { id: 'block7', appearStart: 12, appearEnd: 10, showStart: 10, showEnd: 0,  fadeStart: -1, fadeEnd: -1 }
+                { id: 'block1', showStart: 100, showEnd: 90, fadeStart: 90, fadeEnd: 87, navTarget: 98 },
+                { id: 'block2', appearStart: 87, appearEnd: 85, showStart: 85, showEnd: 75, fadeStart: 75, fadeEnd: 73, navTarget: 80 },
+                { id: 'block3', appearStart: 73, appearEnd: 70, showStart: 70, showEnd: 60, fadeStart: 60, fadeEnd: 58, navTarget: 65 },
+                { id: 'block4', appearStart: 58, appearEnd: 55, showStart: 55, showEnd: 45, fadeStart: 45, fadeEnd: 42, navTarget: 50 },
+                { id: 'block5', appearStart: 42, appearEnd: 40, showStart: 40, showEnd: 30, fadeStart: 30, fadeEnd: 27, navTarget: 35 },
+                { id: 'block6', appearStart: 27, appearEnd: 25, showStart: 25, showEnd: 15, fadeStart: 15, fadeEnd: 12, navTarget: 20 },
+                { id: 'block7', appearStart: 12, appearEnd: 10, showStart: 10, showEnd: 0,  fadeStart: -1, fadeEnd: -1, navTarget: 5 }
             ];
 
             function mapRange(value, inMin, inMax, outMin, outMax) {
@@ -572,13 +671,16 @@
 
                 if(dirtyImg) dirtyImg.style.opacity = Math.max(0, Math.min(1, val / 100));
 
-                scrollRanges.forEach(range => {
+                let currentActiveBlockIndex = 0;
+
+                scrollRanges.forEach((range, index) => {
                     const el = document.getElementById(range.id);
                     if(!el) return;
 
                     let opacity = 0;
                     let visible = false;
 
+                    // Determine visibility for animation
                     if (range.appearStart !== undefined && val <= range.appearStart && val > range.appearEnd) {
                         opacity = mapRange(val, range.appearStart, range.appearEnd, 0, 1);
                         visible = true;
@@ -592,10 +694,12 @@
                         visible = true;
                     }
 
+                    // Apply styles
                     if (visible) {
                         el.style.visibility = 'visible';
                         el.style.opacity = opacity;
                         if (opacity > 0.5) {
+                            currentActiveBlockIndex = index; // Identify current block
                             el.querySelectorAll('.cinematic-text, .fly-in-anim, .glass-title-panel').forEach(c => c.classList.add('in-focus', 'landed'));
                             if (range.id === 'block3') startServiceAnimation();
                         }
@@ -606,6 +710,17 @@
                         if (range.id === 'block3') stopServiceAnimation();
                     }
                 });
+
+                // --- Update Nav Highlighter ---
+                const activeNav = navItems[currentActiveBlockIndex];
+                if (activeNav) {
+                    navItems.forEach(i => i.classList.remove('active-item'));
+                    activeNav.classList.add('active-item');
+                    
+                    navHighlighter.style.opacity = '1';
+                    navHighlighter.style.width = `${activeNav.offsetWidth}px`;
+                    navHighlighter.style.left = `${activeNav.offsetLeft}px`;
+                }
             }
 
             window.addEventListener('scroll', sync);
