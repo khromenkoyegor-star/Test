@@ -56,30 +56,36 @@
         /* --- BLOCK 1: HERO --- */
         #hero-footnote {
             font-size: 0.8rem; color: rgba(255,255,255,0.7);
-            position: absolute; bottom: 12%; width: 100%; text-align: center;
-            /* Delay animation by 1 second */
+            position: absolute; bottom: 8%; width: 100%; text-align: center;
             transition-delay: 1s;
         }
-        @media (min-width: 769px) { #hero-footnote { bottom: 15%; } }
+        /* Scroll Down Indicator Styles */
+        .scroll-down-wrapper {
+            position: absolute; bottom: 18%; width: 100%; 
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            opacity: 0.6; animation: pulse 2s infinite; pointer-events: none;
+        }
+        @media (min-width: 769px) { 
+            #hero-footnote { bottom: 10%; } 
+            .scroll-down-wrapper { bottom: 20%; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: translateY(0); }
+            50% { opacity: 0.8; transform: translateY(5px); }
+        }
 
         /* --- BLOCK 2: RISKS (DESKTOP) --- */
         .dt-mindmap-container {
             position: relative; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
         }
-        
         .dt-center-pos {
-            position: absolute; 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 100%; max-width: 600px;
-            display: flex; justify-content: center; align-items: center;
-            text-align: center; 
+            display: flex; justify-content: center; align-items: center; text-align: center; 
             z-index: 10; pointer-events: none;
         }
-
         .dt-anchor { position: absolute; width: 320px; height: 120px; z-index: 20; }
-        
         .dt-pos-tl { bottom: 50%; right: 50%; margin-bottom: 80px; margin-right: 200px; }
         .dt-pos-tr { bottom: 50%; left: 50%; margin-bottom: 80px; margin-left: 200px; }
         .dt-pos-bl { top: 50%; right: 50%; margin-top: 80px; margin-right: 200px; }
@@ -96,10 +102,8 @@
             transition: height 0.5s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s, border-color 0.3s;
         }
         .dt-card:hover { border-color: rgba(251, 191, 36, 0.5); background: rgba(255, 255, 255, 0.06); }
-
         .dt-pos-tl .dt-card, .dt-pos-tr .dt-card { bottom: 0; top: auto; transform-origin: bottom center; }
         .dt-pos-bl .dt-card, .dt-pos-br .dt-card { top: 0; bottom: auto; transform-origin: top center; }
-
         .dt-card.active {
             height: 280px; background: rgba(10, 10, 10, 0.95);
             border-color: #fbbf24; z-index: 50; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
@@ -125,27 +129,23 @@
         }
         .dt-card.active .expand-hint { transform: rotate(45deg); color: #fbbf24; }
 
-        /* --- BLOCK 2: MOBILE LAYOUT (SUN STRUCTURE) --- */
+        /* --- BLOCK 2: MOBILE LAYOUT --- */
         @media (max-width: 768px) {
             .dt-mindmap-container { display: none; }
-            
             .risk-mobile-layout {
                 position: relative; width: 100%; height: 100%;
                 display: flex; flex-direction: column; 
                 align-items: center; justify-content: center;
                 gap: 20px; padding-top: 60px;
             }
-            
             .risk-mobile-title { text-align: center; z-index: 20; width: 100%; margin: 10px 0; }
             .risk-mobile-title h2 { font-size: 1.8rem; line-height: 1.1; }
-
             .mobile-row {
                 display: flex; justify-content: space-between; 
                 gap: 15px; width: 95%; max-width: 400px;
                 position: relative; z-index: 30;
             }
             .m-grid-cell { position: relative; width: 48%; height: 110px; }
-            
             .risk-card-mob {
                 position: absolute; width: 100%; height: 100%; left: 0;
                 background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px);
@@ -153,16 +153,13 @@
                 padding: 1rem; display: flex; flex-direction: column; justify-content: flex-start;
                 transition: height 0.3s ease, z-index 0s; overflow: hidden;
             }
-            
             .row-top .m-grid-cell .risk-card-mob { bottom: 0; top: auto; transform-origin: bottom center; }
             .row-bottom .m-grid-cell .risk-card-mob { top: 0; bottom: auto; transform-origin: top center; }
-
             .risk-card-mob.active {
                 height: 240px !important; z-index: 100;
                 background: #111; border-color: #fbbf24;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             }
-            
             .card-icon { color: #fbbf24; margin-bottom: 8px; width: 32px; height: 32px; }
             .risk-card-mob h3 { font-size: 1rem; font-weight: 700; }
             .hidden-text { display: block; opacity: 0; max-height: 0; font-size: 0.9rem; color: #ccc; transition: all 0.3s ease; line-height: 1.3; }
@@ -207,20 +204,22 @@
             border-top: 1px solid rgba(255, 255, 255, 0.15); margin-top: auto; margin-bottom: 30px; 
             display: flex; align-items: center; height: 60px; pointer-events: auto; flex-shrink: 0; 
         }
-        /* Faster speed (28s) */
-        .marquee-track { display: flex; gap: 40px; padding: 0 20px; animation: marquee 28s linear infinite; width: max-content; }
+        /* Increased speed (14s) */
+        .marquee-track { display: flex; gap: 40px; padding: 0 20px; animation: marquee 14s linear infinite; width: max-content; }
         .marquee-track .benefit-item { align-items: center; white-space: nowrap; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* --- REST OF STYLES --- */
+        /* --- BLOCK 4 & 5 --- */
         #block4.content-block { justify-content: center; padding: 20px; }
         .cinematic-stage { position: relative; width: 95%; max-width: 1000px; height: 60vh; max-height: 550px; background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); overflow: hidden; display: flex; flex-direction: column; }
         @media (min-width: 769px) { .cinematic-stage { height: 500px; } }
         .slides-wrapper { width: 100%; height: 100%; position: relative; }
         .slide-item { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .slide-item.active { opacity: 1; pointer-events: auto; }
-        @media (min-width: 769px) { .slide-item { flex-direction: row; } .slide-img-col { width: 45%; height: 100%; position: relative; overflow: hidden; } .slide-txt-col { width: 55%; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: center; } .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.05); position: absolute; top: 20px; right: 20px; line-height: 1; } }
-        @media (max-width: 768px) { .slide-item { flex-direction: column; } .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; } .slide-txt-col { width: 100%; height: 60%; padding: 20px 20px 80px 20px; overflow-y: auto; mask-image: linear-gradient(to bottom, black 85%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%); } .slide-number { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.6); position: absolute; top: 10px; right: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); } }
+        @media (min-width: 769px) { .slide-item { flex-direction: row; } .slide-img-col { width: 45%; height: 100%; position: relative; overflow: hidden; } .slide-txt-col { width: 55%; height: 100%; padding: 40px; display: flex; flex-direction: column; justify-content: center; } }
+        @media (max-width: 768px) { .slide-item { flex-direction: column; } .slide-img-col { width: 100%; height: 40%; position: relative; overflow: hidden; } .slide-txt-col { width: 100%; height: 60%; padding: 20px 20px 80px 20px; overflow-y: auto; mask-image: linear-gradient(to bottom, black 85%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%); } }
+        /* Removed slide-number styles completely */
+        
         .slide-img-obj { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); transition: transform 1.5s ease-out; }
         .slide-item.active .slide-img-obj { transform: scale(1); }
         .case-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #fbbf24; font-weight: 700; margin-bottom: 15px; display: none; align-items: center; gap: 10px; }
@@ -237,59 +236,16 @@
         .team-title-area { position: absolute; top: 5%; width: 100%; text-align: center; z-index: 40; padding: 0 20px; }
         .team-title-area h2 { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
         .team-title-area p { font-size: 0.9rem; color: #aaa; max-width: 600px; margin: 0 auto; font-weight: 300; }
-        
-        .carousel-container { 
-            width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; 
-            padding: 0 17.5vw; 
-            display: flex; align-items: center; height: 550px; 
-            -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 40px; 
-        }
+        .carousel-container { width: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 17.5vw; display: flex; align-items: center; height: 550px; -ms-overflow-style: none; scrollbar-width: none; cursor: grab; margin-top: 40px; }
         .carousel-container::-webkit-scrollbar { display: none; }
-
-        .card-wrapper { 
-            flex: 0 0 80vw;
-            height: 450px; scroll-snap-align: center; scroll-snap-stop: always; 
-            position: relative; perspective: 800px; margin: 0 10px; z-index: 1; 
-        }
-        
-        @media (min-width: 769px) { 
-            .carousel-container { 
-                padding: 0 35vw; 
-            } 
-            .card-wrapper { 
-                flex: 0 0 38vw; 
-                height: 500px; 
-            } 
-        }
-
-        .card-inner { 
-            width: 100%; height: 100%; 
-            background: transparent; 
-            border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); 
-            display: flex; overflow: hidden; position: relative; 
-            will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8); 
-        }
-        
-        .c-text { 
-            width: 55%; padding: 1.2rem; display: flex; flex-direction: column; justify-content: center; 
-            background: linear-gradient(135deg, rgba(34,34,34, 0.6) 0%, rgba(10,10,10, 0.6) 100%);
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(255,255,255,0.05); position: relative; 
-        }
-        
-        .c-photo { width: 45%; } 
-        .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
-        
-        .c-quote { 
-            font-family: 'Playfair Display', serif; 
-            font-size: 0.75rem; 
-            line-height: 1.3; color: #ccc; font-style: italic; margin-bottom: 0.8rem; position: relative; z-index: 2; flex-grow: 1; overflow-y: auto; max-height: 250px; 
-        }
+        .card-wrapper { flex: 0 0 80vw; height: 450px; scroll-snap-align: center; scroll-snap-stop: always; position: relative; perspective: 800px; margin: 0 10px; z-index: 1; }
+        @media (min-width: 769px) { .carousel-container { padding: 0 35vw; } .card-wrapper { flex: 0 0 38vw; height: 500px; } }
+        .card-inner { width: 100%; height: 100%; background: transparent; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); display: flex; overflow: hidden; position: relative; will-change: transform; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.2s; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        .c-text { width: 55%; padding: 1.2rem; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(135deg, rgba(34,34,34, 0.6) 0%, rgba(10,10,10, 0.6) 100%); backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .c-photo { width: 45%; } .c-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) contrast(1.1); }
+        .c-quote { font-family: 'Playfair Display', serif; font-size: 0.75rem; line-height: 1.3; color: #ccc; font-style: italic; margin-bottom: 0.8rem; position: relative; z-index: 2; flex-grow: 1; overflow-y: auto; max-height: 250px; }
         @media (min-width: 769px) { .c-quote { font-size: 0.95rem; } }
-        .c-quote::-webkit-scrollbar { width: 2px; }
-        .c-quote::-webkit-scrollbar-thumb { background: #555; }
-        
+        .c-quote::-webkit-scrollbar { width: 2px; } .c-quote::-webkit-scrollbar-thumb { background: #555; }
         .c-name { font-size: 0.85rem; font-weight: 800; color: #fff; text-transform: uppercase; margin-top: auto; }
         .c-role { font-size: 0.6rem; color: #ef4444; font-weight: 700; text-transform: uppercase; }
         .quote-bg { position: absolute; top: 5px; left: 5px; font-size: 3rem; font-family: serif; color: rgba(255,255,255,0.05); line-height: 0; pointer-events: none; }
@@ -314,7 +270,6 @@
         .price-title { font-size: 2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
         .price-main-text { font-size: 1rem; color: #ccc; line-height: 1.6; max-width: 600px; margin: 0 auto; }
         .price-highlight { font-size: 1.2rem; font-weight: 700; color: #fbbf24; margin: 10px 0; }
-        
         .price-secondary-box {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.05);
@@ -334,6 +289,13 @@
             transition: all 0.3s ease; text-decoration: none; font-size: 0.9rem; white-space: nowrap;
         }
         .report-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); transform: translateY(-2px); }
+
+        /* --- BLOCK 7: Styles --- */
+        .text-outline-heavy {
+            -webkit-text-stroke: 1px rgba(0,0,0,0.8);
+            text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 4px 4px rgba(0,0,0,1);
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="text-white antialiased">
@@ -346,6 +308,12 @@
         <div id="block1" class="content-block" style="z-index: 40;">
             <h1 id="hero-title" class="cinematic-text text-5xl md:text-7xl lg:text-8xl font-extrabold text-center leading-tight text-shadow-strong"><span class="text-red-500">64%</span> ЗАГОРЯННЯ<br>НА КУХНЯХ</h1>
             <h2 id="hero-subtitle" class="cinematic-text text-2xl md:text-4xl font-light text-center mt-6 text-shadow-strong tracking-wide">ПОВʼЯЗАНІ З БРУДНОЮ<br>ВЕНТИЛЯЦІЄЮ*</h2>
+            
+            <div class="scroll-down-wrapper cinematic-text">
+                <span class="text-[10px] uppercase tracking-widest text-white/80">scroll down</span>
+                <i data-lucide="chevron-down" class="w-6 h-6 text-white"></i>
+            </div>
+
             <div id="hero-footnote" class="cinematic-text text-shadow-strong">* За даними провідних міжнародних організацій з пожежної безпеки (NFPA, UK Fire Services, ANSI)</div>
         </div>
 
@@ -452,13 +420,12 @@
         </div>
 
         <div id="block7" class="content-block">
-            <div class="text-center max-w-4xl px-4 flex flex-col items-center gap-8">
-
-                <h2 class="cinematic-text text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white text-shadow-strong">
+            <div class="text-center max-w-4xl px-4 flex flex-col items-center gap-8 -mt-24 md:mt-0"> <h2 class="cinematic-text text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white text-shadow-strong">
                     Не чекайте на<br>
                     <span class="text-amber-500">критичний момент.</span>
                 </h2>
-                <p class="cinematic-text text-lg md:text-2xl font-light text-white/90 text-shadow-strong max-w-2xl">
+                
+                <p class="cinematic-text text-lg md:text-2xl font-light text-white/90 text-outline-heavy max-w-2xl">
                     Отримайте експертний розрахунок вартості обслуговування сьогодні.
                 </p>
 
@@ -468,7 +435,7 @@
                 </a>
 
                 <a href="tel:+380637446998" class="cinematic-text text-white/80 hover:text-white transition-colors text-base md:text-lg font-mono tracking-wide mt-4 border-b border-white/20 hover:border-white/80 pb-1">
-                    Контактний номер: +380 63 744 69 98
+                    <span class="md:hidden">Дзвоніть:</span><span class="hidden md:inline">Контактний номер:</span> +380 63 744 69 98
                 </a>
 
             </div>
@@ -530,7 +497,8 @@
             portfolioItems.forEach((item, i) => {
                 const el = document.createElement('div');
                 el.className = `slide-item ${i===0 ? 'active' : ''}`;
-                el.innerHTML = `<div class="slide-img-col"><img src="${item.img}" class="slide-img-obj" loading="lazy"><div class="slide-number">0${i+1}</div></div><div class="slide-txt-col"><p class="case-desc">${item.text}</p></div>`;
+                // Removed the slide-number div
+                el.innerHTML = `<div class="slide-img-col"><img src="${item.img}" class="slide-img-obj" loading="lazy"></div><div class="slide-txt-col"><p class="case-desc">${item.text}</p></div>`;
                 wrapper.appendChild(el);
             });
             let currentSlide = 0;
